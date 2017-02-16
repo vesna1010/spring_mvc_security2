@@ -20,6 +20,7 @@ public class DepartmentController {
 	@Autowired
 	private HibernateService<Department> departmentService;
 
+	
 	//returns departments
 	@RequestMapping(method = RequestMethod.GET)
 	public String showAllDepartements(Model model) {
