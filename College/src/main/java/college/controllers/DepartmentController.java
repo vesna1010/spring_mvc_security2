@@ -14,7 +14,7 @@ import college.model.Department;
 import college.service.HibernateService;
 
 @Controller
-@RequestMapping("/departments/")
+@RequestMapping("/departments")
 public class DepartmentController {
 
 	@Autowired
