@@ -14,7 +14,7 @@ import college.model.User;
 import college.service.UserService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="file:src/main/webapp/WEB-INF/spring/spring-persistence.xml")
+@ContextConfiguration(locations="file:src/main/webapp/WEB-INF/spring/root-context.xm")
 public class Test2 {
 
 	@Autowired
