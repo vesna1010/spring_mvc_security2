@@ -38,4 +38,18 @@
 		class="org.springframework.security.crypto.password.StandardPasswordEncoder">
 	</bean>
 
+<bean id="conversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="formatters">
+			<set>
+				<bean class="college.formatters.RoleFormatter"></bean>
+				<bean class="college.formatters.AddressFormatter"></bean>
+				<bean class="college.formatters.DepartmentFormatter"></bean>
+				<bean class="college.formatters.StudyProgramFormatter"></bean>
+				<bean class="college.formatters.SubjectFormatter"></bean>
+				<bean class="college.formatters.ProfessorFormatter"></bean>
+				<bean class="college.formatters.StudentFormatter"></bean>
+			</set>
+		</property>
+	</bean>
 </beans>
