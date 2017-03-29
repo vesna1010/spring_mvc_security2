@@ -24,7 +24,7 @@ import college.service.HibernateService;
 import college.service.impl.ExamService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "file:src/main/webapp/WEB-INF/spring/root-context.xm")
+@ContextConfiguration(locations = "file:src/main/webapp/WEB-INF/spring/root-context.xml")
 public class Test1 {
 
 	@Autowired
