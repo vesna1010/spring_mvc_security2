@@ -10,16 +10,16 @@ public class AddressFormatter implements Formatter<Address> {
 
 	@Override
 	public String print(Address address, Locale locale) {
-		if (address == null)
-			return "";
-		else
-			return address.toString();
+		if (address == null) {
+			return null;
+		}
+		return address.toString();
 	}
 
 	@Override
 	public Address parse(String text, Locale locale) throws ParseException {
 		Address address = new Address();
-		String[] array ={"", "", ""};
+		String[] array = { "", "", "" };
 		if (text != null) {
 			String[] parts = text.split("-");
 			for (int i = 0; i < parts.length; i++)

@@ -14,14 +14,17 @@ public class SubjectFormatter implements Formatter<Subject> {
 
 	@Override
 	public String print(Subject subject, Locale locale) {
-		if (subject == null)
-			return "";
-		else
-			return subject.getTitle();
+		if (subject == null) {
+			return null;
+		}
+		return subject.getTitle();
 	}
 
 	@Override
 	public Subject parse(String id, Locale locale) throws ParseException {
+		if (id == null){
+			return null;
+		}
 		return service.findOne(id);
 	}
 

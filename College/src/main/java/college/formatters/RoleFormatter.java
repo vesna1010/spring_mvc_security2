@@ -14,14 +14,17 @@ public class RoleFormatter implements Formatter<Role> {
 
 	@Override
 	public String print(Role role, Locale locale) {
-		if (role == null)
-			return "";
-		else
-			return role.getRole();
+		if (role == null) {
+			return null;
+		}
+		return role.getRole();
 	}
 
 	@Override
 	public Role parse(String id, Locale locale) throws ParseException {
+		if (id == null) {
+			return null;
+		}
 		return userService.findRole(id);
 	}
 }

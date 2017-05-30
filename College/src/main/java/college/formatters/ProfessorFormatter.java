@@ -14,14 +14,17 @@ public class ProfessorFormatter implements Formatter<Professor> {
 
 	@Override
 	public String print(Professor professor, Locale locale) {
-		if (professor == null)
-			return "";
-		else
+		if (professor == null){
+			return null;
+		}
 			return professor.getFullName();
 	}
 
 	@Override
 	public Professor parse(String id, Locale locale) throws ParseException {
+		if(id==null){
+			return null;
+		}
 		return professorService.findOne(id);
 	}
 

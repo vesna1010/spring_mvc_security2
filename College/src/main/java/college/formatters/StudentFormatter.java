@@ -14,14 +14,17 @@ public class StudentFormatter implements Formatter<Student> {
 
 	@Override
 	public String print(Student student, Locale locale) {
-		if (student == null)
-			return "";
-		else
-			return student.getFullName();
+		if (student == null) {
+			return null;
+		}
+		return student.getFullName();
 	}
 
 	@Override
 	public Student parse(String id, Locale locale) throws ParseException {
+		if (id == null) {
+			return null;
+		}
 		return studentService.findOne(id);
 	}
 

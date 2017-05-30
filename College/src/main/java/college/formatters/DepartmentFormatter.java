@@ -14,15 +14,18 @@ public class DepartmentFormatter implements Formatter<Department> {
 
 	@Override
 	public String print(Department department, Locale locale) {
-		if (department == null)
-			return "";
-		else
-			return department.getTitle();
+		if (department == null){
+			return null;
+		}
+		return department.getTitle();
 	}
-
+		
 	@Override
 	public Department parse(String id, Locale locale) throws ParseException {
-			return departmentService.findOne(id);
+		if(id==null){
+			return null;
+		}
+		return departmentService.findOne(id);
 	}
 
 }
