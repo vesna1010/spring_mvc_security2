@@ -11,13 +11,13 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
-<script type="text/javascript" src="<c:url value='/resource/jQuery/date.js' context='/College' />"></script>
-<script type="text/javascript" src="<c:url value='/resource/jQuery/activeClass.js' context='/College' />"></script>
-<script type="text/javascript" src="<c:url value='/resource/angular/validationPassword.js' context='/College' />"></script>
+<script type="text/javascript" src="<c:url value='/resource/jQuery/date.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/resource/jQuery/activeClass.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resource/angular/validationPassword.js' />"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css">
-<link rel="stylesheet" href="<c:url value='/resource/css/style.css' context='/College'/>"/> 
+<link rel="stylesheet" href="<c:url value='/resource/css/style.css' />"/> 
 
 </head>
 <body>

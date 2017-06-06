@@ -32,4 +32,5 @@
 		<property name="maxUploadSize" value="20971520" /> 
 		<property name="maxInMemorySize" value="1048576" />
 	</bean> 
+	<mvc:resources location="/resource/" mapping="/resource/**"></mvc:resources>
 </beans>
