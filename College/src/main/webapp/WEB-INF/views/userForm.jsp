@@ -69,9 +69,8 @@ class="form-control" multiple="multiple">
 <sf:options items="${listRoles}" itemLabel="role" itemValue="id"/>
 </sf:select>
 <div class="text-danger">
-<span ng-show="userForm.roles.$error.required && !userForm.password.$error.pattern
-&& !userForm.username.$error.pattern && !userForm.email.$error.pattern
-&& !userForm.password.$error.required && !userForm.username.$error.required && !userForm.email.$error.required">
+<span ng-show="userForm.roles.$error.required && userForm.password.$valid
+&& userForm.username.$valid && userForm.email.$valid">
 Select roles.
 </span>
 </div>
