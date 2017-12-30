@@ -64,7 +64,7 @@ public class StudentController {
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "multipart/form-data")
 	public ModelAndView saveStudentAndRenderStudentForm(@Valid @ModelAttribute Student student, 
-			BindingResult result) {
+		BindingResult result) {
 		
 		if (!result.hasErrors()) {
 			return saveStudentAndGetModelAndView(student);
