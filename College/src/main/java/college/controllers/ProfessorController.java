@@ -3,7 +3,6 @@ package college.controllers;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import college.enums.Gender;
 import college.model.Professor;
 import college.model.StudyProgram;
@@ -69,7 +67,7 @@ public class ProfessorController {
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "multipart/form-data")
 	public ModelAndView saveProfessorAndRenderProfessorForm(@Valid @ModelAttribute Professor professor, 
-			BindingResult result) {
+		BindingResult result) {
 	
 		if(!result.hasErrors()) {
 			return saveProfessorAndGetModelAndView(professor);
