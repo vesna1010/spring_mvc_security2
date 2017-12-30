@@ -41,8 +41,7 @@ public class ProfessorController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, params = "studyProgramId")
-	public ModelAndView renderProfessorsPageWithProfessorsByStudyProgram(
-			@RequestParam String studyProgramId) {
+	public ModelAndView renderProfessorsPageWithProfessorsByStudyProgram(@RequestParam String studyProgramId) {
 		return setModelAndViewByStudyProgram(studyProgramService.findStudyProgramById(studyProgramId));
 	}
 	
