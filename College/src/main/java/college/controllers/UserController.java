@@ -1,80 +1,96 @@
 package college.controllers;
 
 import java.security.Principal;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+import college.enums.Role;
 import college.model.User;
 import college.service.UserService;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
 	
+	
+	@Autowired
+	@Qualifier("userValidator")
+	private Validator validator;
 	@Autowired
 	private UserService userService;
+	private List<Role> roles = Arrays.asList(Role.values());
 	
-	//returns all enabled users
-	@RequestMapping("/users/")
-	public String users(Model model){
-		model.addAttribute("users", userService.findUsers());
-		return "users";
+	@RequestMapping
+	public ModelAndView renderUsersPageWithAllUsers() {
+		return new ModelAndView("usersPage", "users", userService.findUsers());
 	}
-	
-	//creates form for new user
-	@RequestMapping("/users/save")
-	public String addUser(Model model){
-		model.addAttribute("user", new User());
-		model.addAttribute("listRoles", userService.findRoles());
-		return "userForm";
+
+	@RequestMapping("/userForm")
+	public ModelAndView renderEmptyUserForm(ModelAndView model) {
+		model.setViewName("userForm");
+		model.addObject("user", new User());
+		model.addObject("roles", roles);
+		
+		return model;
 	}
-	
-	//save new user
-	@RequestMapping(value="/users/save", method=RequestMethod.POST)
-	public String addUser(User user, Model model){
-		if(userService.findUser(user.getUsername())!=null){
-			model.addAttribute("message", "Username exist!");
-		}else{
-			userService.saveOrUpdate(user);
-			model.addAttribute("user", new User());
-			model.addAttribute("message", "Your data has been successfuly saved!");
+
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public ModelAndView saveUserAndRenderUserForm(@ModelAttribute User user, BindingResult result) {
+		validator.validate(user, result);
+		
+		if(!result.hasErrors()) {
+			saveUserAndGetModelAndView(user);
 		}
-		model.addAttribute("listRoles", userService.findRoles());
-		return "userForm";
+		
+		return new ModelAndView("userForm", "roles", roles);
+	}
+
+	private ModelAndView saveUserAndGetModelAndView(User user) {
+		userService.saveOrUpdateUser(user);
+
+		return new ModelAndView("redirect:/users/userForm");
+	}
+
+	@RequestMapping("/delete/{username}")
+	public ModelAndView deleteUserAndRenderUsersPage(@PathVariable String username) {
+		userService.deleteUserByUsername(username);
+
+		return new ModelAndView("redirect:/users");
+	}
+
+	@RequestMapping("/disable/{username}")
+	public ModelAndView disableUserAndRenderUsersPage(@PathVariable String username) {
+		userService.disableUserByUsername(username);
+
+		return new ModelAndView("redirect:/users");
+	}
+
+	@RequestMapping("/changePassword")
+	public ModelAndView renderUserFormWithUser(Principal principal) {
+		ModelAndView model = new ModelAndView("userForm");
+
+		model.setViewName("userForm");
+		model.addObject("user", getUserWithoutPassword(principal.getName()));
+		model.addObject("roles", roles);
+
+		return model;
 	}
 	
-	//deletes user with the specified username
-	@RequestMapping("/users/delete/{username}")
-	public String deleteUser(Model model, @PathVariable String username){
-		userService.deleteUser(username);
-		return "redirect:/users/";
+	private User getUserWithoutPassword(String username) {
+		User user = userService.findUserByUsername(username);
+		user.setPassword("");
+		
+		return user;
 	}
-	
-	//disables user with the specified username
-	@RequestMapping("/users/disable/{username}")
-	public String disableUser(Model model, @PathVariable String username){
-		userService.disableUser(username);
-		return "redirect:/users/";
-	}
-	
-	//creates form for update password
-	@RequestMapping("/password/save")
-	public String changePassword(Model model, Principal principal){
-		model.addAttribute("listRoles", userService.findRoles());
-		model.addAttribute("user", userService.findUser(principal.getName()));
-		return "password";
-	}
-	
-	//logged user changes the password
-	@RequestMapping(value="/password/save", method=RequestMethod.POST)
-	public String changePassword(User user, Model model, Principal principal){
-		userService.saveOrUpdate(user);
-		model.addAttribute("message", "Password changed.");
-		model.addAttribute("user", userService.findUser(principal.getName()));
-		model.addAttribute("listRoles", userService.findRoles());
-		return "password";
-	}
-	
+
 }
