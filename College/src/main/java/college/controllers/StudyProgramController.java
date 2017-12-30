@@ -3,92 +3,91 @@ package college.controllers;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.servlet.ModelAndView;
 import college.model.Department;
 import college.model.StudyProgram;
-import college.service.HibernateService;
+import college.service.DepartmentService;
+import college.service.StudyProgramService;
 
 @Controller
 @RequestMapping("/studyPrograms")
 public class StudyProgramController {
-	
-	@Autowired
-	private HibernateService<StudyProgram> studyProgramService;
-	
-	@Autowired
-	private HibernateService<Department> departmentService;
 
-	//returns all study programs or by the department
-	@RequestMapping(method=RequestMethod.GET)
-	public String showCourses(Model model, @RequestParam(required=false) String id){
-		if(id!=null){
-			Department department=departmentService.findOne(id);
-			if(department!=null){
-				model.addAttribute("studyPrograms", department.getStudyPrograms());
-				model.addAttribute("department", department);
-			}else{
-				model.addAttribute("studyPrograms", null);
-				model.addAttribute("department",null);
-			}
-		}else{
-			model.addAttribute("studyPrograms", studyProgramService.findAll());
-			model.addAttribute("department",null);
+	@Autowired
+	private StudyProgramService studyProgramService;
+	@Autowired
+	private DepartmentService departmentService;
+
+	@RequestMapping(method = RequestMethod.GET, params = "!departmentId")
+	public ModelAndView renderStudyProgramsPageWithAllStudyPrograms(ModelAndView model) {
+		model.setViewName("studyProgramsPage");
+		model.addObject("title", "All Study Programs");
+		model.addObject("studyPrograms", studyProgramService.findAllStudyPrograms());
+
+		return model;
+	}
+
+	@RequestMapping(method = RequestMethod.GET, params = "departmentId")
+	public ModelAndView renderStudyProgramsPageWithStudyProgramsByDepartment(@RequestParam String departmentId) {	
+		return getModelAndViewByDepartment(departmentService.findDepartmentById(departmentId));
+	}
+	
+	private ModelAndView getModelAndViewByDepartment(Department department) {
+		ModelAndView model = new ModelAndView("studyProgramsPage");
+
+		model.addObject("title", "Study Programs at " + department.getTitle());
+		model.addObject("studyPrograms", department.getStudyPrograms());
+
+		return model;
+	}
+
+	@RequestMapping(value = "/studyProgramForm", method = RequestMethod.GET)
+	public ModelAndView renderEmptyStudyProgramForm(ModelAndView model) {
+		model.setViewName("studyProgramForm");
+		model.addObject("studyProgram", new StudyProgram());
+		model.addObject("departments", departmentService.findAllDepartments());
+
+		return model;
+	}
+
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public ModelAndView saveStudyProgramAndRenderStudyProgramForm(@Valid @ModelAttribute StudyProgram studyProgram, 
+		BindingResult result) {
+
+		if (!result.hasErrors()) {
+			return saveStudyProgramAndGetModelAndView(studyProgram);
 		}
-		return "studyPrograms";
+
+		return new ModelAndView("studyProgramForm", "departments", departmentService.findAllDepartments());
 	}
-	
-	//creates form for new study program
-	@RequestMapping("/save")
-	public String showForm(Model model){
-		model.addAttribute("message", "Add New");
-		model.addAttribute("studyProgram", new StudyProgram());
-		model.addAttribute("departments", departmentService.findAll());
-		return "studyProgramForm";
+
+	private ModelAndView saveStudyProgramAndGetModelAndView(StudyProgram studyProgram) {
+		studyProgramService.saveOrUpdateStudyProgram(studyProgram);
+
+		return new ModelAndView("redirect:/studyPrograms/studyProgramForm");
 	}
-	
-	//save or update study program
-	@RequestMapping(value="/save", method=RequestMethod.POST)
-	public String saveCourse(@RequestParam("button") String button, @Valid @ModelAttribute("studyProgram") StudyProgram studyProgram, BindingResult result, Model model){
-		if(!result.hasErrors()){
-			if (button.equals("save")) {
-			studyProgramService.save(studyProgram);
-			return "redirect:/studyPrograms/save";
-			}
-		}
-		if(button.equals("reset")){
-			return "redirect:/studyPrograms/save";
-		}
-		if(studyProgramService.findOne(studyProgram.getId())==null){
-			model.addAttribute("message", "Add New");
-		}else{
-			model.addAttribute("message", "Update");
-		}
-		model.addAttribute("departments", departmentService.findAll());
-		return "studyProgramForm";
+
+	@RequestMapping("/edit/{studyProgramId}")
+	public ModelAndView renderFormWithStudyProgram(@PathVariable String studyProgramId) {
+		ModelAndView model = new ModelAndView("studyProgramForm");
+
+		model.addObject("studyProgram", studyProgramService.findStudyProgramById(studyProgramId));
+		model.addObject("departments", departmentService.findAllDepartments());
+
+		return model;
 	}
-	
-	//returns study program with specified ID
-	@RequestMapping("/find/{id}")
-	public String showCourse(Model model, @PathVariable String id){
-		model.addAttribute("message", "Update");;
-		model.addAttribute("studyProgram", studyProgramService.findOne(id));
-		model.addAttribute("departments", departmentService.findAll());
-		return "studyProgramForm";
+
+	@RequestMapping("/delete/{studyProgramId}")
+	public ModelAndView deleteStudyProgramAndRenderStudyProgramsPage(@PathVariable String studyProgramId) {
+		studyProgramService.deleteStudyProgramById(studyProgramId);
+
+		return new ModelAndView("redirect:/studyPrograms");
 	}
-	
-	//deletes study program with specified ID
-	@RequestMapping("/delete/{id}")
-	public String showForm(Model model, @PathVariable String id){
-			studyProgramService.delete(id);
-		return "redirect:/studyPrograms/";
-	}
-	
-	
+
 }
