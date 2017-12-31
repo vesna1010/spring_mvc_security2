@@ -3,6 +3,7 @@ package college.dao.impl;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.TreeSet;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,7 +16,6 @@ public abstract class HibernateDaoImpl<I extends Serializable, E extends Seriali
 
 	@Autowired
 	private SessionFactory sessionFactory;
-
 	private Class<E> entityClass;
 
 	public void setEntityClass(Class<E> entityClass) {
