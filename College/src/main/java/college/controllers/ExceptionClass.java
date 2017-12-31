@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ExceptionClass {
 
 	@ExceptionHandler(AccessDeniedException.class)
-	public String handleAccessDeniedException(AccessDeniedException ex){
+	public String handleAccessDeniedException(AccessDeniedException ex) {
 		return "denied";
 	}
-	
+
 }
