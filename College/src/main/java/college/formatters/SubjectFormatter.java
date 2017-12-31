@@ -4,28 +4,24 @@ import java.text.ParseException;
 import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
+import org.springframework.stereotype.Component;
 import college.model.Subject;
-import college.service.HibernateService;
+import college.service.SubjectService;
 
+@Component
 public class SubjectFormatter implements Formatter<Subject> {
 
 	@Autowired
-	private HibernateService<Subject> service;
+	private SubjectService subjectService;
 
 	@Override
 	public String print(Subject subject, Locale locale) {
-		if (subject == null) {
-			return null;
-		}
 		return subject.getTitle();
 	}
 
 	@Override
-	public Subject parse(String id, Locale locale) throws ParseException {
-		if (id == null){
-			return null;
-		}
-		return service.findOne(id);
+	public Subject parse(String subjectId, Locale locale) throws ParseException {
+		return subjectService.findSubjectById(subjectId);
 	}
 
 }
