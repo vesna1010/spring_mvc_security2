@@ -2,108 +2,123 @@
 <!DOCTYPE tiles-definitions PUBLIC
        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
- <tiles-definitions >
- <definition name="home" template="/WEB-INF/templates/default.jsp">
- <put-attribute name="title" value="Home"></put-attribute>
- <put-attribute name="header" value="/WEB-INF/templates/header.jsp"></put-attribute>
- <put-attribute name="menu" value="/WEB-INF/templates/menu.jsp"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/home.jsp"></put-attribute>
- <put-attribute name="active" value="home"></put-attribute>
- </definition>
- <definition name="departments" extends="home">
- <put-attribute name="title" value="All Departments"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/departments.jsp"></put-attribute>
- <put-attribute name="active" value="departments"></put-attribute>
- </definition>
- <definition name="studyPrograms" extends="home">
- <put-attribute name="title" value="All Study Programs"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/studyPrograms.jsp"></put-attribute>
- <put-attribute name="active" value="studyPrograms"></put-attribute>
- </definition>
- <definition name="students" extends="home">
- <put-attribute name="title" value="All Students"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/students.jsp"></put-attribute>
- <put-attribute name="active" value="students"></put-attribute>
- </definition>
- <definition name="professors" extends="home">
- <put-attribute name="title" value="All Professors"></put-attribute>
-<put-attribute name="body" value="/WEB-INF/views/professors.jsp"></put-attribute>
-<put-attribute name="active" value="professors"></put-attribute>
- </definition>
- <definition name="subjects" extends="home">
- <put-attribute name="title" value="All Professors"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/subjects.jsp"></put-attribute>
- <put-attribute name="active" value="subjects"></put-attribute>
- </definition>
- <definition name="departmentForm" extends="home">
- <put-attribute name="title" value="Add Department"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/departmentForm.jsp"></put-attribute>
- <put-attribute name="active" value="departmentForm"></put-attribute>
- </definition>
- <definition name="studyProgramForm" extends="home">
- <put-attribute name="title" value="Add Study Program"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/studyProgramForm.jsp"></put-attribute>
- <put-attribute name="active" value="courseForm"></put-attribute>
- </definition>
- <definition name="subjectForm" extends="home">
- <put-attribute name="title" value="Add Subject"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/subjectForm.jsp"></put-attribute>
- <put-attribute name="active" value="subjectForm"></put-attribute>
- </definition>
- <definition name="professorForm" extends="home">
- <put-attribute name="title" value="Add Professor"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/professorForm.jsp"></put-attribute>
- <put-attribute name="active" value="professorForm"></put-attribute>
- </definition>
- <definition name="studentForm" extends="home">
- <put-attribute name="title" value="Add Student"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/studentForm.jsp"></put-attribute>
- <put-attribute name="active" value="studentForm"></put-attribute>
- </definition>
- <definition name="users" extends="home">
- <put-attribute name="title" value="All Users"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/users.jsp"></put-attribute>
- <put-attribute name="active" value="users"></put-attribute>
- </definition>
- <definition name="userForm" extends="home">
- <put-attribute name="title" value="Add New User"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/userForm.jsp"></put-attribute>
- <put-attribute name="active" value="userForm"></put-attribute>
- </definition>
- <definition name="login" extends="home">
- <put-attribute name="title" value="Login"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/login.jsp"></put-attribute>
- <put-attribute name="active" value="login"></put-attribute>
- </definition>
- <definition name="studentExams" extends="home">
- <put-attribute name="title" value="Exams"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/studentExams.jsp"></put-attribute>
- <put-attribute name="active" value="studentExams"></put-attribute>
- </definition>
- <definition name="password" extends="home">
- <put-attribute name="title" value="Change Password"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/password.jsp"></put-attribute>
- <put-attribute name="active" value="password"></put-attribute>
- </definition>
- <definition name="listExams" extends="home">
- <put-attribute name="title" value="Search Exams"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/listExams.jsp"></put-attribute>
- <put-attribute name="active" value="listExams"></put-attribute>
- </definition>
- <definition name="examForm" extends="home">
- <put-attribute name="title" value="Add Exam"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/examForm.jsp"></put-attribute>
- <put-attribute name="active" value="studyPrograms"></put-attribute>
- </definition>
- <definition name="searchExamsForm" extends="home">
- <put-attribute name="title" value="Search Exams"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/searchExamsForm.jsp"></put-attribute>
- <put-attribute name="active" value="searchExamsForm"></put-attribute>
- </definition>
- <definition name="denied" extends="home">
- <put-attribute name="title" value="Search Exams"></put-attribute>
- <put-attribute name="body" value="/WEB-INF/views/denied.jsp"></put-attribute>
- <put-attribute name="active" value="home"></put-attribute>
- </definition>
- 
- </tiles-definitions> 
+<tiles-definitions>
+
+	<definition name="home" template="/WEB-INF/templates/default.jsp">
+		<put-attribute name="title" value="Home"></put-attribute>
+		<put-attribute name="header" value="/WEB-INF/templates/header.jsp"></put-attribute>
+		<put-attribute name="menu" value="/WEB-INF/templates/menu.jsp"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/home.jsp"></put-attribute>
+		<put-attribute name="active" value="home"></put-attribute>
+	</definition>
+
+	<definition name="departmentsPage" extends="home">
+		<put-attribute name="title" value="All Departments"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/departments.jsp"></put-attribute>
+		<put-attribute name="active" value="departments"></put-attribute>
+	</definition>
+
+	<definition name="studyProgramsPage" extends="home">
+		<put-attribute name="title" value="All Study Programs"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/studyPrograms.jsp"></put-attribute>
+		<put-attribute name="active" value="studyPrograms"></put-attribute>
+	</definition>
+
+	<definition name="studentsPage" extends="home">
+		<put-attribute name="title" value="All Students"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/students.jsp"></put-attribute>
+		<put-attribute name="active" value="students"></put-attribute>
+	</definition>
+	
+	<definition name="professorsPage" extends="home">
+		<put-attribute name="title" value="All Professors"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/professors.jsp"></put-attribute>
+		<put-attribute name="active" value="professors"></put-attribute>
+	</definition>
+
+	<definition name="subjectsPage" extends="home">
+		<put-attribute name="title" value="All Professors"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/subjects.jsp"></put-attribute>
+		<put-attribute name="active" value="subjects"></put-attribute>
+	</definition>
+
+	<definition name="departmentForm" extends="home">
+		<put-attribute name="title" value="Add Department"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/departmentForm.jsp"></put-attribute>
+		<put-attribute name="active" value="departmentForm"></put-attribute>
+	</definition>
+
+	<definition name="studyProgramForm" extends="home">
+		<put-attribute name="title" value="Add Study Program"></put-attribute>
+		<put-attribute name="body"
+			value="/WEB-INF/views/studyProgramForm.jsp"></put-attribute>
+		<put-attribute name="active" value="studyProgramForm"></put-attribute>
+	</definition>
+
+	<definition name="subjectForm" extends="home">
+		<put-attribute name="title" value="Add Subject"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/subjectForm.jsp"></put-attribute>
+		<put-attribute name="active" value="subjectForm"></put-attribute>
+	</definition>
+
+	<definition name="professorForm" extends="home">
+		<put-attribute name="title" value="Add Professor"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/professorForm.jsp"></put-attribute>
+		<put-attribute name="active" value="professorForm"></put-attribute>
+	</definition>
+
+	<definition name="studentForm" extends="home">
+		<put-attribute name="title" value="Add Student"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/studentForm.jsp"></put-attribute>
+		<put-attribute name="active" value="studentForm"></put-attribute>
+	</definition>
+	
+	<definition name="usersPage" extends="home">
+		<put-attribute name="title" value="All Users"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/users.jsp"></put-attribute>
+		<put-attribute name="active" value="users"></put-attribute>
+	</definition>
+
+	<definition name="userForm" extends="home">
+		<put-attribute name="title" value="Add New User"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/userForm.jsp"></put-attribute>
+		<put-attribute name="active" value="userForm"></put-attribute>
+	</definition>
+
+	<definition name="loginForm" extends="home">
+		<put-attribute name="title" value="Login"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/loginForm.jsp"></put-attribute>
+		<put-attribute name="active" value="login"></put-attribute>
+	</definition>
+
+	<definition name="studentExamsPage" extends="home">
+		<put-attribute name="title" value="Exams"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/studentExams.jsp"></put-attribute>
+		<put-attribute name="active" value="studentExams"></put-attribute>
+	</definition>
+
+	<definition name="examsPage" extends="home">
+		<put-attribute name="title" value="Search Exams"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/exams.jsp"></put-attribute>
+		<put-attribute name="active" value="exams"></put-attribute>
+	</definition>
+
+	<definition name="examForm" extends="home">
+		<put-attribute name="title" value="Add Exam"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/examForm.jsp"></put-attribute>
+		<put-attribute name="active" value="examForm"></put-attribute>
+	</definition>
+
+	<definition name="searchExamsForm" extends="home">
+		<put-attribute name="title" value="Search Exams"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/searchExamsForm.jsp"></put-attribute>
+		<put-attribute name="active" value="searchExamsForm"></put-attribute>
+	</definition>
+
+	<definition name="denied" extends="home">
+		<put-attribute name="title" value="Search Exams"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/denied.jsp"></put-attribute>
+		<put-attribute name="active" value="home"></put-attribute>
+	</definition>
+
+</tiles-definitions> 
