@@ -22,6 +22,6 @@ public @interface Title {
 
 	Class<? extends Payload>[] payload() default {};
 
-	String pattern() default "^([a-zA-Z0-9]{3,}(\\s)*)+$";
+	String pattern() default "^([a-zA-Z0-9]+(\\s)?){5,}$";
 
 }
