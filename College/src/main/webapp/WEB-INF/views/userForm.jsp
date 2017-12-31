@@ -1,97 +1,25 @@
-<%@ taglib  prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib  prefix="sf" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="tag" tagdir="/WEB-INF/tags/"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
-<div class="row">
-<div class="col-sm-12">
+<h3 class="text-center">Save/Update User</h3>
+<br>
 
-<c:url value='/users/save' context='/College' var="action"/>
-
-<div class="row" ng-app="myApp" ng-controller="myCtrl">
-<h3 class="text-center">Add New User</h3><br>
 <h4 class="text-center text-success">${message}</h4>
-<sf:form method="post" name="userForm" action="${action}" class="form-horizontal"
-commandName="user">
 
-<div class="form-group">
-<sf:label path="username" class="control-label col-sm-3 col-sm-offset-2">USERNAME</sf:label>
-<div class="col-sm-4">
-<sf:input ng-model="username" class="form-control" path="username" ng-required="true" 
-ng-pattern="/^([a-zA-Z0-9]+\s?){8,15}$/"/>
-<div class="text-danger">
-<span ng-show="userForm.username.$dirty && userForm.username.$error.required">
-Enter valid username. <br>
-</span>
-<span ng-show="userForm.username.$dirty && userForm.username.$error.pattern">
-Username must be between 8 and 15 characters long (only alphabetic characters and numbers).
-</span>
-</div>
-</div>
-</div>
-
-<div class="form-group">
-<sf:label path="email" class="control-label col-sm-3 col-sm-offset-2">EMAIL</sf:label>
-<div class="col-sm-4">
-<sf:input ng-model="email" class="form-control" path="email" ng-required="true"
-ng-pattern="/^[a-zA-Z0-9_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/"/>
-<div class="text-danger">
-<span ng-show="userForm.email.$dirty && userForm.email.$error.required">
-Enter email. <br>
-</span>
-<span ng-show="userForm.email.$dirty && userForm.email.$error.pattern">
-Enter valid email.
-</span>
-</div>
-</div>
-</div>
-
-<div class="form-group">
-<sf:label path="password" class="control-label col-sm-3 col-sm-offset-2">PASSWORD</sf:label>
-<div class="col-sm-4">
-<sf:password ng-model="password" class="form-control" path="password" 
-ng-required="true" ng-pattern="/^(\S){8,15}$/"/>
-<div class="text-danger">
-<span ng-show="userForm.password.$dirty && userForm.password.$error.required">
-Enter password. <br>
-</span>
-<span ng-show="userForm.password.$dirty && userForm.password.$error.pattern">
-Password must be between 8 and 15 characters long.
-</span>
-</div>
-</div>
-</div>
-
-<div class="form-group">
-<label for="roles" class="control-label col-sm-3 col-sm-offset-2">ROLES</label>
-<div class="col-sm-4">
-<sf:select ng-model="roles" path="roles" ng-required="true" 
-class="form-control" multiple="multiple">
-<sf:options items="${listRoles}" itemLabel="role" itemValue="id"/>
-</sf:select>
-<div class="text-danger">
-<span ng-show="userForm.roles.$error.required && userForm.password.$valid
-&& userForm.username.$valid && userForm.email.$valid">
-Select roles.
-</span>
-</div>
-</div>
-</div>
-
-<div class="form-group">
-    <div class="col-sm-offset-5 col-sm-4">
-     <div class="btn-group">
-      <button class="btn btn-primary" ng-disabled="userForm.$invalid">Save</button>
-      <button type="reset" class="btn btn-default">Reset</button>
-      </div>
-    </div>
-  </div>
+<sf:form action="${pageContext.request.contextPath}/users/save"
+	method="post" modelAttribute="user" class="form-horizontal">
+	<sec:authorize access="hasRole('ADMIN')">
+		<tag:input_text_group name="username" title="USERNAME"></tag:input_text_group>
+		<tag:input_text_group name="email" title="EMAIL"></tag:input_text_group>
+	</sec:authorize>
+	<tag:input_password_group name="password" title="PASSWORD"></tag:input_password_group>
+	<tag:input_password_group name="confirmPassword"
+		title="CONFIRM PASSWORD"></tag:input_password_group>
+	<sec:authorize access="hasRole('ADMIN')">
+		<tag:input_select_group_list items="${roles}" name="roles"
+			title="ROLES"></tag:input_select_group_list>
+	</sec:authorize>
+	<tag:button_grup></tag:button_grup>
 </sf:form>
-</div>
-
-
-</div>
-</div>
-
-
-
-
