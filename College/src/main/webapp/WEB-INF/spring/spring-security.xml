@@ -1,30 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-<security:authentication-manager>
-<security:authentication-provider >
-<security:jdbc-user-service data-source-ref="dataSource" 
-users-by-username-query="SELECT USERNAME, PASSWORD, ENABLED FROM USERS WHERE USERNAME=?" 
-authorities-by-username-query="SELECT * FROM ROLES, USERS_ROLES WHERE USERS_ROLES.USER_ID=? AND USERS_ROLES.ROLE_ID=ID"/>
-<security:password-encoder ref="passwordEncoder"/>
-</security:authentication-provider>
-</security:authentication-manager>
-<security:http use-expressions="true">
-<security:intercept-url pattern="/" access="permitAll"/>
-<security:intercept-url pattern="/login" access="permitAll"/>
-<security:intercept-url pattern="/logout" access="permitAll"/>
-<security:intercept-url pattern="/resource/**" access="permitAll"/>
-<security:intercept-url pattern="/password/save" access="isAuthenticated()"/>
-<security:intercept-url pattern="/users/**" access="hasRole('ADMIN')"/>
-<security:intercept-url pattern="/exams/search" access="hasAnyRole('USER', 'PROFESSOR')"/>
-<security:intercept-url pattern="/students/exams/*" access="hasAnyRole('USER', 'PROFESSOR')"/>
-<security:intercept-url pattern="/*/" access="hasAnyRole('USER', 'PROFESSOR')"/>
-<security:intercept-url pattern="/*/**" access="hasRole('USER')"/>
-<security:form-login login-page="/login" login-processing-url="/login" authentication-failure-url="/login?error=true"/>
-<security:logout logout-success-url="/" invalidate-session="true" logout-url="/logout"/>
-<security:access-denied-handler error-page="/denied"/>
-</security:http>
+
+	<security:authentication-manager>
+		<security:authentication-provider 
+			user-service-ref="userServiceImpl">
+			<security:password-encoder ref="passwordEncoder" />
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+	<security:http use-expressions="true" >
+		<security:intercept-url pattern="/" access="permitAll" />
+		<security:intercept-url pattern="/login"
+			access="isAnonymous()" method="GET" />
+		<security:intercept-url pattern="/login"
+			access="isAnonymous()" method="POST" />
+		<security:intercept-url pattern="/logout"
+			access="isAuthenticated()" />
+		<security:intercept-url pattern="/resource/**"
+			access="permitAll" />
+		<security:intercept-url pattern="/users/changePassword"
+			access="isAuthenticated()" method="GET" />
+		<security:intercept-url pattern="/users/**" 
+			access="hasRole('ADMIN')" method="GET" />
+		<security:intercept-url pattern="/exams/search"
+			access="hasAnyRole('USER', 'PROFESSOR')" />
+		<security:intercept-url pattern="/students/exams/*"
+			access="isAuthenticated()" />
+		<security:intercept-url pattern="/*" method="GET"
+			access="isAuthenticated()" />
+		<security:intercept-url pattern="/*/**"
+			access="hasAnyRole('USER', 'ADMIN')" />
+		<security:form-login login-page="/login" 
+			login-processing-url="/login" authentication-failure-url="/login?error=true" />
+		<security:logout logout-success-url="/" delete-cookies="true"
+			invalidate-session="true" logout-url="/logout" />
+		<security:access-denied-handler
+			error-page="/denied" />
+	</security:http>
+
 </beans>
