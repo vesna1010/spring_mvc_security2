@@ -19,7 +19,7 @@
 	<tag:input_text_group name="telephone" title="TELEPHONE"></tag:input_text_group>
 	<tag:input_text_group name="address" title="ADDRESS (city-street-state)"></tag:input_text_group>
 	<tag:input_text_group name="title" title="TITLE"></tag:input_text_group>
-	<tag:input_file_group></tag:input_file_group>
+	<tag:input_file_group name="image" file="file" title="IMAGE"></tag:input_file_group>
 	<tag:button_grup></tag:button_grup>
 </sf:form>
 
