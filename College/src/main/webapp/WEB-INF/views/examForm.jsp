@@ -4,7 +4,7 @@
 <h3 class="text-center">Save/Update Exam</h3>
 <br>
 
-<sf:form action="${pageContext.request.contextPath}/exams/saveOrUpdate"
+<sf:form action="${pageContext.request.contextPath}/exams/save"
 	method="post" modelAttribute="exam" class="form-horizontal">
 	<sf:hidden path="id" />
 	<tag:input_date_group name="date" title="DATE"></tag:input_date_group>
