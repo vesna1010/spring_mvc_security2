@@ -41,7 +41,7 @@
 								href="<c:url value='/studyPrograms/delete/${studyProgram.id}' />"><span
 								class="glyphicon glyphicon-remove"></span>&nbsp;Delete</a>
 							<a class="btn btn-default"
-								href="<c:url value='/exams/examForm/?id=${studyProgram.id}' />">Add
+								href="<c:url value='/exams/examForm/?studyProgramId=${studyProgram.id}' />">Add
 								Exams</a>
 						</sec:authorize><a class="btn btn-default"
 						href="<c:url value='/students?studyProgramId=${studyProgram.id}'/>">&nbsp;Students</a>
