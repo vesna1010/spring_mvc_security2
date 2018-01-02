@@ -4,7 +4,7 @@
 <h3 class="text-center">Search Exams</h3>
 <br>
 
-<sf:form action="${pageContext.request.contextPath}/departments/save"
+<sf:form action="${pageContext.request.contextPath}/exams/search"
 	method="post" modelAttribute="exam" class="form-horizontal">
 	<tag:input_date_group name="date" title="DATE"></tag:input_date_group>
 	<tag:input_select_group_set items="${subjects}" name="subject"
