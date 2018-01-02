@@ -1,6 +1,7 @@
+package college.service.impl;
+
 import java.util.Date;
 import java.util.Set;
-
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import college.dao.extensions.ExamDao;
@@ -32,7 +33,7 @@ public class ExamServiceImpl implements ExamService {
 
 	@Override
 	public Set<Exam> findExamsByObjects(Professor professor, Subject subject, Date date) {
-		return examDao.findAll();
+		return examDao.findExamsByObjects(professor, subject, date);
 	}
 
 }
