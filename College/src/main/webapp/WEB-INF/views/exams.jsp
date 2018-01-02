@@ -13,20 +13,20 @@
 	<div class="table-responsive">
 		<table class="table table-striped table-bordered">
 			<tr>
-				<th colspan="5">DATE : <tag:date date="${exams[0].date}"></tag:date>
+				<th colspan="5">DATE : <tag:date date="${exams.first().date}"></tag:date>
 				</th>
 			</tr>
 			<tr>
-				<th colspan="5">PROFESSOR : ${exams[0].professor.fullName}</th>
+				<th colspan="5">PROFESSOR : ${exams.first().professor.fullName}</th>
 			</tr>
 			<tr>
-				<th colspan="5">SUBJECT : ${exams[0].subject.title}</th>
-			</tr>
+				<th colspan="5">SUBJECT : ${exams.first().subject.title}</th>
+			</tr> 
 			<tr>
 				<th>ID</th>
 				<th>STUDENT</th>
 				<th>SCORE</th>
-				<sec:authorize access="hasRole('USER', 'ADMIN')">
+				<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
 					<th>MANAGE</th>
 				</sec:authorize>
 			</tr>
@@ -35,7 +35,7 @@
 					<td>${exam.id}</td>
 					<td>${exam.student.fullName}</td>
 					<td>${exam.score}</td>
-					<sec:authorize access="hasRole('USER', 'ADMIN')">
+					<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
 						<td><a class="btn btn-primary"
 							href="<c:url value='/exams/edit/${exam.id}' />"><span
 								class="glyphicon glyphicon-pencil"></span> Edit</a> <a
