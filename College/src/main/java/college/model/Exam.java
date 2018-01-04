@@ -15,90 +15,35 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.springframework.format.annotation.DateTimeFormat;
 
+@SuppressWarnings({ "serial" })
 @Entity
-@Table(name="EXAMS")
-public class Exam implements Serializable{
+@Table(name = "EXAMS")
+public class Exam implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private Long id;
+	private Student student;
+	private Professor professor;
+	private Subject subject;
+	private Date date = new Date();
+	private Integer score = 6;
+
+	public Exam() {
+	}
+
+	public Exam(Student student, Professor professor, Subject subject, Integer score) {
+		this.student = student;
+		this.professor = professor;
+		this.subject = subject;
+		this.score = score;
+	}
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="ID")
-	private Long id;
-	
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name="STUDENT_ID")
-	private Student student;
-	
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name="PROFESSOR_ID")
-	private Professor professor;
-	
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name="SUBJECT_ID")
-	private Subject subject;
-	
-	@NotNull
-	@DateTimeFormat(pattern = "dd-MM-yyyy")
-	@Column(name="DATE")
-	@Temporal(TemporalType.DATE)
-	private Date date=new Date();
-
-	@NotNull
-	@Min(value = 6)
-	@Max(value = 10)
-	@Column(name="SCORE")
-	private Integer score;
-	
-	public Exam(){
-	}
-	
-	public Exam(Student student, Professor professor, Subject subject, Date date, Integer score) {
-		this.score=score;
-		this.student = student;
-		this.professor = professor;
-		this.subject = subject;
-		this.date = date;
-	}
-
-	public Student getStudent() {
-		return student;
-	}
-
-	public void setStudent(Student student) {
-		this.student = student;
-	}
-
-	public Professor getProfessor() {
-		return professor;
-	}
-
-	public void setProfessor(Professor professor) {
-		this.professor = professor;
-	}
-
-	public Subject getSubject() {
-		return subject;
-	}
-
-	public void setSubject(Subject subject) {
-		this.subject = subject;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID")
 	public Long getId() {
 		return id;
 	}
@@ -107,6 +52,57 @@ public class Exam implements Serializable{
 		this.id = id;
 	}
 
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "STUDENT_ID")
+	@Cascade(CascadeType.SAVE_UPDATE)
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
+	}
+
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "PROFESSOR_ID")
+	@Cascade(CascadeType.SAVE_UPDATE)
+	public Professor getProfessor() {
+		return professor;
+	}
+
+	public void setProfessor(Professor professor) {
+		this.professor = professor;
+	}
+
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "SUBJECT_ID")
+	@Cascade(CascadeType.SAVE_UPDATE)
+	public Subject getSubject() {
+		return subject;
+	}
+
+	public void setSubject(Subject subject) {
+		this.subject = subject;
+	}
+
+	@DateTimeFormat(pattern = "dd-MM-yyyy")
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DATE")
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	@NotNull
+	@Min(value = 6)
+	@Max(value = 10)
+	@Column(name = "SCORE")
 	public Integer getScore() {
 		return score;
 	}
@@ -115,16 +111,11 @@ public class Exam implements Serializable{
 		this.score = score;
 	}
 
-	
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((professor == null) ? 0 : professor.hashCode());
-		result = prime * result + ((score == null) ? 0 : score.hashCode());
 		result = prime * result + ((student == null) ? 0 : student.hashCode());
 		result = prime * result + ((subject == null) ? 0 : subject.hashCode());
 		return result;
@@ -139,25 +130,10 @@ public class Exam implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Exam other = (Exam) obj;
-		if (date == null) {
-			if (other.date != null)
-				return false;
-		} else if (!date.equals(other.date))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
 		if (professor == null) {
 			if (other.professor != null)
 				return false;
 		} else if (!professor.equals(other.professor))
-			return false;
-		if (score == null) {
-			if (other.score != null)
-				return false;
-		} else if (!score.equals(other.score))
 			return false;
 		if (student == null) {
 			if (other.student != null)
@@ -172,5 +148,4 @@ public class Exam implements Serializable{
 		return true;
 	}
 
-	
 }
