@@ -1,54 +1,44 @@
 package college.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.util.Set;
+import java.util.HashSet;
+import javax.persistence.CollectionTable;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
 import javax.persistence.Table;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.Transient;
+import college.enums.Role;
 
+@SuppressWarnings({ "serial"})
 @Entity
-@Table(name="USERS")
-public class User implements Serializable{
+@Table(name = "USERS")
+public class User implements Serializable, Comparable<User> {
 
-	private static final long serialVersionUID = 1L;
+	private String username = "";
+	private String password = "";
+	private String confirmPassword = "";
+	private String email = "";
+	private Boolean enabled = true;
+	private Set<Role> roles = new HashSet<>();
+
+	public User() {
+	}
+
+	public User(String username, String email, String password, Set<Role> roles) {
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.roles = roles;
+	}
 
 	@Id
-	@Column(name="USERNAME")
-	private String username;
-	
-	@Column(name="EMAIL")
-	private String email;
-	
-	@JsonIgnore
-	@Column(name="PASSWORD")
-	private String password;
-	
-	@Column(name="ENABLED")
-	private Boolean enabled=true;
-	
-	@ManyToMany
-	@JoinTable(name="USERS_ROLES", 
-	joinColumns=@JoinColumn(name="USER_ID", referencedColumnName="username"),
-	inverseJoinColumns=@JoinColumn(name="ROLE_ID", referencedColumnName="id"))
-	private List<Role> roles;
-
-	public User(){
-		roles=new ArrayList<Role>();
-	}
-
-	public User(String username, String email, String password) {
-		roles=new ArrayList<Role>();
-		this.username = username;
-		this.email = email;
-		this.password = password;
-	}
-
+	@Column(name = "USERNAME")
 	public String getUsername() {
 		return username;
 	}
@@ -57,14 +47,7 @@ public class User implements Serializable{
 		this.username = username;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
+	@Column(name = "PASSWORD")
 	public String getPassword() {
 		return password;
 	}
@@ -73,7 +56,26 @@ public class User implements Serializable{
 		this.password = password;
 	}
 
-	public Boolean getEnabled() {
+	@Transient
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
+
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
+	}
+
+	@Column(name = "EMAIL")
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Column(name = "ENABLED")
+	public Boolean isEnabled() {
 		return enabled;
 	}
 
@@ -81,21 +83,27 @@ public class User implements Serializable{
 		this.enabled = enabled;
 	}
 
-	public List<Role> getRoles() {
+	@ElementCollection
+	@CollectionTable(name = "USERS_ROLES", joinColumns = @JoinColumn(name = "USERNAME"))
+	@Enumerated(EnumType.STRING)
+	@Column(name = "ROLE")
+	public Set<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<Role> roles) {
+	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+	
+	@Override
+	public int compareTo(User user) {
+		return this.username.compareTo(user.getUsername());
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		result = prime * result + ((enabled == null) ? 0 : enabled.hashCode());
-		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((roles == null) ? 0 : roles.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
@@ -110,21 +118,6 @@ public class User implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		if (email == null) {
-			if (other.email != null)
-				return false;
-		} else if (!email.equals(other.email))
-			return false;
-		if (enabled == null) {
-			if (other.enabled != null)
-				return false;
-		} else if (!enabled.equals(other.enabled))
-			return false;
-		if (password == null) {
-			if (other.password != null)
-				return false;
-		} else if (!password.equals(other.password))
-			return false;
 		if (roles == null) {
 			if (other.roles != null)
 				return false;
@@ -137,6 +130,5 @@ public class User implements Serializable{
 			return false;
 		return true;
 	}
-	
-	
+
 }
