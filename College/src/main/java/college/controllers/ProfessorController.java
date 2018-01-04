@@ -1,8 +1,6 @@
 package college.controllers;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +16,6 @@ import college.model.Professor;
 import college.model.StudyProgram;
 import college.service.ProfessorService;
 import college.service.StudyProgramService;
-import college.service.SubjectService;
 
 @Controller
 @RequestMapping("/professors")
@@ -28,8 +25,6 @@ public class ProfessorController {
 	private ProfessorService professorService;
 	@Autowired
 	private StudyProgramService studyProgramService;
-	@Autowired
-	private SubjectService subjectService;
 
 	@RequestMapping(method = RequestMethod.GET, params = "!studyProgramId")
 	private ModelAndView renderProfessorsPageWithAllProfessors(ModelAndView model) {
@@ -59,7 +54,6 @@ public class ProfessorController {
 		model.setViewName("professorForm");
 		model.addObject("professor", new Professor());
 		model.addObject("genders", Arrays.asList(Gender.values()));
-		model.addObject("subjects", subjectService.findAllSubjects());
 		
 		return model;
 	}
@@ -72,22 +66,13 @@ public class ProfessorController {
 			return saveProfessorAndGetModelAndView(professor);
 		}
 			
-		return new ModelAndView("professorForm", getModelMap());
+		return new ModelAndView("professorForm", "genders", Arrays.asList(Gender.values()));
 	}
 	
 	private ModelAndView saveProfessorAndGetModelAndView(Professor professor) {
 		professorService.saveOrUpdateProfessor(professor);
 
 		return new ModelAndView("redirect:/professors/save");
-	}
-	
-	private Map<String, Object> getModelMap() {
-		Map<String, Object> modelMap = new HashMap<>();
-
-		modelMap.put("genders", Arrays.asList(Gender.values()));
-		modelMap.put("subjects", subjectService.findAllSubjects());
-
-		return modelMap;
 	}
 
 	@RequestMapping("/edit/{professorId}")
@@ -96,7 +81,6 @@ public class ProfessorController {
 		
 		model.addObject("professor", professorService.findProfessorById(professorId));
 		model.addObject("genders", Arrays.asList(Gender.values()));
-		model.addObject("subjects", subjectService.findAllSubjects());
 		
 		return model;
 	}
