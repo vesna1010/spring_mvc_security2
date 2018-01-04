@@ -31,7 +31,7 @@ public class DepartmentController {
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public ModelAndView saveDepartmentAndRenderDepartmentForm(@Valid @ModelAttribute Department department, 
-								  BindingResult result) {
+		BindingResult result) {
 		
 		if (!result.hasErrors()) {
 			return saveDepartmentAndGetModelAndView(department);
