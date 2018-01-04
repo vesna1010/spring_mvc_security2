@@ -2,14 +2,18 @@ package college.model;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -18,69 +22,32 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-
+import college.enums.Gender;
 import college.validation.MyId;
 import college.validation.PersonName;
 
+@SuppressWarnings("serial")
 @MappedSuperclass
-public class Person implements Serializable {
+public abstract class Person implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-
-	@Id
-	@MyId
-	@Column(name = "ID")
-	private String id;
-
-	@PersonName
-	@Column(name = "FIRST_NAME")
-	private String firstName;
-
-	@PersonName
-	@Column(name = "LAST_NAME")
-	private String lastName;
-
-	@PersonName
-	@Column(name = "FATHER_NAME")
-	private String fatherName;
-
-	@NotNull
-	@DateTimeFormat(pattern = "dd-MM-yyyy")
-	@Column(name = "DATE_OF_BIRTH")
-	@Temporal(TemporalType.DATE)
+	
+	private String id = "";
+	private String fullName = "";
+	private String fatherName = "";
 	private Date dateOfBirth;
-
-	@NotBlank
-	@Email
-	@Column(name = "EMAIL")
-	private String email;
-
-	@Pattern(regexp = "^\\d{9,}$")
-	@Column(name = "TELEPHONE")
-	private String telephone;
-
-	@NotBlank
-	@Column(name = "GENDER")
-	private String gender;
-
-	@Valid
-	@NotNull
-	@Embedded
+	private String email = "";
+	private String telephone = "";
+	private Gender gender;
 	private Address address;
-
-	@NotNull
-	@Lob
-	@Column(name = "IMAGE", nullable = false, columnDefinition = "mediumblob")
 	private byte[] image;
 
-	public Person() {
+	protected Person() {
 	}
 
-	public Person(String id, String firstName, String lastName, String fatherName, Date dateOfBirth, String email,
-			String telephone, String gender, Address address) {
+	protected Person(String id, String fullName, String fatherName, Date dateOfBirth, 
+			String email, String telephone, Gender gender, Address address) {
 		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
+		this.fullName = fullName;
 		this.fatherName = fatherName;
 		this.dateOfBirth = dateOfBirth;
 		this.email = email;
@@ -89,70 +56,9 @@ public class Person implements Serializable {
 		this.address = address;
 	}
 
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getFatherName() {
-		return fatherName;
-	}
-
-	public void setFatherName(String fatherName) {
-		this.fatherName = fatherName;
-	}
-
-	public Date getDateOfBirth() {
-		return dateOfBirth;
-	}
-
-	public void setDateOfBirth(Date dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getTelephone() {
-		return telephone;
-	}
-
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
-	}
-
-	public Address getAddress() {
-		return address;
-	}
-
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-
-	public byte[] getImage() {
-		return image;
-	}
-
-	public void setImage(byte[] image) {
-		this.image = image;
-	}
-
+	@Id
+	@MyId
+	@Column(name = "ID")
 	public String getId() {
 		return id;
 	}
@@ -161,26 +67,101 @@ public class Person implements Serializable {
 		this.id = id;
 	}
 
+	@PersonName
+	@Column(name = "FULL_NAME")
 	public String getFullName() {
-		return this.firstName + " " + this.lastName;
+		return fullName;
 	}
 
-	public String getGender() {
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	@PersonName
+	@Column(name = "FATHER_NAME")
+	public String getFatherName() {
+		return fatherName;
+	}
+
+	public void setFatherName(String fatherName) {
+		this.fatherName = fatherName;
+	}
+
+	@NotNull
+	@DateTimeFormat(pattern = "dd-MM-yyyy")
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DATE_OF_BIRTH")
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	@NotBlank
+	@Email
+	@Column(name = "EMAIL")
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Pattern(regexp = "^\\d{3,7}-\\d{3}-\\d{3}$")
+	@Column(name = "TELEPHONE")
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	@NotNull
+	@Column(name = "GENDER")
+	@Enumerated(EnumType.STRING)
+	public Gender getGender() {
 		return gender;
 	}
 
-	public void setGender(String gender) {
+	public void setGender(Gender gender) {
 		this.gender = gender;
+	}
+
+	@Valid
+	@NotNull
+	@Embedded
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	@NotNull
+	@Lob
+	@Column(name = "IMAGE")
+	public byte[] getImage() {
+		return image;
+	}
+	
+	public void setImage(byte[] image) {
+		this.image = image;
+	}
+	
+	@Transient
+	public CommonsMultipartFile getFile(){
+		return null;
 	}
 
 	public void setFile(CommonsMultipartFile file){
 		if (!file.isEmpty()) {
 			this.setImage(file.getBytes());
 		}
-	}
-	
-	public CommonsMultipartFile getFile(){
-		return null;
 	}
 	
 	public String showImage() {
@@ -192,22 +173,16 @@ public class Person implements Serializable {
 		}
 		return base64Encoded;
 	}
-
 	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((address == null) ? 0 : address.hashCode());
 		result = prime * result + ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
-		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((fatherName == null) ? 0 : fatherName.hashCode());
-		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
+		result = prime * result + ((fullName == null) ? 0 : fullName.hashCode());
 		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + Arrays.hashCode(image);
-		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
-		result = prime * result + ((telephone == null) ? 0 : telephone.hashCode());
 		return result;
 	}
 
@@ -220,30 +195,20 @@ public class Person implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Person other = (Person) obj;
-		if (address == null) {
-			if (other.address != null)
-				return false;
-		} else if (!address.equals(other.address))
-			return false;
 		if (dateOfBirth == null) {
 			if (other.dateOfBirth != null)
 				return false;
 		} else if (!dateOfBirth.equals(other.dateOfBirth))
-			return false;
-		if (email == null) {
-			if (other.email != null)
-				return false;
-		} else if (!email.equals(other.email))
 			return false;
 		if (fatherName == null) {
 			if (other.fatherName != null)
 				return false;
 		} else if (!fatherName.equals(other.fatherName))
 			return false;
-		if (firstName == null) {
-			if (other.firstName != null)
+		if (fullName == null) {
+			if (other.fullName != null)
 				return false;
-		} else if (!firstName.equals(other.firstName))
+		} else if (!fullName.equals(other.fullName))
 			return false;
 		if (gender == null) {
 			if (other.gender != null)
@@ -255,20 +220,7 @@ public class Person implements Serializable {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (!Arrays.equals(image, other.image))
-			return false;
-		if (lastName == null) {
-			if (other.lastName != null)
-				return false;
-		} else if (!lastName.equals(other.lastName))
-			return false;
-		if (telephone == null) {
-			if (other.telephone != null)
-				return false;
-		} else if (!telephone.equals(other.telephone))
-			return false;
 		return true;
 	}
 
-	
 }
