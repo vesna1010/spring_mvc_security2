@@ -150,6 +150,19 @@ public class StudyProgram implements Serializable {
 
 		return professors;
 	}
+	
+	@Transient
+	public Set<Lecture> getLectures() {
+		Set<Lecture> lectures = new HashSet<>();
+		
+		for (Subject subject : this.subjects) {
+			for(Lecture subjectLecture : subject.getLectures()) {
+				lectures.add(subjectLecture);
+			}
+		}
+
+		return lectures;
+	}
 
 	@Override
 	public int hashCode() {
