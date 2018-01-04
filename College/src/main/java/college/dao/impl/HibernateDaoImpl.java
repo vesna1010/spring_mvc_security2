@@ -1,8 +1,8 @@
 package college.dao.impl;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -35,7 +35,7 @@ public abstract class HibernateDaoImpl<I extends Serializable, E extends Seriali
 	public Set<E> findAll() {
 		Criteria criteria = getSession().createCriteria(entityClass);
 
-		return new TreeSet<>(criteria.list());
+		return new HashSet<E>(criteria.list());
 	}
 
 	@Override
