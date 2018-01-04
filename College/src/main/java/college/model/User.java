@@ -18,7 +18,7 @@ import college.enums.Role;
 @SuppressWarnings({ "serial"})
 @Entity
 @Table(name = "USERS")
-public class User implements Serializable, Comparable<User> {
+public class User implements Serializable {
 
 	private String username = "";
 	private String password = "";
@@ -93,11 +93,6 @@ public class User implements Serializable, Comparable<User> {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
-	}
-	
-	@Override
-	public int compareTo(User user) {
-		return this.username.compareTo(user.getUsername());
 	}
 
 	@Override
