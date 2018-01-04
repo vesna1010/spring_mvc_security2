@@ -13,14 +13,4 @@ public class ProfessorDaoImpl extends HibernateDaoImpl<String, Professor> implem
 		setEntityClass(Professor.class);
 	}
 
-	@Override
-	public void saveOrUpdate(Professor professor) {
-		Query query = getSession().createQuery(
-				"delete from SubjectProfessor where professor=:professor");
-
-		query.setEntity("professor", professor);
-		query.executeUpdate();
-		super.saveOrUpdate(professor);
-	}
-
 }
