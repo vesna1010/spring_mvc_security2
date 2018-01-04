@@ -72,7 +72,7 @@ public class ProfessorController {
 	private ModelAndView saveProfessorAndGetModelAndView(Professor professor) {
 		professorService.saveOrUpdateProfessor(professor);
 
-		return new ModelAndView("redirect:/professors/save");
+		return new ModelAndView("redirect:/professors/professorForm");
 	}
 
 	@RequestMapping("/edit/{professorId}")
