@@ -9,6 +9,6 @@
 	<div class="col-sm-4">
 		<sf:input path="${name}" class="form-control" />
 		<sf:errors class="text-danger" path="${name}" />
-		<sf:errors class="text-danger" path="${error}" />
+		<sf:errors class="text-danger" path="${errors}" />
 	</div>
 </div>
