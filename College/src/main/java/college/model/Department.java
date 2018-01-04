@@ -1,56 +1,45 @@
 package college.model;
 
 import java.io.Serializable;
-import java.util.*;
-import javax.persistence.CascadeType;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import college.validation.MyId;
 import college.validation.Title;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "DEPARTMENTS")
 public class Department implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-
-	@Id
-	@MyId
-	@Column(name = "ID")
-	private String id;
-
-	@Title
-	@Column(name = "TITLE")
-	private String title;
-
-	@NotNull
-	@DateTimeFormat(pattern = "dd-MM-yyyy")
-	@Column(name = "DATE_OF_CREATION")
-	@Temporal(TemporalType.DATE)
-	private Date dateOfCreation;
-
-	@OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
-	private List<StudyProgram> studyPrograms;
+	
+	private String id = "";
+	private String title = "";
+	private Date dateOfCreation = new Date();
+	private Set<StudyProgram> studyPrograms = new HashSet<>();
 
 	public Department() {
-		studyPrograms = new ArrayList<StudyProgram>();
 	}
-
-	public Department(String id, String title, Date dateOfCreation) {
-		studyPrograms = new ArrayList<StudyProgram>();
-		this.id=id;
+	
+	public Department(String id, String title) {
+		this.id = id;
 		this.title = title;
-		this.dateOfCreation = dateOfCreation;
 	}
 
+	@Id 
+	@MyId 
+	@Column(name = "ID")
 	public String getId() {
 		return id;
 	}
@@ -59,6 +48,8 @@ public class Department implements Serializable {
 		this.id = id;
 	}
 
+	@Title 
+	@Column(name = "TITLE")
 	public String getTitle() {
 		return title;
 	}
@@ -67,6 +58,9 @@ public class Department implements Serializable {
 		this.title = title;
 	}
 
+	@DateTimeFormat(pattern = "dd-MM-yyyy")
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DATE_OF_CREATION")
 	public Date getDateOfCreation() {
 		return dateOfCreation;
 	}
@@ -75,19 +69,25 @@ public class Department implements Serializable {
 		this.dateOfCreation = dateOfCreation;
 	}
 
-	public List<StudyProgram> getStudyPrograms() {
+	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+	@Cascade(CascadeType.ALL)
+	public Set<StudyProgram> getStudyPrograms() {
 		return studyPrograms;
 	}
-
-	public void setStudyPrograms(List<StudyProgram> studyPrograms) {
+	
+	void setStudyPrograms(Set<StudyProgram> studyPrograms) {
 		this.studyPrograms = studyPrograms;
+	}
+
+	public void addStudyProgram(StudyProgram studyProgram) {
+		studyProgram.setDepartment(this);
+		this.studyPrograms.add(studyProgram);
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((dateOfCreation == null) ? 0 : dateOfCreation.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
@@ -102,11 +102,6 @@ public class Department implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Department other = (Department) obj;
-		if (dateOfCreation == null) {
-			if (other.dateOfCreation != null)
-				return false;
-		} else if (!dateOfCreation.equals(other.dateOfCreation))
-			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -120,8 +115,4 @@ public class Department implements Serializable {
 		return true;
 	}
 
-	
-	
-
-	
 }
