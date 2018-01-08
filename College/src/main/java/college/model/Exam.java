@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,7 +23,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(name = "EXAMS")
 public class Exam implements Serializable {
 
-	private Long id;
+	private String id;
 	private Student student;
 	private Professor professor;
 	private Subject subject;
@@ -34,7 +33,8 @@ public class Exam implements Serializable {
 	public Exam() {
 	}
 
-	public Exam(Student student, Professor professor, Subject subject, Integer score) {
+	public Exam(String id, Student student, Professor professor, Subject subject, Integer score) {
+		this.id = id;
 		this.student = student;
 		this.professor = professor;
 		this.subject = subject;
@@ -42,20 +42,19 @@ public class Exam implements Serializable {
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
 	@NotNull
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "STUDENT_ID")
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade(CascadeType.MERGE)
 	public Student getStudent() {
 		return student;
 	}
@@ -65,9 +64,9 @@ public class Exam implements Serializable {
 	}
 
 	@NotNull
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PROFESSOR_ID")
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade(CascadeType.MERGE)
 	public Professor getProfessor() {
 		return professor;
 	}
@@ -77,9 +76,9 @@ public class Exam implements Serializable {
 	}
 
 	@NotNull
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SUBJECT_ID")
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade(CascadeType.MERGE)
 	public Subject getSubject() {
 		return subject;
 	}
@@ -149,3 +148,4 @@ public class Exam implements Serializable {
 	}
 
 }
+
