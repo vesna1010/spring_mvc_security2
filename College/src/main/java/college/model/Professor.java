@@ -30,8 +30,8 @@ public class Professor extends Person {
 	public Professor() {
 	}
 
-	public Professor(String id, String fullName, String fatherName, Date dateOfBirth, String email, 
-			 String telephone, Gender gender, Address address, String titleOfProfessor) {
+	public Professor(String id, String fullName, String fatherName, Date dateOfBirth, String email, String telephone,
+			Gender gender, Address address, String titleOfProfessor) {
 		super(id, fullName, fatherName, dateOfBirth, email, telephone, gender, address);
 		this.titleOfProfessor = titleOfProfessor;
 	}
@@ -63,10 +63,10 @@ public class Professor extends Person {
 		return lectures;
 	}
 
-	public void setLectures(Set<Lecture> lectures) {
+	void setLectures(Set<Lecture> lectures) {
 		this.lectures = lectures;
 	}
-	
+
 	public void addLecture(Lecture lecture) {
 		lecture.setProfessor(this);
 		this.lectures.add(lecture);
@@ -99,3 +99,4 @@ public class Professor extends Person {
 	}
 
 }
+
