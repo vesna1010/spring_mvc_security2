@@ -9,7 +9,7 @@ import college.dao.impl.HibernateDaoImpl;
 import college.model.User;
 
 @Component("userDao")
-public class UserDaoImpl extends HibernateDaoImpl<String, User> implements UserDao {
+public class UserDaoImpl extends HibernateDaoImpl<User> implements UserDao {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
