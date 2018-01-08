@@ -3,12 +3,11 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <c:if test="${empty student.exams}">
-	<h4 class="text-center text-danger">Student has no passed exams!</h4>
+	<h4 class="text-center text-danger">Student ${student.fullName}
+		has no passed exams!</h4>
 </c:if>
 
 <c:if test="${not empty student.exams}">
-	<h3 class="text-center">All Exams</h3>
-	<br>
 	<div class="table-responsive">
 		<table class="table table-striped table-bordered">
 			<tr>
@@ -39,4 +38,6 @@
 		</table>
 	</div>
 </c:if>
+
+
 
