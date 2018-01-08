@@ -3,7 +3,6 @@ package college.service;
 import java.util.Set;
 import college.model.User;
 
-
 public interface UserService {
 
 	Set<User> findUsers();
@@ -17,3 +16,4 @@ public interface UserService {
 	void disableUserByUsername(String username);
 	
 }
+
