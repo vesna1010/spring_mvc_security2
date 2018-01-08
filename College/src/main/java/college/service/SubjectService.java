@@ -14,3 +14,4 @@ public interface SubjectService {
 	void saveOrUpdateSubject(Subject subject);
 	
 }
+
