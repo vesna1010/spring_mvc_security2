@@ -8,12 +8,12 @@ import college.model.Subject;
 
 public interface ExamService {
 	
-	Exam findExamById(Long id);
+	Exam findExamById(String id);
 	
 	Set<Exam> findExamsByObjects(Professor professor, Subject subject, Date date );
 
 	void saveOrUpdateExam(Exam exam);
 	
-	void deleteExamById(Long id);
+	void deleteExamById(String id);
 	
 }
