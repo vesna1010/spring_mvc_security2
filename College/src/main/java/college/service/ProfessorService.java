@@ -14,3 +14,4 @@ public interface ProfessorService {
 	void saveOrUpdateProfessor(Professor professor);
 	
 }
+
