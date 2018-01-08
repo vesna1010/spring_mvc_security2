@@ -16,8 +16,7 @@
 			<tr class="success">
 				<th>ID</th>
 				<th>DATE OF EMPLOYMENT</th>
-				<th>FIRST NAME</th>
-				<th>LAST NAME</th>
+				<th>FULL NAME</th>
 				<th>FATHER NAME</th>
 				<th>GENDER</th>
 				<th>DATE OF BIRTH</th>
@@ -25,34 +24,31 @@
 				<th>TELEPHONE</th>
 				<th>ADDRESS</th>
 				<th>TITLE</th>
-				<th>DATE OF TERMINATION</th>
 				<th>IMAGE</th>
 				<th>SUBJECTS</th>
 				<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
 					<th>MANAGE</th>
 				</sec:authorize>
 			</tr>
-			<c:forEach items="${studyProgram.professors}" var="professor">
+			<c:forEach items="${professors}" var="professor">
 				<tr>
 					<td>${professor.id}</td>
-					<td><tag:date date="${professor.dateOfEmployment}" ></tag:date></td>
-					<td>${professor.firstName}</td>
-					<td>${professor.lastName}</td>
+					<td><tag:date date="${professor.dateOfEmployment}"></tag:date></td>
+					<td>${professor.fullName}</td>
 					<td>${professor.fatherName}</td>
 					<td>${professor.gender}</td>
 					<td><tag:date date="${professor.dateOfBirth}"></tag:date></td>
 					<td>${professor.email}</td>
 					<td>${professor.telephone}</td>
 					<td>${professor.address}</td>
-					<td>${professor.title}</td>
-					<td>${professor.dateOfTermination}</td>
+					<td>${professor.titleOfProfessor}</td>
 					<td><img src="data:image/jpeg;base64,${professor.showImage()}"
 						width="100" height="100" /></td>
 					<td><c:forEach items="${professor.subjects}" var="subject">${subject.title}<br>
 						</c:forEach></td>
 					<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
 						<td><a class="btn btn-primary"
-							href="<c:url value='/professors/find/${professor.id}' />"><span
+							href="<c:url value='/professors/edit/${professor.id}' />"><span
 								class="glyphicon glyphicon-pencil"></span>&nbsp;Edit</a> <a
 							class="btn btn-danger"
 							href="<c:url value='/professors/delete/${professor.id}' />"><span
@@ -63,3 +59,4 @@
 		</table>
 	</div>
 </c:if>
+
