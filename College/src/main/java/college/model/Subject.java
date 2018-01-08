@@ -62,7 +62,7 @@ public class Subject implements Serializable {
 	@NotNull
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "STUDY_PROGRAM_ID")
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade(CascadeType.MERGE)
 	public StudyProgram getStudyProgram() {
 		return studyProgram;
 	}
@@ -112,7 +112,6 @@ public class Subject implements Serializable {
 		return professors;
 	}
 	
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -151,3 +150,4 @@ public class Subject implements Serializable {
 	}
 
 }
+
