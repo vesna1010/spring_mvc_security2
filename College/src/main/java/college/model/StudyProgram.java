@@ -24,6 +24,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import college.validation.MyId;
 import college.validation.Title;
 
+
 @SuppressWarnings({ "serial" })
 @Entity
 @Table(name = "STUDY_PROGRAMS")
@@ -82,7 +83,7 @@ public class StudyProgram implements Serializable {
 	@NotNull
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "DEPARTMENT_ID")
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade(CascadeType.MERGE)
 	public Department getDepartment() {
 		return department;
 	}
@@ -143,9 +144,7 @@ public class StudyProgram implements Serializable {
 		Set<Professor> professors = new HashSet<>();
 
 		for (Subject subject : this.subjects) {
-			for (Professor professor : subject.getProfessors()) {
-				professors.add(professor);
-			}
+			professors.addAll(subject.getProfessors());
 		}
 
 		return professors;
@@ -156,9 +155,7 @@ public class StudyProgram implements Serializable {
 		Set<Lecture> lectures = new HashSet<>();
 		
 		for (Subject subject : this.subjects) {
-			for(Lecture subjectLecture : subject.getLectures()) {
-				lectures.add(subjectLecture);
-			}
+			lectures.addAll(subject.getLectures());
 		}
 
 		return lectures;
@@ -208,3 +205,4 @@ public class StudyProgram implements Serializable {
 	}
 
 }
+
