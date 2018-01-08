@@ -10,3 +10,4 @@ public interface LectureService {
 	
 	void deleteLectureById(String id);
 }
+
