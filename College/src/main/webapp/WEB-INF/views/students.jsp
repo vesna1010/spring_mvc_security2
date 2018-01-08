@@ -2,8 +2,9 @@
 <%@ taglib prefix="tag" tagdir="/WEB-INF/tags/"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-	
-<h3 class="text-center">${title}</h3><br>
+
+<h3 class="text-center">${title}</h3>
+<br>
 
 <c:if test="${empty students}">
 	<h4 class="text-center text-danger">There are no students!</h4>
@@ -23,11 +24,9 @@
 				<th>TELEPHONE</th>
 				<th>ADDRESS</th>
 				<th>YEAR OF STUDY</th>
+				<th>STUDY PROGRAMS</th>
 				<th>IMAGE</th>
-				<th>EXAMS</th>
-				<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
-					<th>MANAGE</th>
-				</sec:authorize>
+				<th>MANAGE</th>
 			</tr>
 			<c:forEach items="${students}" var="student">
 				<tr>
@@ -41,19 +40,19 @@
 					<td>${student.telephone}</td>
 					<td>${student.address}</td>
 					<td>${student.yearOfStudy}</td>
+					<td>${student.studyProgram.title}</td>
 					<td><img src="data:image/jpeg;base64,${student.showImage()}"
 						width="100" height="100" /></td>
-					<td>${student.studyProgram.title}</td>
-					<td><a class="btn btn-default"
-						href="<c:url value='/students/exams/${student.id}' />">&nbsp;Exams</a></td>
-					<sec:authorize access="hasRole('USER', 'ADMIN')">
-						<td><a class="btn btn-primary"
-							href="<c:url value='/students/find/${student.id}' />"><span
-								class="glyphicon glyphicon-pencil"></span>&nbsp;Edit</a> <a
-							class="btn btn-danger"
-							href="<c:url value='/students/delete/${student.id}' />"><span
-								class="glyphicon glyphicon-remove"></span>&nbsp;Delete</a></td>
-					</sec:authorize>
+					<td><sec:authorize access="hasAnyRole('USER', 'ADMIN')">
+							<a class="btn btn-primary"
+								href="<c:url value='/students/edit/${student.id}' />"><span
+								class="glyphicon glyphicon-pencil"></span>&nbsp;Edit</a>
+							<a class="btn btn-danger"
+								href="<c:url value='/students/delete/${student.id}' />"><span
+								class="glyphicon glyphicon-remove"></span>&nbsp;Delete</a>
+						</sec:authorize> <a class="btn btn-default"
+						href="<c:url value='/students/exams/${student.id}' />">&nbsp;Exams</a>
+					</td>
 				</tr>
 			</c:forEach>
 		</table>
