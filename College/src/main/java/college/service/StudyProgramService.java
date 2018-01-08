@@ -14,3 +14,4 @@ public interface StudyProgramService {
 	void saveOrUpdateStudyProgram(StudyProgram studyProgram);
 	
 }
+
