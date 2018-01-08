@@ -67,7 +67,7 @@ public class Student extends Person {
 	@NotNull
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "STUDY_PROGRAM_ID")
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade(CascadeType.MERGE)
 	public StudyProgram getStudyProgram() {
 		return studyProgram;
 	}
@@ -100,5 +100,31 @@ public class Student extends Person {
 	public void setAverage(Double average) {
 		this.average = average;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((studyProgram == null) ? 0 : studyProgram.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Student other = (Student) obj;
+		if (studyProgram == null) {
+			if (other.studyProgram != null)
+				return false;
+		} else if (!studyProgram.equals(other.studyProgram))
+			return false;
+		return true;
+	}
 	
 }
+
