@@ -15,6 +15,7 @@
 			<tr class="success">
 				<th>ID</th>
 				<th>TITLE</th>
+				<th>STUDY PROGRAM</th>
 				<th>PROFESSORS</th>
 				<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
 					<th>MANAGE</th>
@@ -24,6 +25,7 @@
 				<tr>
 					<td>${subject.id}</td>
 					<td>${subject.title}</td>
+					<td>${subject.studyProgram.title}</td>
 					<td><c:forEach items="${subject.professors}" var="professor">${professor.fullName}<br>
 						</c:forEach></td>
 					<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
@@ -39,3 +41,4 @@
 		</table>
 	</div>
 </c:if>
+
