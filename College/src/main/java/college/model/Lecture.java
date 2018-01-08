@@ -3,22 +3,24 @@ package college.model;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+
+import college.validation.MyId;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "SUBJECTS_PROFESSORS")
 public class Lecture implements Serializable {
 
-	private Long id;
+	private String id;
 	private Professor professor;
 	private Subject subject;
 	private Integer hours;
@@ -26,27 +28,28 @@ public class Lecture implements Serializable {
 	public Lecture(){
 	}
 
-	public Lecture(Professor professor, Subject subject, Integer hours) {
+	public Lecture(String id, Professor professor, Subject subject, Integer hours) {
+		this.id = id;
 		this.professor = professor;
 		this.subject = subject;
 		this.hours = hours;
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@MyId
 	@Column(name = "ID")
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "PROFESSOR_ID")
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade(CascadeType.MERGE)
 	public Professor getProfessor() {
 		return professor;
 	}
@@ -58,7 +61,7 @@ public class Lecture implements Serializable {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "SUBJECT_ID")
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade(CascadeType.MERGE)
 	public Subject getSubject() {
 		return subject;
 	}
@@ -67,6 +70,9 @@ public class Lecture implements Serializable {
 		this.subject = subject;
 	}
 
+	@NotNull
+	@Min(value = 1)
+	@Max(value = 5)
 	@Column(name = "HOURS")
 	public Integer getHours() {
 		return hours;
@@ -75,7 +81,7 @@ public class Lecture implements Serializable {
 	public void setHours(Integer hours) {
 		this.hours = hours;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -108,3 +114,4 @@ public class Lecture implements Serializable {
 	}
 
 }
+
