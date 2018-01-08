@@ -25,7 +25,7 @@ import college.validation.MyId;
 @Table(name = "EXAMS")
 public class Exam implements Serializable {
 
-	private String id;
+	private String id = "";
 	private Student student;
 	private Professor professor;
 	private Subject subject;
