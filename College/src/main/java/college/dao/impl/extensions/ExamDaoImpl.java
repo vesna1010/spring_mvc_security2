@@ -1,8 +1,8 @@
 package college.dao.impl.extensions;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.HashSet;
 import org.hibernate.Query;
 import org.springframework.stereotype.Component;
 import college.dao.extensions.ExamDao;
@@ -12,7 +12,7 @@ import college.model.Professor;
 import college.model.Subject;
 
 @Component("examDao")
-public class ExamDaoImpl extends HibernateDaoImpl<Long, Exam> implements ExamDao {
+public class ExamDaoImpl extends HibernateDaoImpl<Exam> implements ExamDao {
 
 	public ExamDaoImpl() {
 		setEntityClass(Exam.class);
@@ -30,5 +30,5 @@ public class ExamDaoImpl extends HibernateDaoImpl<Long, Exam> implements ExamDao
 		
 		return new HashSet<Exam>(query.list());
 	}
-
+	
 }
