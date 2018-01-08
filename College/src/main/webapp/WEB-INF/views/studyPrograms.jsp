@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-<%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="tag" tagdir="/WEB-INF/tags/"%>
 
 <h3 class="text-center">${title}</h3>
@@ -21,9 +20,7 @@
 				<th>DURATION OF STUDY</th>
 				<th>ECTS</th>
 				<th>DEPARTMENT</th>
-				<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
-					<th>MANAGE</th>
-				</sec:authorize>
+				<th>MANAGE</th>
 			</tr>
 			<c:forEach items="${studyPrograms}" var="studyProgram">
 				<tr>
@@ -41,14 +38,16 @@
 								href="<c:url value='/studyPrograms/delete/${studyProgram.id}' />"><span
 								class="glyphicon glyphicon-remove"></span>&nbsp;Delete</a>
 							<a class="btn btn-default"
-								href="<c:url value='/exams/examForm/?studyProgramId=${studyProgram.id}' />">Add
-								Exams</a>
+								href="<c:url value='/exams/examForm?studyProgramId=${studyProgram.id}' />">&nbsp;Add
+								Exam</a>
 						</sec:authorize><a class="btn btn-default"
 						href="<c:url value='/students?studyProgramId=${studyProgram.id}'/>">&nbsp;Students</a>
 						<a class="btn btn-default"
 						href="<c:url value='/subjects?studyProgramId=${studyProgram.id}'/>">&nbsp;Subjects</a>
 						<a class="btn btn-default"
 						href="<c:url value='/professors?studyProgramId=${studyProgram.id}'/>">&nbsp;Professors</a>
+						<a class="btn btn-default"
+						href="<c:url value='/lectures?studyProgramId=${studyProgram.id}'/>">&nbsp;Lectures</a>
 					</td>
 				</tr>
 			</c:forEach>
