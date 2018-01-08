@@ -2,8 +2,8 @@ package college.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.HashSet;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,7 +23,6 @@ import college.validation.Title;
 @Table(name = "DEPARTMENTS")
 public class Department implements Serializable {
 
-	
 	private String id = "";
 	private String title = "";
 	private Date dateOfCreation = new Date();
@@ -31,14 +30,14 @@ public class Department implements Serializable {
 
 	public Department() {
 	}
-	
+
 	public Department(String id, String title) {
 		this.id = id;
 		this.title = title;
 	}
 
-	@Id 
-	@MyId 
+	@Id
+	@MyId
 	@Column(name = "ID")
 	public String getId() {
 		return id;
@@ -48,7 +47,7 @@ public class Department implements Serializable {
 		this.id = id;
 	}
 
-	@Title 
+	@Title
 	@Column(name = "TITLE")
 	public String getTitle() {
 		return title;
@@ -74,7 +73,7 @@ public class Department implements Serializable {
 	public Set<StudyProgram> getStudyPrograms() {
 		return studyPrograms;
 	}
-	
+
 	void setStudyPrograms(Set<StudyProgram> studyPrograms) {
 		this.studyPrograms = studyPrograms;
 	}
@@ -116,3 +115,4 @@ public class Department implements Serializable {
 	}
 
 }
+
