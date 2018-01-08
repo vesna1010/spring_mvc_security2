@@ -18,6 +18,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import college.validation.MyId;
+
 @SuppressWarnings({ "serial" })
 @Entity
 @Table(name = "EXAMS")
@@ -42,6 +44,7 @@ public class Exam implements Serializable {
 	}
 
 	@Id
+	@MyId
 	@Column(name = "ID")
 	public String getId() {
 		return id;
