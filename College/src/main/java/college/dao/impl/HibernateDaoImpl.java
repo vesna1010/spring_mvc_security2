@@ -1,8 +1,8 @@
 package college.dao.impl;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.HashSet;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import college.dao.HibernateDao;
 
 @Transactional
-public abstract class HibernateDaoImpl<I extends Serializable, E extends Serializable> implements HibernateDao<I, E> {
+public abstract class HibernateDaoImpl<E extends Serializable> implements HibernateDao<E> {
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -26,8 +26,8 @@ public abstract class HibernateDaoImpl<I extends Serializable, E extends Seriali
 	}
 
 	@Override
-	public E findOneById(final I i) {
-		return (E) getSession().get(entityClass, i);
+	public E findOneById(final String id) {
+		return (E) getSession().get(entityClass, id);
 	}
 
 	@Override
@@ -40,12 +40,12 @@ public abstract class HibernateDaoImpl<I extends Serializable, E extends Seriali
 
 	@Override
 	public void saveOrUpdate(E e) {
-		getSession().saveOrUpdate(e);
+		getSession().merge(e);
 	}
 
 	@Override
-	public void deleteById(final I i) {
-		E e = findOneById(i);
+	public void deleteById(final String id) {
+		E e = findOneById(id);
 		getSession().delete(e);
 	}
 
