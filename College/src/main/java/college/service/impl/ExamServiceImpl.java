@@ -2,6 +2,7 @@ package college.service.impl;
 
 import java.util.Date;
 import java.util.Set;
+
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import college.dao.extensions.ExamDao;
@@ -22,12 +23,12 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 	@Override
-	public Exam findExamById(Long id) {
+	public Exam findExamById(String id) {
 		return examDao.findOneById(id);
 	}
 
 	@Override
-	public void deleteExamById(Long id) {
+	public void deleteExamById(String id) {
 		examDao.deleteById(id);
 	}
 
@@ -37,3 +38,4 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 }
+
