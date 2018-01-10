@@ -75,8 +75,8 @@ public class DepartmentControllerTest extends BaseControllerTest {
 
 		mockMvc.perform(get("/departments"))
 		       .andExpect(status().isOk())
-			   .andExpect(model().attribute("departments", is(departments)))
-			   .andExpect(view().name("departmentsPage"));
+		       .andExpect(model().attribute("departments", is(departments)))
+		       .andExpect(view().name("departmentsPage"));
 
 		verify(departmentService, times(1)).findAllDepartments();
 	}
@@ -96,7 +96,7 @@ public class DepartmentControllerTest extends BaseControllerTest {
 	private void renderEmptyDepartmentForm_Enabled() throws Exception {
 		mockMvc.perform(get("/departments/departmentForm"))
 		       .andExpect(status().isOk())
-			   .andExpect(model().attribute("department", is(new Department())))
+		       .andExpect(model().attribute("department", is(new Department())))
 			   .andExpect(view().name("departmentForm"));
 	}
 
