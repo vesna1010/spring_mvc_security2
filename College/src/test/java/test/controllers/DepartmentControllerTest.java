@@ -119,10 +119,9 @@ public class DepartmentControllerTest extends BaseControllerTest {
 
 		doNothing().when(departmentService).saveOrUpdateDepartment(department);
 
-		mockMvc.perform(
-			post("/departments/save").with(csrf())
-			.param("id", "D3")
-			.param("title", "Department 3"))
+		mockMvc.perform(post("/departments/save").with(csrf())
+				.param("id", "D3")
+				.param("title", "Department 3"))
 		       .andExpect(model().hasNoErrors())
 		       .andExpect(status().is3xxRedirection())
 		       .andExpect(redirectedUrl("/departments/departmentForm"));
@@ -137,10 +136,9 @@ public class DepartmentControllerTest extends BaseControllerTest {
 
 		doNothing().when(departmentService).saveOrUpdateDepartment(department);
 
-		mockMvc.perform(
-			post("/departments/save").with(csrf())
-			.param("id", "D3")
-			.param("title", "Department ???"))
+		mockMvc.perform(post("/departments/save").with(csrf())
+				.param("id", "D3")
+				.param("title", "Department ???"))
 		       .andExpect(status().isOk())
 		       .andExpect(model().attributeHasFieldErrors("department", "title"))
 		       .andExpect(model().attribute("department", is(department)))
