@@ -48,7 +48,7 @@ public class SubjectControllerTest extends BaseControllerTest {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(wax).apply(springSecurity()).build();
 		studyProgram1.addSubject(subject1);
-	  studyProgram1.addSubject(subject2);
+		studyProgram1.addSubject(subject2);
 	}
 
 	@Test
@@ -111,10 +111,10 @@ public class SubjectControllerTest extends BaseControllerTest {
 		when(studyProgramService.findStudyProgramById("SP1")).thenReturn(studyProgram1);
 	
 		mockMvc.perform(get("/subjects").param("studyProgramId", "SP1"))
-	         .andExpect(status().isOk())
-	         .andExpect(model().attribute("subjects", hasSize(2)))
-	         .andExpect(model().attribute("title", is("Subjects at Study Program 1")))
-	         .andExpect(view().name("subjectsPage"));
+	               .andExpect(status().isOk())
+	               .andExpect(model().attribute("subjects", hasSize(2)))
+	               .andExpect(model().attribute("title", is("Subjects at Study Program 1")))
+	               .andExpect(view().name("subjectsPage"));
 	
 		verify(studyProgramService, times(1)).findStudyProgramById("SP1");
 	}
