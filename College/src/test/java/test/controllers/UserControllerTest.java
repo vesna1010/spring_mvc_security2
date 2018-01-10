@@ -75,7 +75,7 @@ public class UserControllerTest extends BaseControllerTest {
 		mockMvc.perform(get("/users"))
 		       .andExpect(status().isOk())
 		       .andExpect(model().attribute("users", hasSize(2)))
-           .andExpect(view().name("usersPage"));
+		       .andExpect(view().name("usersPage"));
 
 		verify(userService, times(1)).findUsers();
 	}
@@ -149,7 +149,7 @@ public class UserControllerTest extends BaseControllerTest {
 
 		mockMvc.perform(get("/users/delete/" + "USERNAME"))
 		       .andExpect(status().isForbidden())
-			     .andExpect(forwardedUrl("/denied"));
+		       .andExpect(forwardedUrl("/denied"));
 
 		verify(userService, times(0)).deleteUserByUsername("USERNAME");
 	}
@@ -161,7 +161,7 @@ public class UserControllerTest extends BaseControllerTest {
 
 		mockMvc.perform(get("/users/delete/" + "USERNAME"))
 		       .andExpect(status().is3xxRedirection())
-			     .andExpect(redirectedUrl("/users"));
+		       .andExpect(redirectedUrl("/users"));
 
 		verify(userService, times(1)).deleteUserByUsername("USERNAME");
 	}
@@ -173,7 +173,7 @@ public class UserControllerTest extends BaseControllerTest {
 
 		mockMvc.perform(get("/users/disable/" + "USERNAME"))
 		       .andExpect(status().isForbidden())
-			     .andExpect(forwardedUrl("/denied"));
+		       .andExpect(forwardedUrl("/denied"));
 
 		verify(userService, times(0)).disableUserByUsername("USERNAME");
 	}
@@ -185,7 +185,7 @@ public class UserControllerTest extends BaseControllerTest {
 
 		mockMvc.perform(get("/users/disable/" + "USERNAME"))
 		       .andExpect(status().is3xxRedirection())
-			     .andExpect(redirectedUrl("/users"));
+		       .andExpect(redirectedUrl("/users"));
 
 		verify(userService, times(1)).disableUserByUsername("USERNAME");
 	}
@@ -195,7 +195,7 @@ public class UserControllerTest extends BaseControllerTest {
 	public void renderPasswordFormTest_By_AnonymousUser() throws Exception {
 		mockMvc.perform(get("/users/changePassword"))
 		       .andExpect(status().is3xxRedirection())
-			     .andExpect(redirectedUrlPattern("**/login"));
+		       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
