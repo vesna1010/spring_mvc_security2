@@ -111,8 +111,8 @@ public class SubjectControllerTest extends BaseControllerTest {
 		when(studyProgramService.findStudyProgramById("SP1")).thenReturn(studyProgram1);
 	
 		mockMvc.perform(get("/subjects").param("studyProgramId", "SP1"))
-	               .andExpect(status().isOk())
-	               .andExpect(model().attribute("subjects", hasSize(2)))
+		       .andExpect(status().isOk())
+		       .andExpect(model().attribute("subjects", hasSize(2)))
 	               .andExpect(model().attribute("title", is("Subjects at Study Program 1")))
 	               .andExpect(view().name("subjectsPage"));
 	
