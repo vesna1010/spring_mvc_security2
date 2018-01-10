@@ -101,8 +101,8 @@ public class UserControllerTest extends BaseControllerTest {
 	@Test
 	@WithMockUser(username = "USERNAME_ADMIN", password = "PASSWORD_ADMIN", roles = "ADMIN")
 	public void saveUserAndRenderUserForm_ValidForm_By_Admin() throws Exception {
-		User user = new User("USERNAME", "email@gmail.com", "PASSWORD", 
-				             new HashSet<Role>(Arrays.asList(Role.PROFESSOR)));
+		User user = new User("USERNAME", "email@gmail.com", "PASSWORD", new HashSet<Role>(
+			Arrays.asList(Role.PROFESSOR)));
 
 		doNothing().when(userService).saveOrUpdateUser(user);
 
@@ -122,8 +122,7 @@ public class UserControllerTest extends BaseControllerTest {
 	@Test
 	@WithMockUser(username = "USERNAME_ADMIN", password = "PASSWORD_ADMIN", roles = "ADMIN")
 	public void saveUserAndRenderUserForm_InvalidForm_By_Admin() throws Exception {
-		User user = new User("USERNAME", "email@gmail.com", "PASSWORD", 
-	             new HashSet<Role>());
+		User user = new User("USERNAME", "email@gmail.com", "PASSWORD", new HashSet<Role>());
 
 		doNothing().when(userService).saveOrUpdateUser(user);
 
