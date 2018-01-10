@@ -97,7 +97,7 @@ public class DepartmentControllerTest extends BaseControllerTest {
 		mockMvc.perform(get("/departments/departmentForm"))
 		       .andExpect(status().isOk())
 		       .andExpect(model().attribute("department", is(new Department())))
-			   .andExpect(view().name("departmentForm"));
+		       .andExpect(view().name("departmentForm"));
 	}
 
 	@Test
@@ -109,7 +109,7 @@ public class DepartmentControllerTest extends BaseControllerTest {
 	private void renderEmptyDepartmentForm_Disabled() throws Exception {
 		mockMvc.perform(get("/departments/departmentForm"))
 		       .andExpect(status().isForbidden())
-			   .andExpect(forwardedUrl("/denied"));
+		       .andExpect(forwardedUrl("/denied"));
 	}
 
 	@Test
@@ -120,12 +120,12 @@ public class DepartmentControllerTest extends BaseControllerTest {
 		doNothing().when(departmentService).saveOrUpdateDepartment(department);
 
 		mockMvc.perform(
-				post("/departments/save").with(csrf())
-				.param("id", "D3")
-				.param("title", "Department 3"))
-		        .andExpect(model().hasNoErrors())
-				.andExpect(status().is3xxRedirection())
-				.andExpect(redirectedUrl("/departments/departmentForm"));
+			post("/departments/save").with(csrf())
+			.param("id", "D3")
+			.param("title", "Department 3"))
+		       .andExpect(model().hasNoErrors())
+		       .andExpect(status().is3xxRedirection())
+		       .andExpect(redirectedUrl("/departments/departmentForm"));
 
 		verify(departmentService, times(1)).saveOrUpdateDepartment(department);
 	}
@@ -138,13 +138,13 @@ public class DepartmentControllerTest extends BaseControllerTest {
 		doNothing().when(departmentService).saveOrUpdateDepartment(department);
 
 		mockMvc.perform(
-				post("/departments/save").with(csrf())
-				.param("id", "D3")
-				.param("title", "Department ???"))
+			post("/departments/save").with(csrf())
+			.param("id", "D3")
+			.param("title", "Department ???"))
 		       .andExpect(status().isOk())
-			   .andExpect(model().attributeHasFieldErrors("department", "title"))
-			   .andExpect(model().attribute("department", is(department)))
-			   .andExpect(view().name("departmentForm"));
+		       .andExpect(model().attributeHasFieldErrors("department", "title"))
+		       .andExpect(model().attribute("department", is(department)))
+		       .andExpect(view().name("departmentForm"));
 
 		verify(departmentService, times(0)).saveOrUpdateDepartment(department);
 	}
@@ -166,8 +166,8 @@ public class DepartmentControllerTest extends BaseControllerTest {
 
 		mockMvc.perform(get("/departments/edit/" + "D1"))
 		       .andExpect(status().isOk())
-			   .andExpect(model().attribute("department", is(department1)))
-			   .andExpect(view().name("departmentForm"));
+		       .andExpect(model().attribute("department", is(department1)))
+		       .andExpect(view().name("departmentForm"));
 
 		verify(departmentService, times(1)).findDepartmentById("D1");
 	}
@@ -183,7 +183,7 @@ public class DepartmentControllerTest extends BaseControllerTest {
 
 		mockMvc.perform(get("/departments/edit/" + "D1"))
 		       .andExpect(status().isForbidden())
-			   .andExpect(forwardedUrl("/denied"));
+		       .andExpect(forwardedUrl("/denied"));
 
 		verify(departmentService, times(0)).findDepartmentById("D1");
 	}
@@ -205,7 +205,7 @@ public class DepartmentControllerTest extends BaseControllerTest {
 
 		mockMvc.perform(get("/departments/delete/" + "D1"))
 		       .andExpect(status().is3xxRedirection())
-			   .andExpect(redirectedUrl("/departments"));
+		       .andExpect(redirectedUrl("/departments"));
 
 		verify(departmentService, times(1)).deleteDepartmentById("D1");
 	}
@@ -221,7 +221,7 @@ public class DepartmentControllerTest extends BaseControllerTest {
 
 		mockMvc.perform(get("/departments/delete/" + "D1"))
 		       .andExpect(status().isForbidden())
-			   .andExpect(forwardedUrl("/denied"));
+		       .andExpect(forwardedUrl("/denied"));
 
 		verify(departmentService, times(0)).deleteDepartmentById("D1");
 	}
