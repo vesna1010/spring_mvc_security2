@@ -7,7 +7,9 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+
 import org.junit.Before;
+
 import college.enums.Gender;
 import college.enums.Role;
 import college.model.Address;
@@ -39,17 +41,17 @@ public abstract class BaseTest {
 	protected final Subject subject2 = new Subject("SUB2", "Subject 2", studyProgram1);
 
 	protected final Student student1 = new Student("S1", "First Student", "First Father Name",
-			new GregorianCalendar(5, 5, 1995).getTime(), "email1@gmail.com", "065-123-456", Gender.MALE,
+			new GregorianCalendar(1995, 5, 5).getTime(), "email1@gmail.com", "065-123-456", Gender.MALE,
 			new Address("City", "Street", "State"), studyProgram1);
 	protected final Student student2 = new Student("S2", "Second Student", "Second Father Name",
-			new GregorianCalendar(4, 4, 1995).getTime(), "email2@gmail.com", "065-124-156", Gender.MALE,
+			new GregorianCalendar(1995, 4, 4).getTime(), "email2@gmail.com", "065-124-156", Gender.MALE,
 			new Address("City", "Street", "State"), studyProgram1);
 
 	protected final Professor professor1 = new Professor("P1", "First Professor", "First Father Name",
-			new GregorianCalendar(5, 5, 1995).getTime(), "email3@gmail.com", "065-333-212", Gender.MALE,
+			new GregorianCalendar(1985, 3, 2).getTime(), "email3@gmail.com", "065-333-212", Gender.MALE,
 			new Address("City", "Street", "State"), "Title");
 	protected final Professor professor2 = new Professor("P2", "Second Professor", "Second Father Name",
-			new GregorianCalendar(4, 4, 1995).getTime(), "email4@gmail.com", "065-423-515", Gender.MALE,
+			new GregorianCalendar(1985, 1, 5).getTime(), "email4@gmail.com", "065-423-515", Gender.MALE,
 			new Address("City", "Street", "State"), "Title");
 
 	protected final Lecture lecture1 = new Lecture("L1", professor1, subject1, 2);
