@@ -13,14 +13,14 @@
 	<div class="table-responsive">
 		<table class="table table-striped table-bordered">
 			<tr>
-				<th colspan="5">DATE : <tag:date date="${exams.first().date}"></tag:date>
+				<th colspan="5">DATE : <tag:date date="${exams.iterator().next().date}"></tag:date>
 				</th>
 			</tr>
 			<tr>
-				<th colspan="5">PROFESSOR : ${exams.first().professor.fullName}</th>
+				<th colspan="5">PROFESSOR : ${exams.iterator().next().professor.fullName}</th>
 			</tr>
 			<tr>
-				<th colspan="5">SUBJECT : ${exams.first().subject.title}</th>
+				<th colspan="5">SUBJECT : ${exams.iterator().next().subject.title}</th>
 			</tr> 
 			<tr>
 				<th>ID</th>
@@ -37,7 +37,7 @@
 					<td>${exam.score}</td>
 					<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
 						<td><a class="btn btn-primary"
-							href="<c:url value='/exams/edit/${exam.id}' />"><span
+							href="<c:url value='/exams/edit/${exam.id}/${exam.subject.studyProgram.id}' />"><span
 								class="glyphicon glyphicon-pencil"></span> Edit</a> <a
 							class="btn btn-danger"
 							href="<c:url value='/exams/delete/${exam.id}' />"><span
@@ -49,3 +49,4 @@
 	</div>
 
 </c:if>
+
