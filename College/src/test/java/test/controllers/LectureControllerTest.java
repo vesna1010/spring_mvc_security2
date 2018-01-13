@@ -81,9 +81,9 @@ public class LectureControllerTest extends BaseControllerTest {
 		when(studyProgramService.findStudyProgramById("SP1")).thenReturn(studyProgram1);
 		
 		mockMvc.perform(get("/lectures").param("studyProgramId", "SP1"))
-                       .andExpect(status().isOk())
-                       .andExpect(model().attribute("studyProgram", is(studyProgram1)))
-                       .andExpect(view().name("lectures"));
+		       .andExpect(status().isOk())
+		       .andExpect(model().attribute("studyProgram", is(studyProgram1)))
+		       .andExpect(view().name("lectures"));
 		
 		verify(studyProgramService, times(1)).findStudyProgramById("SP1");
 	}
