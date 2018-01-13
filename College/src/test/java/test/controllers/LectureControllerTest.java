@@ -125,7 +125,7 @@ public class LectureControllerTest extends BaseControllerTest {
 	private void renderLectureForm_Disabled() throws Exception {
 		mockMvc.perform(get("/lectures/lectureForm").param("studyProgramId", "SP1"))
 		       .andExpect(status().isForbidden())
-                       .andExpect(forwardedUrl("/denied"));
+		       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -213,7 +213,7 @@ public class LectureControllerTest extends BaseControllerTest {
 	private void renderFormWithLecture_Disabled() throws Exception {
 		mockMvc.perform(get("/lectures/edit/" + "L1/SP1"))
 		       .andExpect(status().isForbidden())
-                       .andExpect(forwardedUrl("/denied"));
+		       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
