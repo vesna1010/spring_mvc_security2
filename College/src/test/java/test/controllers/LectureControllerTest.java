@@ -79,13 +79,13 @@ public class LectureControllerTest extends BaseControllerTest {
 
 	private void renderLecturesByStudyProgram_Enabled() throws Exception {
 		when(studyProgramService.findStudyProgramById("SP1")).thenReturn(studyProgram1);
-       
-        mockMvc.perform(get("/lectures").param("studyProgramId", "SP1"))
-               .andExpect(status().isOk())
-               .andExpect(model().attribute("studyProgram", is(studyProgram1)))
-               .andExpect(view().name("lectures"));
-        
-        verify(studyProgramService, times(1)).findStudyProgramById("SP1");
+		
+		mockMvc.perform(get("/lectures").param("studyProgramId", "SP1"))
+                       .andExpect(status().isOk())
+                       .andExpect(model().attribute("studyProgram", is(studyProgram1)))
+                       .andExpect(view().name("lectures"));
+		
+		verify(studyProgramService, times(1)).findStudyProgramById("SP1");
 	}
 
 	@Test
@@ -125,7 +125,7 @@ public class LectureControllerTest extends BaseControllerTest {
 	private void renderLectureForm_Disabled() throws Exception {
 		mockMvc.perform(get("/lectures/lectureForm").param("studyProgramId", "SP1"))
 		       .andExpect(status().isForbidden())
-               .andExpect(forwardedUrl("/denied"));
+                       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -133,8 +133,7 @@ public class LectureControllerTest extends BaseControllerTest {
 	public void saveLecture_ValidForm() throws Exception {
 		doNothing().when(lectureService).saveOrUpdateLecture(lecture1);
 		
-		mockMvc.perform(
-				post("/lectures/save").with(csrf())
+		mockMvc.perform(post("/lectures/save").with(csrf())
 				.param("studyProgramId", "SP1")
 				.param("id", "L1")
 				.param("professor", "P1")
@@ -157,8 +156,7 @@ public class LectureControllerTest extends BaseControllerTest {
 		when(studyProgramService.findStudyProgramById("SP1")).thenReturn(studyProgram1);
 		doNothing().when(lectureService).saveOrUpdateLecture(lecture1);
 		
-		mockMvc.perform(
-				post("/lectures/save").with(csrf())
+		mockMvc.perform(post("/lectures/save").with(csrf())
 				.param("studyProgramId", "SP1")
 				.param("id", "L1")
 				.param("professor", "P1")
@@ -215,7 +213,7 @@ public class LectureControllerTest extends BaseControllerTest {
 	private void renderFormWithLecture_Disabled() throws Exception {
 		mockMvc.perform(get("/lectures/edit/" + "L1/SP1"))
 		       .andExpect(status().isForbidden())
-               .andExpect(forwardedUrl("/denied"));
+                       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -229,32 +227,32 @@ public class LectureControllerTest extends BaseControllerTest {
 	public void deleteLectureAndRenderLecturesPageTest_By_User() throws Exception {
 		deleteLectureAndRenderLecturesPage_Enabled();
 	}
-
-    private void deleteLectureAndRenderLecturesPage_Enabled() throws Exception {
-    	doNothing().when(lectureService).deleteLectureById("L1");
-    	
-    	mockMvc.perform(get("/lectures/delete/" + "L1/SP1"))
-    	       .andExpect(status().is3xxRedirection())
-    	       .andExpect(redirectedUrl("/lectures?studyProgramId=SP1"));
-    	
-    	verify(lectureService, times(1)).deleteLectureById("L1");
-    }
+	
+	private void deleteLectureAndRenderLecturesPage_Enabled() throws Exception {
+		doNothing().when(lectureService).deleteLectureById("L1");
+		
+		mockMvc.perform(get("/lectures/delete/" + "L1/SP1"))
+    	               .andExpect(status().is3xxRedirection())
+    	               .andExpect(redirectedUrl("/lectures?studyProgramId=SP1"));
+		
+		verify(lectureService, times(1)).deleteLectureById("L1");
+	}
     
-    @Test
+        @Test
 	@WithMockUser(username = "USERNAME_PROFESSOR", password = "PASSWORD3", roles = "PROFESSOR")
 	public void deleteLectureAndRenderLecturesPageTest_By_Professor() throws Exception {
-    	deleteLectureAndRenderLecturesPage_Disabled();
+		deleteLectureAndRenderLecturesPage_Disabled();
 	}
     
 	private void deleteLectureAndRenderLecturesPage_Disabled() throws Exception {
 		doNothing().when(lectureService).deleteLectureById("L1");
-  	
-    	mockMvc.perform(get("/lectures/delete/" + "L1/SP1"))
-    	       .andExpect(status().isForbidden())
-               .andExpect(forwardedUrl("/denied"));
-    	
-    	verify(lectureService, times(0)).deleteLectureById("L1");
-    }
+		
+		mockMvc.perform(get("/lectures/delete/" + "L1/SP1"))
+    	               .andExpect(status().isForbidden())
+                       .andExpect(forwardedUrl("/denied"));
+		
+		verify(lectureService, times(0)).deleteLectureById("L1");
+	}
 	
 }
 
