@@ -232,8 +232,8 @@ public class LectureControllerTest extends BaseControllerTest {
 		doNothing().when(lectureService).deleteLectureById("L1");
 		
 		mockMvc.perform(get("/lectures/delete/" + "L1/SP1"))
-    	               .andExpect(status().is3xxRedirection())
-    	               .andExpect(redirectedUrl("/lectures?studyProgramId=SP1"));
+		       .andExpect(status().is3xxRedirection())
+		       .andExpect(redirectedUrl("/lectures?studyProgramId=SP1"));
 		
 		verify(lectureService, times(1)).deleteLectureById("L1");
 	}
@@ -248,8 +248,8 @@ public class LectureControllerTest extends BaseControllerTest {
 		doNothing().when(lectureService).deleteLectureById("L1");
 		
 		mockMvc.perform(get("/lectures/delete/" + "L1/SP1"))
-    	               .andExpect(status().isForbidden())
-                       .andExpect(forwardedUrl("/denied"));
+		       .andExpect(status().isForbidden())
+		       .andExpect(forwardedUrl("/denied"));
 		
 		verify(lectureService, times(0)).deleteLectureById("L1");
 	}
