@@ -42,9 +42,12 @@ public class StudyProgram implements Serializable {
 	public StudyProgram() {
 	}
 
-	public StudyProgram(String id, String title, Department department) {
+	public StudyProgram(String id, String title, Date dateOfCreation, Integer durationOfStudy, 
+			Department department) {
 		this.id = id;
 		this.title = title;
+		this.dateOfCreation = dateOfCreation;
+		this.durationOfStudy = durationOfStudy;
 		this.department = department;
 	}
 
