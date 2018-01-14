@@ -35,11 +35,13 @@ public class Exam implements Serializable {
 	public Exam() {
 	}
 
-	public Exam(String id, Student student, Professor professor, Subject subject, Integer score) {
+	public Exam(String id, Student student, Professor professor, Subject subject, 
+			Date date, Integer score) {
 		this.id = id;
 		this.student = student;
 		this.professor = professor;
 		this.subject = subject;
+		this.date = date;
 		this.score = score;
 	}
 
