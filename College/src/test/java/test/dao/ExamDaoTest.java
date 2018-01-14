@@ -7,7 +7,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,10 +86,12 @@ public class ExamDaoTest extends BaseDaoTest {
 	
 	@Test
 	public void findExamsByObjectsTest() {
-		Set<Exam> exams = examDao.findExamsByObjects(professor1, subject1, new Date());
+		Set<Exam> exams = examDao.findExamsByObjects(professor1, subject1, 
+				new GregorianCalendar(2017, Calendar.MAY, 1).getTime());
 		
 		assertThat(exams, hasSize(1));
 		assertThat(examDao.findAll(), hasSize(2));
 	}
 	
 }
+
