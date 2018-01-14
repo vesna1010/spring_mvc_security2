@@ -31,8 +31,9 @@ public class Professor extends Person {
 	}
 
 	public Professor(String id, String fullName, String fatherName, Date dateOfBirth, String email, String telephone,
-			Gender gender, Address address, String titleOfProfessor) {
+			Gender gender, Address address, Date dateOfEmployment, String titleOfProfessor) {
 		super(id, fullName, fatherName, dateOfBirth, email, telephone, gender, address);
+		this.dateOfEmployment = dateOfEmployment;
 		this.titleOfProfessor = titleOfProfessor;
 	}
 
