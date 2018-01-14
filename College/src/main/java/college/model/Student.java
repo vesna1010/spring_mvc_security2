@@ -36,8 +36,11 @@ public class Student extends Person {
 	}
 
 	public Student(String id, String fullName, String fatherName, Date dateOfBirth, String email, 
-			String telephone, Gender gender, Address address, StudyProgram studyProgram) {
+			String telephone, Gender gender, Address address, Date dateOfEntry, Integer yearOfStudy,
+			StudyProgram studyProgram) {
 		super(id, fullName, fatherName, dateOfBirth, email, telephone, gender, address);
+		this.yearOfStudy = yearOfStudy;
+		this.dateOfEntry = dateOfEntry;
 		this.studyProgram = studyProgram;
 	}
 
