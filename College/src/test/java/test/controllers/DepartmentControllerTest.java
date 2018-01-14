@@ -121,9 +121,9 @@ public class DepartmentControllerTest extends BaseControllerTest {
 				.param("id", "D1")
 				.param("title", "Department 1")
 				.param("dateOfCreation", "01-01-2017"))
-			.andExpect(model().hasNoErrors())
-			.andExpect(status().is3xxRedirection())
-			.andExpect(redirectedUrl("/departments/departmentForm"));
+		       .andExpect(model().hasNoErrors())
+		       .andExpect(status().is3xxRedirection())
+		       .andExpect(redirectedUrl("/departments/departmentForm"));
 
 		verify(departmentService, times(1)).saveOrUpdateDepartment(department1);
 	}
