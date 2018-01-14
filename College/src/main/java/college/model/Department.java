@@ -31,11 +31,12 @@ public class Department implements Serializable {
 	public Department() {
 	}
 
-	public Department(String id, String title) {
+	public Department(String id, String title, Date dateOfCreation) {
 		this.id = id;
 		this.title = title;
+		this.dateOfCreation = dateOfCreation;
 	}
-
+	
 	@Id
 	@MyId
 	@Column(name = "ID")
