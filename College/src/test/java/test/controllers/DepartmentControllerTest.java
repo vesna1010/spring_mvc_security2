@@ -115,30 +115,31 @@ public class DepartmentControllerTest extends BaseControllerTest {
 	@Test
 	@WithMockUser(username = "USERNAME_USER", password = "PASSWORD2", roles = "USER")
 	public void saveDepartmentAndRenderDepartmentFormTest_ValidForm() throws Exception {
-		Department department = new Department("D3", "Department 3");
-
-		doNothing().when(departmentService).saveOrUpdateDepartment(department);
+		doNothing().when(departmentService).saveOrUpdateDepartment(department1);
 
 		mockMvc.perform(post("/departments/save").with(csrf())
-				.param("id", "D3")
-				.param("title", "Department 3"))
-		       .andExpect(model().hasNoErrors())
-		       .andExpect(status().is3xxRedirection())
-		       .andExpect(redirectedUrl("/departments/departmentForm"));
+				.param("id", "D1")
+				.param("title", "Department 1")
+		        .param("dateOfCreation", "01-01-2017"))
+		        .andExpect(model().hasNoErrors())
+			.andExpect(status().is3xxRedirection())
+			.andExpect(redirectedUrl("/departments/departmentForm"));
 
-		verify(departmentService, times(1)).saveOrUpdateDepartment(department);
+		verify(departmentService, times(1)).saveOrUpdateDepartment(department1);
 	}
 
 	@Test
 	@WithMockUser(username = "USERNAME_USER", password = "PASSWORD2", roles = "USER")
 	public void saveDepartmentAndRenderDepartmentFormTest_InvalidForm() throws Exception {
-		Department department = new Department("D3", "Department ???");
+		Department department = new Department("D3", "Department ???", 
+				new GregorianCalendar(2017, Calendar.JANUARY, 1).getTime());
 
 		doNothing().when(departmentService).saveOrUpdateDepartment(department);
 
 		mockMvc.perform(post("/departments/save").with(csrf())
 				.param("id", "D3")
-				.param("title", "Department ???"))
+				.param("title", "Department ???")
+				.param("dateOfCreation", "01-01-2017"))
 		       .andExpect(status().isOk())
 		       .andExpect(model().attributeHasFieldErrors("department", "title"))
 		       .andExpect(model().attribute("department", is(department)))
