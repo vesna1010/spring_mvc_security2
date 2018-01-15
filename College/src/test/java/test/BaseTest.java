@@ -8,9 +8,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-
 import org.junit.Before;
-
 import college.enums.Gender;
 import college.enums.Role;
 import college.model.Address;
