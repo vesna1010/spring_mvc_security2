@@ -87,7 +87,7 @@ public class ExamDaoTest extends BaseDaoTest {
 	@Test
 	public void findExamsByObjectsTest() {
 		Set<Exam> exams = examDao.findExamsByObjects(professor1, subject1, 
-				new GregorianCalendar(2017, Calendar.MAY, 1).getTime());
+				new GregorianCalendar(2017, Calendar.FEBRUARY, 1).getTime());
 		
 		assertThat(exams, hasSize(1));
 		assertThat(examDao.findAll(), hasSize(2));
