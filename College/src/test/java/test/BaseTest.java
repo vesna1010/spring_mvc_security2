@@ -31,14 +31,14 @@ public abstract class BaseTest {
 			new HashSet<>(Arrays.asList(Role.USER, Role.PROFESSOR)));
 
 	protected final Department department1 = new Department("D1", "Department 1",
-			new GregorianCalendar(2016, Calendar.JUNE, 1).getTime());
+			new GregorianCalendar(2016, 5, 1).getTime());
 	protected final Department department2 = new Department("D2", "Department 2",
-			new GregorianCalendar(2016, Calendar.JUNE, 1).getTime());
+			new GregorianCalendar(2016, 5, 1).getTime());
 
 	protected final StudyProgram studyProgram1 = new StudyProgram("SP1", "Study Program 1",
-			new GregorianCalendar(2016, Calendar.JUNE, 1).getTime(), 3, department1);
+			new GregorianCalendar(2016, 5, 1).getTime(), 3, department1);
 	protected final StudyProgram studyProgram2 = new StudyProgram("SP2", "Study Program 2",
-			new GregorianCalendar(2016, Calendar.JUNE, 1).getTime(), 3, department1);
+			new GregorianCalendar(2016, 5, 1).getTime(), 3, department1);
 
 	protected final Subject subject1 = new Subject("SUB1", "Subject 1", studyProgram1);
 	protected final Subject subject2 = new Subject("SUB2", "Subject 2", studyProgram1);
@@ -64,11 +64,11 @@ public abstract class BaseTest {
 	protected final Lecture lecture3 = new Lecture("L3", professor1, subject2, 2);
 
 	protected final Exam exam1 = new Exam("E1", student1, professor1, subject1,
-			new GregorianCalendar(2017, 1, 2).getTime(), 8);
+			new GregorianCalendar(2017, 1, 1).getTime(), 8);
 	protected final Exam exam2 = new Exam("E2", student1, professor2, subject2,
-			new GregorianCalendar(2017, 2, 2).getTime(), 9);
+			new GregorianCalendar(2017, 1, 2).getTime(), 9);
 	protected final Exam exam3 = new Exam("E3", student2, professor1, subject2,
-			new GregorianCalendar(2017, 3, 2).getTime(), 9);
+			new GregorianCalendar(2017, 1, 2).getTime(), 9);
 
 	public byte[] getImage() throws IOException, URISyntaxException {
 		File imageFile = new File(this.getClass().getResource("/images/image.jpg").toURI());
@@ -90,4 +90,3 @@ public abstract class BaseTest {
 	}
 
 }
-
