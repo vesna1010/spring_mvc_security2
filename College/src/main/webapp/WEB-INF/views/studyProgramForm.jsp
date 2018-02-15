@@ -12,6 +12,6 @@
 	<tag:input_text_group name="durationOfStudy" title="DURATION OF STUDY"></tag:input_text_group>
 	<tag:input_select_group_set items="${departments}" name="department"
 		itemLabel="title" itemValue="id" title="DEPARTMENT"></tag:input_select_group_set>
-	<tag:button_grup></tag:button_grup>
+	<tag:button_group></tag:button_group>
 </sf:form>
 
