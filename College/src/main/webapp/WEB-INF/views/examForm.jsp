@@ -16,6 +16,6 @@
 	<tag:input_select_group_set items="${studyProgram.students}"
 		name="student" itemLabel="fullName" itemValue="id" title="STUDENT"></tag:input_select_group_set>
 	<tag:input_text_group name="score" title="SCORE"></tag:input_text_group>
-	<tag:button_grup></tag:button_grup>
+	<tag:button_group></tag:button_group>
 </sf:form>
 
