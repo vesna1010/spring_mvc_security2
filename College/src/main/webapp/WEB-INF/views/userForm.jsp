@@ -21,5 +21,5 @@
 		<tag:input_select_group_list items="${roles}" name="roles"
 			title="ROLES"></tag:input_select_group_list>
 	</sec:authorize>
-	<tag:button_grup></tag:button_grup>
+	<tag:button_group></tag:button_group>
 </sf:form>
