@@ -11,6 +11,6 @@
 		itemLabel="title" itemValue="id" title="SUBJECT"></tag:input_select_group_set>
 	<tag:input_select_group_set items="${professors}" name="professor"
 		itemLabel="fullName" itemValue="id" title="PROFESSOR"></tag:input_select_group_set>
-	<tag:button_grup></tag:button_grup>
+	<tag:button_group></tag:button_group>
 </sf:form>
 
