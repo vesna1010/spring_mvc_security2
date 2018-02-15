@@ -9,6 +9,6 @@
 	<tag:input_text_group name="id" title="ID"></tag:input_text_group>
 	<tag:input_text_group name="title" title="TITLE"></tag:input_text_group>
 	<tag:input_date_group name="dateOfCreation" title="DATE OF CREATION"></tag:input_date_group>
-	<tag:button_grup></tag:button_grup>
+	<tag:button_group></tag:button_group>
 </sf:form>
 
