@@ -13,6 +13,6 @@
 	<tag:input_select_group_set items="${professors}" name="professor"
 		itemLabel="fullName" itemValue="id" title="PROFESSOR"></tag:input_select_group_set>
 	<tag:input_text_group name="hours" title="HOURS"></tag:input_text_group>
-	<tag:button_grup></tag:button_grup>
+	<tag:button_group></tag:button_group>
 </sf:form>
 
