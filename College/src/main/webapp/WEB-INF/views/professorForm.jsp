@@ -1,3 +1,4 @@
+<%@ page import="college.enums.Gender" %>
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="tag" tagdir="/WEB-INF/tags/"%>
 
@@ -12,7 +13,7 @@
 	<tag:input_date_group name="dateOfEmployment" title="DATE OF EPLOYMENT"></tag:input_date_group>
 	<tag:input_text_group name="fullName" title="FIRST NAME"></tag:input_text_group>
 	<tag:input_text_group name="fatherName" title="FATHER NAME"></tag:input_text_group>
-	<tag:input_select_group_list items="${genders}" name="gender"
+	<tag:input_select_group_list items="${Gender.values()}" name="gender"
 		title="GENDER"></tag:input_select_group_list>
 	<tag:input_date_group name="dateOfBirth" title="DATE OF BIRTH"></tag:input_date_group>
 	<tag:input_text_group name="email" title="EMAIL"></tag:input_text_group>
@@ -23,4 +24,5 @@
 	<tag:input_file_group name="image" file="file" title="IMAGE"></tag:input_file_group>
 	<tag:button_group></tag:button_group>
 </sf:form>
+
 
