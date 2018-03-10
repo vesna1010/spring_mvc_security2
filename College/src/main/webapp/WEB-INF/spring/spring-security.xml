@@ -5,13 +5,12 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<security:authentication-manager>
-		<security:authentication-provider 
-			user-service-ref="userServiceImpl">
+		<security:authentication-provider user-service-ref="userServiceImpl">
 			<security:password-encoder ref="passwordEncoder" />
 		</security:authentication-provider>
 	</security:authentication-manager>
 
-	<security:http use-expressions="true" >
+	<security:http use-expressions="true">
 		<security:intercept-url pattern="/" access="permitAll" />
 		<security:intercept-url pattern="/login"
 			access="isAnonymous()" method="GET" />
@@ -23,7 +22,7 @@
 			access="permitAll" />
 		<security:intercept-url pattern="/users/changePassword"
 			access="isAuthenticated()" method="GET" />
-		<security:intercept-url pattern="/users/**" 
+		<security:intercept-url pattern="/users/**"
 			access="hasRole('ADMIN')" method="GET" />
 		<security:intercept-url pattern="/exams/search"
 			access="hasAnyRole('USER', 'PROFESSOR')" />
@@ -31,14 +30,17 @@
 			access="isAuthenticated()" />
 		<security:intercept-url pattern="/*" method="GET"
 			access="isAuthenticated()" />
+		<security:intercept-url pattern="/*/" method="GET"
+			access="isAuthenticated()" />
 		<security:intercept-url pattern="/*/**"
 			access="hasAnyRole('USER', 'ADMIN')" />
-		<security:form-login login-page="/login" 
+		<security:form-login login-page="/login"
 			login-processing-url="/login" authentication-failure-url="/login?error=true" />
-		<security:logout logout-success-url="/" delete-cookies="true"
-			invalidate-session="true" logout-url="/logout" />
+		<security:logout logout-success-url="/"
+			delete-cookies="true" invalidate-session="true" logout-url="/logout" />
 		<security:access-denied-handler
 			error-page="/denied" />
 	</security:http>
 
 </beans>
+
