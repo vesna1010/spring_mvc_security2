@@ -3,14 +3,19 @@ package college.dao;
 import java.io.Serializable;
 import java.util.Set;
 
-public interface HibernateDao<E extends Serializable> {
+public interface HibernateDao<ID extends Serializable, E extends Serializable> {
 
 	Set<E> findAll();
 
-	E findOneById(final String id);
+	E findById(ID id);
 
-	void saveOrUpdate(E e);
+	void saveOrUpdate(E entity);
 
-	void deleteById(final String id);
+	void deleteAll();
+
+	void delete(E entity);
+	
+	void deleteById(ID id);
 
 }
+
