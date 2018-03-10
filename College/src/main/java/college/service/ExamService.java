@@ -14,7 +14,9 @@ public interface ExamService {
 
 	void saveOrUpdateExam(Exam exam);
 	
-	void deleteExamById(String id);
+	void deleteExam(Exam exam);
 	
 }
+
+
 
