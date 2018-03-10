@@ -20,12 +20,12 @@ public class StudyProgramServiceImpl implements StudyProgramService {
 
 	@Override
 	public StudyProgram findStudyProgramById(String id) {
-		return studyProgramDao.findOneById(id);
+		return studyProgramDao.findById(id);
 	}
 
 	@Override
-	public void deleteStudyProgramById(String id) {
-		studyProgramDao.deleteById(id);
+	public void deleteStudyProgram(StudyProgram studyProgram) {
+		studyProgramDao.delete(studyProgram);
 	}
 
 	@Override
