@@ -15,6 +15,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+
 import college.validation.MyId;
 import college.validation.Title;
 
@@ -23,15 +24,15 @@ import college.validation.Title;
 @Table(name = "SUBJECTS")
 public class Subject implements Serializable {
 
-	private String id = "";
-	private String title = "";
+	private String id;
+	private String title;
 	private StudyProgram studyProgram;
 	private Set<Lecture> lectures = new HashSet<>();
 	private Set<Exam> exams = new HashSet<>();
 
 	public Subject() {
 	}
-	
+
 	public Subject(String id, String title, StudyProgram studyProgram) {
 		this.id = id;
 		this.title = title;
@@ -58,11 +59,11 @@ public class Subject implements Serializable {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+
 	@NotNull
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "STUDY_PROGRAM_ID")
-	@Cascade(CascadeType.MERGE)
+	@Cascade(value = CascadeType.SAVE_UPDATE)
 	public StudyProgram getStudyProgram() {
 		return studyProgram;
 	}
@@ -72,30 +73,30 @@ public class Subject implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
-	@Cascade(CascadeType.ALL)
+	@Cascade(value = CascadeType.ALL)
 	public Set<Exam> getExams() {
 		return exams;
 	}
-	
-	void setExams(Set<Exam> exams) {
+
+	public void setExams(Set<Exam> exams) {
 		this.exams = exams;
 	}
-	
+
 	public void addExam(Exam exam) {
 		exam.setSubject(this);
 		exams.add(exam);
 	}
 
 	@OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
-	@Cascade(CascadeType.ALL)
+	@Cascade(value = CascadeType.ALL)
 	public Set<Lecture> getLectures() {
 		return lectures;
 	}
 
-	void setLectures(Set<Lecture> lectures) {
+	public void setLectures(Set<Lecture> lectures) {
 		this.lectures = lectures;
 	}
-	
+
 	public void addLecture(Lecture lecture) {
 		lecture.setSubject(this);
 		this.lectures.add(lecture);
@@ -111,14 +112,12 @@ public class Subject implements Serializable {
 
 		return professors;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((studyProgram == null) ? 0 : studyProgram.hashCode());
-		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
 
@@ -135,16 +134,6 @@ public class Subject implements Serializable {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
-			return false;
-		if (studyProgram == null) {
-			if (other.studyProgram != null)
-				return false;
-		} else if (!studyProgram.equals(other.studyProgram))
-			return false;
-		if (title == null) {
-			if (other.title != null)
-				return false;
-		} else if (!title.equals(other.title))
 			return false;
 		return true;
 	}
