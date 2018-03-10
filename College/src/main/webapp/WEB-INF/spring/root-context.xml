@@ -9,29 +9,31 @@
 	<context:component-scan
 		base-package="college.dao.impl.extensions, college.service.impl"></context:component-scan>
 
-	<tx:annotation-driven />
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"></property>
+		<property name="packagesToScan" value="college.model"></property>
 		<property name="hibernateProperties">
 			<map>
 				<entry key="hibernate.dialect" value="${jdbc.dialect}"></entry>
 				<entry key="hibernate.hbm2ddl.auto" value="update"></entry>
 				<entry key="hibernate.enable_lazy_load_no_trans" value="true"></entry>
-				<entry key="hibernate.event.merge.entity_copy_observer" value="allow" />
+				<entry key="hibernate.show_sql" value="true"></entry>
 			</map>
 		</property>
-		<property name="packagesToScan" value="college.model"></property>
 	</bean>
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		p:maxIdle="30" p:maxWait="10000" p:maxActive="100" p:password="${jdbc.password}"
 		p:username="${jdbc.username}" p:url="${jdbc.url}" p:driverClassName="${jdbc.driverClassName}" />
+
 	<context:property-placeholder location="classpath:database/database.properties" />
 
 	<bean id="passwordEncoder"
