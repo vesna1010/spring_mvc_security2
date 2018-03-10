@@ -15,15 +15,15 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import college.enums.Role;
 
-@SuppressWarnings({ "serial"})
+@SuppressWarnings({ "serial" })
 @Entity
 @Table(name = "USERS")
 public class User implements Serializable {
 
-	private String username = "";
-	private String password = "";
-	private String confirmPassword = "";
-	private String email = "";
+	private String username;
+	private String password;
+	private String confirmPassword;
+	private String email;
 	private Boolean enabled = true;
 	private Set<Role> roles = new HashSet<>();
 
@@ -75,7 +75,7 @@ public class User implements Serializable {
 	}
 
 	@Column(name = "ENABLED")
-	public Boolean isEnabled() {
+	public Boolean getEnabled() {
 		return enabled;
 	}
 
@@ -99,7 +99,6 @@ public class User implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((roles == null) ? 0 : roles.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
@@ -113,11 +112,6 @@ public class User implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		if (roles == null) {
-			if (other.roles != null)
-				return false;
-		} else if (!roles.equals(other.roles))
-			return false;
 		if (username == null) {
 			if (other.username != null)
 				return false;
