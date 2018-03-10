@@ -5,7 +5,7 @@
 <br>
 
 <sf:form
-	action="${pageContext.request.contextPath}/exams/save?studyProgramId=${studyProgram.id}"
+	action="${pageContext.request.contextPath}/exams/save?studyProgram=${studyProgram.id}"
 	method="post" modelAttribute="exam" class="form-horizontal">
 	<tag:input_text_group name="id" title="ID"></tag:input_text_group>
 	<tag:input_date_group name="date" title="DATE"></tag:input_date_group>
@@ -18,4 +18,6 @@
 	<tag:input_text_group name="score" title="SCORE"></tag:input_text_group>
 	<tag:button_group></tag:button_group>
 </sf:form>
+
+
 
