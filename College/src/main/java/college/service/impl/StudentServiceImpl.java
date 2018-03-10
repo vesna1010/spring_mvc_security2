@@ -20,12 +20,12 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public Student findStudentById(String id) {
-		return studentDao.findOneById(id);
+		return studentDao.findById(id);
 	}
 
 	@Override
-	public void deleteStudentById(String id) {
-		studentDao.deleteById(id);
+	public void deleteStudent(Student student) {
+		studentDao.delete(student);
 	}
 
 	@Override
