@@ -9,7 +9,7 @@ public interface StudentService {
 	
 	Student findStudentById(String id);
 	
-	void deleteStudentById(String id);
+	void deleteStudent(Student student);
 	
 	void saveOrUpdateStudent(Student student);
 	
