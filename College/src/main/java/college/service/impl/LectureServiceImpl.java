@@ -13,8 +13,8 @@ public class LectureServiceImpl implements LectureService {
 	private LectureDao lectureDao;
 
 	@Override
-	public Lecture findLectureById(String id) {
-		return lectureDao.findOneById(id);
+	public Lecture findLectureById(Long id) {
+		return lectureDao.findById(id);
 	}
 
 	@Override
@@ -23,8 +23,8 @@ public class LectureServiceImpl implements LectureService {
 	}
 
 	@Override
-	public void deleteLectureById(String id) {
-		lectureDao.deleteById(id);
+	public void deleteLecture(Lecture lecture) {
+		lectureDao.delete(lecture);
 	}
 
 }
