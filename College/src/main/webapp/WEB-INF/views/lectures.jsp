@@ -4,7 +4,7 @@
 
 <div class="text-right">
 	<a class="btn btn-default"
-		href="<c:url value='/lectures/lectureForm?studyProgramId=${studyProgram.id}'/>">&nbsp;Add
+		href="<c:url value='/lectures/lectureForm?studyProgram=${studyProgram.id}'/>">&nbsp;Add
 		New Lecture&nbsp;&nbsp;</a>
 </div>
 
