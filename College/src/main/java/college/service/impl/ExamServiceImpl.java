@@ -23,12 +23,12 @@ public class ExamServiceImpl implements ExamService {
 
 	@Override
 	public Exam findExamById(String id) {
-		return examDao.findOneById(id);
+		return examDao.findById(id);
 	}
 
 	@Override
-	public void deleteExamById(String id) {
-		examDao.deleteById(id);
+	public void deleteExam(Exam exam) {
+		examDao.delete(exam);
 	}
 
 	@Override
