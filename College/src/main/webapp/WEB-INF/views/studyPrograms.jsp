@@ -38,16 +38,16 @@
 								href="<c:url value='/studyPrograms/delete/${studyProgram.id}' />"><span
 								class="glyphicon glyphicon-remove"></span>&nbsp;Delete</a>
 							<a class="btn btn-default"
-								href="<c:url value='/exams/examForm?studyProgramId=${studyProgram.id}' />">&nbsp;Add
+								href="<c:url value='/exams/examForm?studyProgram=${studyProgram.id}' />">&nbsp;Add
 								Exam</a>
 						</sec:authorize><a class="btn btn-default"
-						href="<c:url value='/students?studyProgramId=${studyProgram.id}'/>">&nbsp;Students</a>
+						href="<c:url value='/students?studyProgram=${studyProgram.id}'/>">&nbsp;Students</a>
 						<a class="btn btn-default"
-						href="<c:url value='/subjects?studyProgramId=${studyProgram.id}'/>">&nbsp;Subjects</a>
+						href="<c:url value='/subjects?studyProgram=${studyProgram.id}'/>">&nbsp;Subjects</a>
 						<a class="btn btn-default"
-						href="<c:url value='/professors?studyProgramId=${studyProgram.id}'/>">&nbsp;Professors</a>
+						href="<c:url value='/professors?studyProgram=${studyProgram.id}'/>">&nbsp;Professors</a>
 						<a class="btn btn-default"
-						href="<c:url value='/lectures?studyProgramId=${studyProgram.id}'/>">&nbsp;Lectures</a>
+						href="<c:url value='/lectures?studyProgram=${studyProgram.id}'/>">&nbsp;Lectures</a>
 					</td>
 				</tr>
 			</c:forEach>
