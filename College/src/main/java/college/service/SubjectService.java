@@ -9,9 +9,11 @@ public interface SubjectService {
 	
 	Subject findSubjectById(String id);
 	
-	void deleteSubjectById(String id);
+	void deleteSubject(Subject subject);
 	
 	void saveOrUpdateSubject(Subject subject);
 	
 }
+
+
 
