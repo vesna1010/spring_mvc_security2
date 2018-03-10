@@ -1,6 +1,5 @@
 package college.controllers;
 
-import java.util.Arrays;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,11 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import college.enums.Gender;
 import college.model.Professor;
 import college.model.StudyProgram;
 import college.service.ProfessorService;
-import college.service.StudyProgramService;
 
 @Controller
 @RequestMapping("/professors")
@@ -23,24 +20,18 @@ public class ProfessorController {
 
 	@Autowired
 	private ProfessorService professorService;
-	@Autowired
-	private StudyProgramService studyProgramService;
 
-	@RequestMapping(method = RequestMethod.GET, params = "!studyProgramId")
+	@RequestMapping(method = RequestMethod.GET, params = "!studyProgram")
 	private ModelAndView renderProfessorsPageWithAllProfessors(ModelAndView model) {
 		model.setViewName("professorsPage");
 		model.addObject("title", "All Professors");
 		model.addObject("professors", professorService.findAllProfessors());
-		
+
 		return model;
 	}
 
-	@RequestMapping(method = RequestMethod.GET, params = "studyProgramId")
-	public ModelAndView renderProfessorsPageWithProfessorsByStudyProgram(@RequestParam String studyProgramId) {
-		return setModelAndViewByStudyProgram(studyProgramService.findStudyProgramById(studyProgramId));
-	}
-	
-	private ModelAndView setModelAndViewByStudyProgram(StudyProgram studyProgram) {
+	@RequestMapping(method = RequestMethod.GET, params = "studyProgram")
+	public ModelAndView renderProfessorsPageWithProfessorsByStudyProgram(@RequestParam StudyProgram studyProgram) {
 		ModelAndView model = new ModelAndView("professorsPage");
 
 		model.addObject("title", "Professors at " + studyProgram.getTitle());
@@ -50,46 +41,38 @@ public class ProfessorController {
 	}
 
 	@RequestMapping(value = "/professorForm", method = RequestMethod.GET)
-	public ModelAndView renderEmptyProfessorForm(ModelAndView model) {
-		model.setViewName("professorForm");
-		model.addObject("professor", new Professor());
-		model.addObject("genders", Arrays.asList(Gender.values()));
-		
-		return model;
+	public ModelAndView renderEmptyProfessorForm() {
+		return new ModelAndView("professorForm", "professor", new Professor());
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "multipart/form-data")
-	public ModelAndView saveProfessorAndRenderProfessorForm(@Valid @ModelAttribute Professor professor, 
-		BindingResult result) {
-	
-		if(!result.hasErrors()) {
+	public ModelAndView saveProfessorAndRenderProfessorForm(@Valid @ModelAttribute Professor professor,
+			BindingResult result) {
+
+		if (!result.hasErrors()) {
 			return saveProfessorAndGetModelAndView(professor);
 		}
-			
-		return new ModelAndView("professorForm", "genders", Arrays.asList(Gender.values()));
+
+		return new ModelAndView("professorForm");
 	}
-	
+
 	private ModelAndView saveProfessorAndGetModelAndView(Professor professor) {
 		professorService.saveOrUpdateProfessor(professor);
 
 		return new ModelAndView("redirect:/professors/professorForm");
 	}
 
-	@RequestMapping("/edit/{professorId}")
-	public ModelAndView renderFormWithProfessor(@PathVariable String professorId) {
-		ModelAndView model = new ModelAndView("professorForm");
-		
-		model.addObject("professor", professorService.findProfessorById(professorId));
-		model.addObject("genders", Arrays.asList(Gender.values()));
-		
-		return model;
+	@RequestMapping("/edit/{professor}")
+	public ModelAndView renderFormWithProfessor(@PathVariable Professor professor) {
+		return new ModelAndView("professorForm", "professor", professor);
 	}
 
-	@RequestMapping("/delete/{professorId}")
-	public ModelAndView deleteProfessorAndRenderProfessorsPage(@PathVariable String professorId) {
-		professorService.deleteProfessorById(professorId);
+	@RequestMapping("/delete/{professor}")
+	public ModelAndView deleteProfessorAndRenderProfessorsPage(@PathVariable Professor professor) {
+		professorService.deleteProfessor(professor);
 
 		return new ModelAndView("redirect:/professors");
 	}
 
 }
+
