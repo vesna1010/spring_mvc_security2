@@ -3,11 +3,12 @@ package college.service;
 import college.model.Lecture;
 
 public interface LectureService {
-		
-	Lecture findLectureById(String id);
-	
+
+	Lecture findLectureById(Long id);
+
 	void saveOrUpdateLecture(Lecture lecture);
+
+	void deleteLecture(Lecture lecture);
 	
-	void deleteLectureById(String id);
 }
 
