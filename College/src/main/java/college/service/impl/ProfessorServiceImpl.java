@@ -20,12 +20,12 @@ public class ProfessorServiceImpl implements ProfessorService {
 
 	@Override
 	public Professor findProfessorById(String id) {
-		return professorDao.findOneById(id);
+		return professorDao.findById(id);
 	}
 
 	@Override
-	public void deleteProfessorById(String id) {
-		professorDao.deleteById(id);
+	public void deleteProfessor(Professor professor) {
+		professorDao.delete(professor);
 	}
 
 	@Override
