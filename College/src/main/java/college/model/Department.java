@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,10 +24,11 @@ import college.validation.Title;
 @Table(name = "DEPARTMENTS")
 public class Department implements Serializable {
 
-	private String id = "";
-	private String title = "";
-	private Date dateOfCreation = new Date();
-	private Set<StudyProgram> studyPrograms = new HashSet<>();
+	
+	private String id;
+	private String title;
+	private Date dateOfCreation;
+	private Set<StudyProgram> studyPrograms = new HashSet<>();;
 
 	public Department() {
 	}
@@ -36,7 +38,7 @@ public class Department implements Serializable {
 		this.title = title;
 		this.dateOfCreation = dateOfCreation;
 	}
-	
+
 	@Id
 	@MyId
 	@Column(name = "ID")
@@ -58,6 +60,7 @@ public class Department implements Serializable {
 		this.title = title;
 	}
 
+	@NotNull
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	@Temporal(TemporalType.DATE)
 	@Column(name = "DATE_OF_CREATION")
@@ -70,12 +73,12 @@ public class Department implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
-	@Cascade(CascadeType.ALL)
+	@Cascade(value = CascadeType.ALL)
 	public Set<StudyProgram> getStudyPrograms() {
 		return studyPrograms;
 	}
 
-	void setStudyPrograms(Set<StudyProgram> studyPrograms) {
+	public void setStudyPrograms(Set<StudyProgram> studyPrograms) {
 		this.studyPrograms = studyPrograms;
 	}
 
@@ -89,7 +92,6 @@ public class Department implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
 
@@ -106,11 +108,6 @@ public class Department implements Serializable {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
-			return false;
-		if (title == null) {
-			if (other.title != null)
-				return false;
-		} else if (!title.equals(other.title))
 			return false;
 		return true;
 	}
