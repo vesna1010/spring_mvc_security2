@@ -9,6 +9,8 @@ public interface UserService {
 	
 	User findUserByUsername(String username);
 	
+	User findUserByUsernameWithoutPassword(String username);
+	
 	void saveOrUpdateUser(User user);
 	
 	void deleteUserByUsername(String username);
