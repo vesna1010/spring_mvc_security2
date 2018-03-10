@@ -9,9 +9,10 @@ public interface ProfessorService {
 		
 	Professor findProfessorById(String id);
 	
-	void deleteProfessorById(String id);
+	void deleteProfessor(Professor professor);
 	
 	void saveOrUpdateProfessor(Professor professor);
 	
 }
+
 
