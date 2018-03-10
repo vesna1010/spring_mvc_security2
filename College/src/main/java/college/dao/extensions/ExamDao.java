@@ -7,7 +7,8 @@ import college.model.Exam;
 import college.model.Professor;
 import college.model.Subject;
 
-public interface ExamDao extends HibernateDao<Exam> {
+public interface ExamDao extends HibernateDao<String, Exam> {
 
 	Set<Exam> findExamsByObjects(Professor professor, Subject subject, Date date);
 }
+
