@@ -6,10 +6,11 @@ import college.dao.impl.HibernateDaoImpl;
 import college.model.Lecture;
 
 @Component("lectureDao")
-public class LectureDaoImpl extends HibernateDaoImpl<Lecture> implements LectureDao {
+public class LectureDaoImpl extends HibernateDaoImpl<Long, Lecture> implements LectureDao {
 
 	public LectureDaoImpl() {
 		setEntityClass(Lecture.class);
 	}
-
+	
 }
+
