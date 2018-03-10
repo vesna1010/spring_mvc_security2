@@ -46,14 +46,14 @@ public class DepartmentController {
 		return new ModelAndView("redirect:/departments/departmentForm");
 	}
 
-	@RequestMapping("/edit/{departmentId}")
-	public ModelAndView renderDepartmentFormWithDepartment(@PathVariable String departmentId) {
-		return new ModelAndView("departmentForm", "department", departmentService.findDepartmentById(departmentId));
+	@RequestMapping("/edit/{department}")
+	public ModelAndView renderDepartmentFormWithDepartment(@PathVariable Department department) {
+		return new ModelAndView("departmentForm", "department", department);
 	}
 
-	@RequestMapping("/delete/{departmentId}")
-	public ModelAndView deleteDepartmentAndRenderDepartmentsPage(@PathVariable String departmentId) {
-		departmentService.deleteDepartmentById(departmentId);
+	@RequestMapping("/delete/{department}")
+	public ModelAndView deleteDepartmentAndRenderDepartmentsPage(@PathVariable Department department) {
+		departmentService.deleteDepartment(department);
 
 		return new ModelAndView("redirect:/departments");
 	}
