@@ -29,13 +29,12 @@ import college.validation.PersonName;
 @MappedSuperclass
 public abstract class Person implements Serializable {
 
-	
-	private String id = "";
-	private String fullName = "";
-	private String fatherName = "";
+	private String id;
+	private String fullName;
+	private String fatherName;
 	private Date dateOfBirth;
-	private String email = "";
-	private String telephone = "";
+	private String email;
+	private String telephone;
 	private Gender gender;
 	private Address address;
 	private byte[] image;
@@ -43,8 +42,8 @@ public abstract class Person implements Serializable {
 	protected Person() {
 	}
 
-	protected Person(String id, String fullName, String fatherName, Date dateOfBirth, 
-			String email, String telephone, Gender gender, Address address) {
+	protected Person(String id, String fullName, String fatherName, Date dateOfBirth, String email, String telephone,
+			Gender gender, Address address) {
 		this.id = id;
 		this.fullName = fullName;
 		this.fatherName = fatherName;
@@ -147,40 +146,35 @@ public abstract class Person implements Serializable {
 	public byte[] getImage() {
 		return image;
 	}
-	
+
 	public void setImage(byte[] image) {
 		this.image = image;
 	}
-	
+
 	@Transient
-	public CommonsMultipartFile getFile(){
+	public CommonsMultipartFile getFile() {
 		return null;
 	}
 
-	public void setFile(CommonsMultipartFile file){
+	public void setFile(CommonsMultipartFile file) {
 		if (!file.isEmpty()) {
 			this.setImage(file.getBytes());
 		}
 	}
-	
+
 	public String showImage() {
-		byte[] encodeBase64 = Base64.encode(this.image);
 		String base64Encoded = "";
 		try {
-			base64Encoded = new String(encodeBase64, "UTF-8");
+			base64Encoded = new String(Base64.encode(this.image), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 		}
 		return base64Encoded;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
-		result = prime * result + ((fatherName == null) ? 0 : fatherName.hashCode());
-		result = prime * result + ((fullName == null) ? 0 : fullName.hashCode());
-		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
@@ -194,26 +188,6 @@ public abstract class Person implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Person other = (Person) obj;
-		if (dateOfBirth == null) {
-			if (other.dateOfBirth != null)
-				return false;
-		} else if (!dateOfBirth.equals(other.dateOfBirth))
-			return false;
-		if (fatherName == null) {
-			if (other.fatherName != null)
-				return false;
-		} else if (!fatherName.equals(other.fatherName))
-			return false;
-		if (fullName == null) {
-			if (other.fullName != null)
-				return false;
-		} else if (!fullName.equals(other.fullName))
-			return false;
-		if (gender == null) {
-			if (other.gender != null)
-				return false;
-		} else if (!gender.equals(other.gender))
-			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
