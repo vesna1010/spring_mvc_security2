@@ -5,9 +5,9 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
-	
+
 	<context:component-scan
-		base-package="college.controllers, college.formatters, college.validation"></context:component-scan>
+		base-package="college.controllers, college.converters, college.validation"></context:component-scan>
 
 	<bean class="org.springframework.web.servlet.view.tiles3.TilesViewResolver"></bean>
 	<bean class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
@@ -33,16 +33,19 @@
 	<mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven>
 	<bean id="conversionService"
 		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
-		<property name="formatters">
+		<property name="converters">
 			<set>
-				<ref bean="addressFormatter" />
-				<ref bean="departmentFormatter" />
-				<ref bean="studyProgramFormatter" />
-				<ref bean="subjectFormatter" />
-				<ref bean="professorFormatter" />
-				<ref bean="studentFormatter" />
+				<ref bean="addressConverter" />
+				<ref bean="departmentConverter" />
+				<ref bean="studyProgramConverter" />
+				<ref bean="subjectConverter" />
+				<ref bean="professorConverter" />
+				<ref bean="studentConverter" />
+				<ref bean="examConverter" />
+				<ref bean="lectureConverter" />
 			</set>
 		</property>
 	</bean>
 
 </beans>
+
