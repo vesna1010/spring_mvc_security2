@@ -24,7 +24,7 @@ public class StudyProgramController {
 	@Autowired
 	private DepartmentService departmentService;
 
-	@RequestMapping(method = RequestMethod.GET, params = "!departmentId")
+	@RequestMapping(method = RequestMethod.GET, params = "!department")
 	public ModelAndView renderStudyProgramsPageWithAllStudyPrograms(ModelAndView model) {
 		model.setViewName("studyProgramsPage");
 		model.addObject("title", "All Study Programs");
@@ -33,12 +33,8 @@ public class StudyProgramController {
 		return model;
 	}
 
-	@RequestMapping(method = RequestMethod.GET, params = "departmentId")
-	public ModelAndView renderStudyProgramsPageWithStudyProgramsByDepartment(@RequestParam String departmentId) {	
-		return getModelAndViewByDepartment(departmentService.findDepartmentById(departmentId));
-	}
-	
-	private ModelAndView getModelAndViewByDepartment(Department department) {
+	@RequestMapping(method = RequestMethod.GET, params = "department")
+	public ModelAndView renderStudyProgramsPageWithStudyProgramsByDepartment(@RequestParam Department department) {
 		ModelAndView model = new ModelAndView("studyProgramsPage");
 
 		model.addObject("title", "Study Programs at " + department.getTitle());
@@ -57,8 +53,8 @@ public class StudyProgramController {
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public ModelAndView saveStudyProgramAndRenderStudyProgramForm(@Valid @ModelAttribute StudyProgram studyProgram, 
-		BindingResult result) {
+	public ModelAndView saveStudyProgramAndRenderStudyProgramForm(@Valid @ModelAttribute StudyProgram studyProgram,
+			BindingResult result) {
 
 		if (!result.hasErrors()) {
 			return saveStudyProgramAndGetModelAndView(studyProgram);
@@ -73,21 +69,22 @@ public class StudyProgramController {
 		return new ModelAndView("redirect:/studyPrograms/studyProgramForm");
 	}
 
-	@RequestMapping("/edit/{studyProgramId}")
-	public ModelAndView renderFormWithStudyProgram(@PathVariable String studyProgramId) {
+	@RequestMapping("/edit/{studyProgram}")
+	public ModelAndView renderFormWithStudyProgram(@PathVariable StudyProgram studyProgram) {
 		ModelAndView model = new ModelAndView("studyProgramForm");
 
-		model.addObject("studyProgram", studyProgramService.findStudyProgramById(studyProgramId));
+		model.addObject("studyProgram", studyProgram);
 		model.addObject("departments", departmentService.findAllDepartments());
 
 		return model;
 	}
 
-	@RequestMapping("/delete/{studyProgramId}")
-	public ModelAndView deleteStudyProgramAndRenderStudyProgramsPage(@PathVariable String studyProgramId) {
-		studyProgramService.deleteStudyProgramById(studyProgramId);
+	@RequestMapping("/delete/{studyProgram}")
+	public ModelAndView deleteStudyProgramAndRenderStudyProgramsPage(@PathVariable StudyProgram studyProgram) {
+		studyProgramService.deleteStudyProgram(studyProgram);
 
 		return new ModelAndView("redirect:/studyPrograms");
 	}
 
 }
+
