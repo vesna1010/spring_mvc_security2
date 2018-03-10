@@ -19,27 +19,22 @@ import college.service.SubjectService;
 @RequestMapping("/subjects")
 public class SubjectsController {
 
-	
 	@Autowired
 	private SubjectService subjectService;
 	@Autowired
 	private StudyProgramService studyProgramService;
 
-	@RequestMapping(method = RequestMethod.GET, params = "!studyProgramId")
+	@RequestMapping(method = RequestMethod.GET, params = "!studyProgram")
 	public ModelAndView renderSubjectsPageWithAllSubjects(ModelAndView model) {
 		model.setViewName("subjectsPage");
 		model.addObject("title", "All Subjects");
 		model.addObject("subjects", subjectService.findAllSubjects());
-		
+
 		return model;
 	}
 
-	@RequestMapping(method = RequestMethod.GET, params = "studyProgramId")
-	public ModelAndView renderSubjectsPageWithSubjectsByStudyProgram(@RequestParam String studyProgramId) {
-		return getModelAndViewByStudyProgram(studyProgramService.findStudyProgramById(studyProgramId));
-	}
-
-	private ModelAndView getModelAndViewByStudyProgram(StudyProgram studyProgram) {
+	@RequestMapping(method = RequestMethod.GET, params = "studyProgram")
+	public ModelAndView renderSubjectsPageWithSubjectsByStudyProgram(@RequestParam StudyProgram studyProgram) {
 		ModelAndView model = new ModelAndView("subjectsPage");
 
 		model.addObject("title", "Subjects at " + studyProgram.getTitle());
@@ -47,48 +42,48 @@ public class SubjectsController {
 
 		return model;
 	}
-	
+
 	@RequestMapping(value = "/subjectForm", method = RequestMethod.GET)
 	public ModelAndView renderEmptySubjectForm(ModelAndView model) {
 		model.setViewName("subjectForm");
 		model.addObject("subject", new Subject());
 		model.addObject("studyPrograms", studyProgramService.findAllStudyPrograms());
-		
+
 		return model;
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public ModelAndView saveSubjectAndRenderSubjectForm(@Valid @ModelAttribute Subject subject, 
-		BindingResult result) {
-		
+	public ModelAndView saveSubjectAndRenderSubjectForm(@Valid @ModelAttribute Subject subject, BindingResult result) {
+
 		if (!result.hasErrors()) {
 			return saveSubjectAndGetModelAndView(subject);
 		}
-		
+
 		return new ModelAndView("subjectForm", "studyPrograms", studyProgramService.findAllStudyPrograms());
 	}
-	
+
 	private ModelAndView saveSubjectAndGetModelAndView(Subject subject) {
 		subjectService.saveOrUpdateSubject(subject);
-		
+
 		return new ModelAndView("redirect:/subjects/subjectForm");
 	}
 
-	@RequestMapping("/edit/{subjectId}")
-	public ModelAndView renderSubjectFormWithSubject(@PathVariable String subjectId) {
+	@RequestMapping("/edit/{subject}")
+	public ModelAndView renderSubjectFormWithSubject(@PathVariable Subject subject) {
 		ModelAndView model = new ModelAndView("subjectForm");
-		
-		model.addObject("subject", subjectService.findSubjectById(subjectId));
+
+		model.addObject("subject", subject);
 		model.addObject("studyPrograms", studyProgramService.findAllStudyPrograms());
-		
+
 		return model;
 	}
 
-	@RequestMapping("/delete/{subjectId}")
-	public ModelAndView deleteSubjectAndRenderSubjectsPage(@PathVariable String subjectId) {
-		subjectService.deleteSubjectById(subjectId);
+	@RequestMapping("/delete/{subject}")
+	public ModelAndView deleteSubjectAndRenderSubjectsPage(@PathVariable Subject subject) {
+		subjectService.deleteSubject(subject);
 
 		return new ModelAndView("redirect:/subjects");
 	}
 
 }
+
