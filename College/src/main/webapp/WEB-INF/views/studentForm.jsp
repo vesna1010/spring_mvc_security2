@@ -1,3 +1,4 @@
+<%@ page import="college.enums.Gender" %>
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="tag" tagdir="/WEB-INF/tags/"%>
 
@@ -16,7 +17,7 @@
 	<tag:input_select_group_set items="${studyPrograms}"
 		name="studyProgram" title="STUDY PROGRAM" itemLabel="title"
 		itemValue="id"></tag:input_select_group_set>
-	<tag:input_select_group_list items="${genders}" name="gender"
+	<tag:input_select_group_list items="${Gender.values()}" name="gender"
 		title="GENDER"></tag:input_select_group_list>
 	<tag:input_date_group name="dateOfBirth" title="DATE OF BIRTH"></tag:input_date_group>
 	<tag:input_text_group name="email" title="EMAIL"></tag:input_text_group>
