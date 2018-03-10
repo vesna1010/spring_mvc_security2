@@ -11,6 +11,8 @@ public interface DepartmentService {
 	
 	void saveOrUpdateDepartment(Department department);
 
-	void deleteDepartmentById(String id);
+	void deleteDepartment(Department department);
 
 }
+
+
