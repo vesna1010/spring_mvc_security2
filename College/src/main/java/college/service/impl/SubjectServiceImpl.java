@@ -20,12 +20,12 @@ public class SubjectServiceImpl implements SubjectService {
 
 	@Override
 	public Subject findSubjectById(String id) {
-		return subjectDao.findOneById(id);
+		return subjectDao.findById(id);
 	}
 
 	@Override
-	public void deleteSubjectById(String id) {
-		subjectDao.deleteById(id);
+	public void deleteSubject(Subject subject) {
+		subjectDao.delete(subject);
 	}
 
 	@Override
