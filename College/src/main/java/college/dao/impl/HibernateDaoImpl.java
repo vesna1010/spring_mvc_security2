@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import college.dao.HibernateDao;
 
 @Transactional
-public abstract class HibernateDaoImpl<E extends Serializable> implements HibernateDao<E> {
+public abstract class HibernateDaoImpl<ID extends Serializable, E extends Serializable> implements HibernateDao<ID, E> {
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -26,27 +26,43 @@ public abstract class HibernateDaoImpl<E extends Serializable> implements Hibern
 	}
 
 	@Override
-	public E findOneById(final String id) {
-		return (E) getSession().get(entityClass, id);
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
 	public Set<E> findAll() {
-		Criteria criteria = getSession().createCriteria(entityClass);
+		Criteria criteria = this.getSession().createCriteria(entityClass);
 
 		return new HashSet<E>(criteria.list());
 	}
 
 	@Override
-	public void saveOrUpdate(E e) {
-		getSession().merge(e);
+	public void saveOrUpdate(E entity) {
+		this.getSession().saveOrUpdate(entity);
 	}
 
 	@Override
-	public void deleteById(final String id) {
-		E e = findOneById(id);
-		getSession().delete(e);
+	public void deleteAll() {
+		for (E entity : this.findAll()) {
+			this.delete(entity);
+		}
+	}
+
+	@Override
+	public void deleteById(ID id) {
+		E entity = this.findById(id);
+
+		this.delete(entity);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public E findById(ID id) {
+		return (E) this.getSession().get(entityClass, id);
+	}
+
+	@Override
+	public void delete(E entity) {
+		this.getSession().delete(entity);
 	}
 
 }
+
