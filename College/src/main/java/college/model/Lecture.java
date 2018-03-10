@@ -3,23 +3,24 @@ package college.model;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import college.validation.MyId;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "SUBJECTS_PROFESSORS")
+@Table(name = "LECTURES")
 public class Lecture implements Serializable {
 
-	private String id;
+	private Long id;
 	private Professor professor;
 	private Subject subject;
 	private Integer hours;
@@ -27,28 +28,27 @@ public class Lecture implements Serializable {
 	public Lecture(){
 	}
 
-	public Lecture(String id, Professor professor, Subject subject, Integer hours) {
-		this.id = id;
+	public Lecture(Professor professor, Subject subject, Integer hours) {
 		this.professor = professor;
 		this.subject = subject;
 		this.hours = hours;
 	}
 
 	@Id
-	@MyId
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@NotNull
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PROFESSOR_ID")
-	@Cascade(CascadeType.MERGE)
+	@Cascade(value = CascadeType.SAVE_UPDATE)
 	public Professor getProfessor() {
 		return professor;
 	}
@@ -58,9 +58,9 @@ public class Lecture implements Serializable {
 	}
 
 	@NotNull
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SUBJECT_ID")
-	@Cascade(CascadeType.MERGE)
+	@Cascade(value = CascadeType.SAVE_UPDATE)
 	public Subject getSubject() {
 		return subject;
 	}
@@ -71,7 +71,6 @@ public class Lecture implements Serializable {
 
 	@NotNull
 	@Min(value = 1)
-	@Max(value = 5)
 	@Column(name = "HOURS")
 	public Integer getHours() {
 		return hours;
