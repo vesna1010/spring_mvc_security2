@@ -120,5 +120,17 @@
 		<put-attribute name="body" value="/WEB-INF/views/denied.jsp"></put-attribute>
 		<put-attribute name="active" value="home"></put-attribute>
 	</definition>
+	
+	<definition name="lecturesPage" extends="home">
+		<put-attribute name="title" value="Lectures"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/lectures.jsp"></put-attribute>
+		<put-attribute name="active" value="studyPrograms"></put-attribute>
+	</definition>
+	
+	<definition name="lectureForm" extends="home">
+		<put-attribute name="title" value="Lectures"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/views/lectureForm.jsp"></put-attribute>
+		<put-attribute name="active" value="studyPrograms"></put-attribute>
+	</definition>
 
 </tiles-definitions> 
