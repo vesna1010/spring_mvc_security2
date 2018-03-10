@@ -1,3 +1,4 @@
+<%@ page import="college.enums.Role" %>
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="tag" tagdir="/WEB-INF/tags/"%>
 <%@ taglib prefix="sec"
@@ -18,8 +19,9 @@
 	<tag:input_password_group name="confirmPassword"
 		title="CONFIRM PASSWORD"></tag:input_password_group>
 	<sec:authorize access="hasRole('ADMIN')">
-		<tag:input_select_group_list items="${roles}" name="roles"
+		<tag:input_select_group_list items="${Role.values()}" name="roles"
 			title="ROLES"></tag:input_select_group_list>
 	</sec:authorize>
 	<tag:button_group></tag:button_group>
 </sf:form>
+
