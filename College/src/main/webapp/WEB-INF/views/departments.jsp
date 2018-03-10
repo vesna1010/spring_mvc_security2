@@ -17,9 +17,7 @@
 				<th>ID</th>
 				<th>TITLE</th>
 				<th>DATE OF CREATION</th>
-				<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
-					<th>MANAGE</th>
-				</sec:authorize>
+				<th>MANAGE</th>
 			</tr>
 			<c:forEach items="${departments}" var="department">
 				<tr>
@@ -36,10 +34,11 @@
 								<span class="glyphicon glyphicon-remove"></span>&nbsp;Delete
 							</a>
 						</sec:authorize> <a class="btn btn-default"
-						href="<c:url value='/studyPrograms?departmentId=${department.id}'/>">&nbsp;Study
+						href="<c:url value='/studyPrograms?department=${department.id}'/>">&nbsp;Study
 							Programs</a></td>
 				</tr>
 			</c:forEach>
 		</table>
 	</div>
 </c:if>
+
