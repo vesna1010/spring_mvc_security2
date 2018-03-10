@@ -9,9 +9,10 @@ public interface StudyProgramService {
 	
 	StudyProgram findStudyProgramById(String id);
 	
-	void deleteStudyProgramById(String id);
+	void deleteStudyProgram(StudyProgram studyProgram);
 	
 	void saveOrUpdateStudyProgram(StudyProgram studyProgram);
 	
 }
+
 
