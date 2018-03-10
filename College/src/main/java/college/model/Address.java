@@ -7,9 +7,9 @@ import javax.validation.constraints.Pattern;
 @Embeddable
 public class Address {
 
-	private String city = "";
-	private String street = "";
-	private String state = "";
+	private String city;
+	private String street;
+	private String state;
 
 	public Address() {
 	}
@@ -56,3 +56,4 @@ public class Address {
 	}
 
 }
+
