@@ -1,4 +1,4 @@
-package college.controllers;
+ackage college.controllers;
 
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +51,9 @@ public class UserController {
 		return new ModelAndView("redirect:/users/userForm");
 	}
 
-	@RequestMapping("/delete/{user}")
-	public ModelAndView deleteUserAndRenderUsersPage(@PathVariable User user) {
-		userService.deleteUser(user);
+	@RequestMapping("/delete/{username}")
+	public ModelAndView deleteUserAndRenderUsersPage(@PathVariable String username) {
+		userService.deleteUserByUsername(username);
 
 		return new ModelAndView("redirect:/users");
 	}
