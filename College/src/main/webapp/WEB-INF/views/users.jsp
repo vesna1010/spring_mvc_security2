@@ -9,12 +9,14 @@
 			<th>USERNAME</th>
 			<th>EMAIL</th>
 			<th>ROLES</th>
+			<th>ENABLED</th>
 			<th>MANAGE</th>
 		</tr>
 		<c:forEach items="${users}" var="user">
 			<tr>
 				<td>${user.username}</td>
 				<td>${user.email}</td>
+				<td>${user.enabled}</td>
 				<td><c:forEach items="${user.roles}" var="role">${role}<br>
 					</c:forEach></td>
 				<td><a class="btn btn-danger"
@@ -27,3 +29,4 @@
 		</c:forEach>
 	</table>
 </div>
+
