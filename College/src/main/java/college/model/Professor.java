@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -22,8 +23,8 @@ import college.enums.Gender;
 @Table(name = "PROFESSORS")
 public class Professor extends Person {
 
-	private String titleOfProfessor = "";
-	private Date dateOfEmployment = new Date();
+	private Date dateOfEmployment;
+	private String titleOfProfessor;
 	private Set<Lecture> lectures = new HashSet<>();
 	private Set<Exam> exams = new HashSet<>();
 
@@ -47,6 +48,7 @@ public class Professor extends Person {
 		this.titleOfProfessor = titleOfProfessor;
 	}
 
+	@NotNull
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	@Temporal(TemporalType.DATE)
 	@Column(name = "DATE_OF_EMPLOYMENT")
@@ -59,12 +61,12 @@ public class Professor extends Person {
 	}
 
 	@OneToMany(mappedBy = "professor", fetch = FetchType.LAZY)
-	@Cascade(CascadeType.ALL)
+	@Cascade(value = CascadeType.ALL)
 	public Set<Lecture> getLectures() {
 		return lectures;
 	}
 
-	void setLectures(Set<Lecture> lectures) {
+	public void setLectures(Set<Lecture> lectures) {
 		this.lectures = lectures;
 	}
 
@@ -74,12 +76,12 @@ public class Professor extends Person {
 	}
 
 	@OneToMany(mappedBy = "professor", fetch = FetchType.LAZY)
-	@Cascade(CascadeType.ALL)
+	@Cascade(value = CascadeType.ALL)
 	public Set<Exam> getExams() {
 		return exams;
 	}
 
-	void setExams(Set<Exam> exams) {
+	public void setExams(Set<Exam> exams) {
 		this.exams = exams;
 	}
 
