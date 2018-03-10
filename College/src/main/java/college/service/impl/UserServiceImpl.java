@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public User findUserByUsername(String username) {
-		return userDao.findOneById(username);
+		return userDao.findById(username);
 	}
 
 	@Override
@@ -48,15 +48,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userDao.findOneById(username);
+		User user = userDao.findById(username);
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
 		for (Role role : user.getRoles()) {
 			authorities.add(new SimpleGrantedAuthority("ROLE_" + role.toString()));
 		}
 
-		return new org.springframework.security.core.userdetails.User(
-				user.getUsername(), user.getPassword(), authorities);
+		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+				user.getEnabled(), true, true, true, authorities);
 	}
+
+	@Override
+	public User findUserByUsernameWithoutPassword(String username) {
+		User user = this.findUserByUsername(username);
+
+		user.setPassword(null);
+
+		return user;
+	}
+	
 }
 
