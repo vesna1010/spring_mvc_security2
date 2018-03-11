@@ -21,18 +21,10 @@ public class DepartmentDaoTest extends BaseDaoTest {
 
 	@Before
 	public void setUp() {
-		deleteAll();
+		departmentDao.deleteAll();
 		department1.addStudyProgram(studyProgram1);
 		department1.addStudyProgram(studyProgram2);
 		departmentDao.saveOrUpdate(department1);
-	}
-
-	private void deleteAll() {
-		Set<Department> departments = departmentDao.findAll();
-
-		for (Department department : departments) {
-			departmentDao.deleteById(department.getId());
-		}
 	}
 
 	@Test
@@ -46,7 +38,7 @@ public class DepartmentDaoTest extends BaseDaoTest {
 
 	@Test
 	public void findDepartmentByIdTest() {
-		Department department = departmentDao.findOneById("D1");
+		Department department = departmentDao.findById("D1");
 
 		assertThat(department.getTitle(), is("Department 1"));
 		assertThat(department.getStudyPrograms(), hasSize(2));
@@ -56,7 +48,7 @@ public class DepartmentDaoTest extends BaseDaoTest {
 	public void saveDepartmentTest() {
 		departmentDao.saveOrUpdate(department2);
 
-		assertNotNull(departmentDao.findOneById("D2"));
+		assertNotNull(departmentDao.findById("D2"));
 	}
 
 	@Test
@@ -65,7 +57,7 @@ public class DepartmentDaoTest extends BaseDaoTest {
 
 		departmentDao.saveOrUpdate(department1);
 
-		Department department = departmentDao.findOneById("D1");
+		Department department = departmentDao.findById("D1");
 
 		assertThat(department.getTitle(), is("Department"));
 		assertThat(department.getStudyPrograms(), hasSize(2));
@@ -75,8 +67,15 @@ public class DepartmentDaoTest extends BaseDaoTest {
 	public void deleteDepartmentByIdTest() {
 		departmentDao.deleteById("D1");
 
-		assertNull(departmentDao.findOneById("D1"));
+		assertNull(departmentDao.findById("D1"));
 	}
+	
+	@Test
+	public void deleteDepartmentTest() {
+		departmentDao.delete(department1);
+
+		assertNull(departmentDao.findById("D1"));
+	}
+	
 
 }
-
