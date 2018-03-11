@@ -1,4 +1,4 @@
-ackage college.controllers;
+package college.controllers;
 
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
