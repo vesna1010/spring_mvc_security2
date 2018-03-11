@@ -22,7 +22,7 @@ public class StudyProgramDaoTest extends BaseDaoTest{
 
 	@Before
 	public void setUp() {
-		deleteAll();
+		studyProgramDao.deleteAll();
 		subject1.addLecture(lecture1);
 		subject1.addLecture(lecture2);
 		studyProgram1.addStudent(student1);
@@ -30,14 +30,6 @@ public class StudyProgramDaoTest extends BaseDaoTest{
 		studyProgram1.addSubject(subject1);
 		studyProgram1.addSubject(subject2);
 		studyProgramDao.saveOrUpdate(studyProgram1);
-	}
-	
-	private void deleteAll() {
-		Set<StudyProgram> studyPrograms = studyProgramDao.findAll();
-		
-		for (StudyProgram studyProgram : studyPrograms) {
-			studyProgramDao.deleteById(studyProgram.getId());
-		}
 	}
 	
 	@Test
@@ -51,7 +43,7 @@ public class StudyProgramDaoTest extends BaseDaoTest{
 	
 	@Test
 	public void findStudyProgramByIdTest() {
-		StudyProgram studyProgram = studyProgramDao.findOneById("SP1");
+		StudyProgram studyProgram = studyProgramDao.findById("SP1");
 
 		assertThat(studyProgram.getTitle(), is("Study Program 1"));
 		assertThat(studyProgram.getDepartment(), equalTo(department1));
@@ -65,7 +57,7 @@ public class StudyProgramDaoTest extends BaseDaoTest{
 	public void saveStudyProgramTest() {
 		studyProgramDao.saveOrUpdate(studyProgram2);
 		
-		assertNotNull(studyProgramDao.findOneById("SP2"));
+		assertNotNull(studyProgramDao.findById("SP2"));
 	}
 	
 	@Test
@@ -74,7 +66,7 @@ public class StudyProgramDaoTest extends BaseDaoTest{
 		
 		studyProgramDao.saveOrUpdate(studyProgram1);
 		
-		StudyProgram studyProgram = studyProgramDao.findOneById("SP1");
+		StudyProgram studyProgram = studyProgramDao.findById("SP1");
 
 		assertThat(studyProgram.getTitle(), is("Study Program 1"));
 		assertThat(studyProgram.getDepartment(), equalTo(department2));
@@ -86,8 +78,14 @@ public class StudyProgramDaoTest extends BaseDaoTest{
 	public void deleteStudyProgramByIdTest() {
 		studyProgramDao.deleteById("SP1");
 		
-		assertNull(studyProgramDao.findOneById("SP1"));
+		assertNull(studyProgramDao.findById("SP1"));
 	}
 	
+	@Test
+	public void deleteStudyProgramTest() {
+		studyProgramDao.delete(studyProgram1);
+		
+		assertNull(studyProgramDao.findById("SP1"));
+	}
 }
 
