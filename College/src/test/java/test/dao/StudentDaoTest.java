@@ -21,18 +21,10 @@ public class StudentDaoTest extends BaseDaoTest {
 
 	@Before
 	public void setUp() {
-		deleteAll();
+		studentDao.deleteAll();
 		student1.addExam(exam1);
 		student1.addExam(exam2);
 		studentDao.saveOrUpdate(student1);
-	}
-	
-	private void deleteAll() {
-		Set<Student> students = studentDao.findAll();
-		
-		for(Student student : students) {
-			studentDao.deleteById(student.getId());
-		}
 	}
 
 	@Test
@@ -46,7 +38,7 @@ public class StudentDaoTest extends BaseDaoTest {
 	
 	@Test
 	public void findStudentByIdTest() {
-		Student student = studentDao.findOneById("S1");
+		Student student = studentDao.findById("S1");
 		
 		assertThat(student.getStudyProgram(), is(studyProgram1));
 		assertThat(student.getExams(), hasSize(2));
@@ -57,7 +49,7 @@ public class StudentDaoTest extends BaseDaoTest {
 	public void saveStudentTest() {
 		studentDao.saveOrUpdate(student2);
 		
-		assertNotNull(studentDao.findOneById("S2"));
+		assertNotNull(studentDao.findById("S2"));
 	}
 	
 	@Test
@@ -66,7 +58,7 @@ public class StudentDaoTest extends BaseDaoTest {
 
 		studentDao.saveOrUpdate(student1);
 
-		Student student = studentDao.findOneById("S1");
+		Student student = studentDao.findById("S1");
 
 		assertThat(student.getStudyProgram(), is(studyProgram2));
 		assertThat(student.getExams(), hasSize(2));
@@ -77,8 +69,14 @@ public class StudentDaoTest extends BaseDaoTest {
 	public void deleteStudentByIdTest() {
 		studentDao.deleteById("S1");
 		
-		assertNull(studentDao.findOneById("S1"));
+		assertNull(studentDao.findById("S1"));
 	}
 	
+	@Test
+	public void deleteStudentTest() {
+		studentDao.delete(student1);
+		
+		assertNull(studentDao.findById("S1"));
+	}
 }
 
