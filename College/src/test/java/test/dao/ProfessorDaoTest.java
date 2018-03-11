@@ -22,20 +22,12 @@ public class ProfessorDaoTest extends BaseDaoTest {
 
 	@Before
 	public void setUp() {
-		deleteAll();
+		professorDao.deleteAll();
 		professor1.addLecture(lecture1);
 		professor1.addLecture(lecture3);
 		professor1.addExam(exam1);
 		professor1.addExam(exam3);
 		professorDao.saveOrUpdate(professor1);
-	}
-
-	private void deleteAll() {
-		Set<Professor> professors = professorDao.findAll();
-
-		for (Professor professor : professors) {
-			professorDao.deleteById(professor.getId());
-		}
 	}
 
 	@Test
@@ -49,7 +41,7 @@ public class ProfessorDaoTest extends BaseDaoTest {
 
 	@Test
 	public void findProfessorById() {
-		Professor professor = professorDao.findOneById("P1");
+		Professor professor = professorDao.findById("P1");
 
 		assertThat(professor.getLectures(), hasSize(2));
 		assertThat(professor.getExams(), hasSize(2));
@@ -60,7 +52,7 @@ public class ProfessorDaoTest extends BaseDaoTest {
 	public void saveProfessorTest() {
 		professorDao.saveOrUpdate(professor2);
 
-		assertNotNull(professorDao.findOneById("P2"));
+		assertNotNull(professorDao.findById("P2"));
 	}
 
 	@Test
@@ -69,7 +61,7 @@ public class ProfessorDaoTest extends BaseDaoTest {
 
 		professorDao.saveOrUpdate(professor1);
 
-		Professor professor = professorDao.findOneById("P1");
+		Professor professor = professorDao.findById("P1");
 
 		assertThat(professor.getGender(), is(Gender.FEMALE));
 		assertThat(professor.getLectures(), hasSize(2));
@@ -81,7 +73,14 @@ public class ProfessorDaoTest extends BaseDaoTest {
 	public void deleteProfessorByIdTest() {
 		professorDao.deleteById("P1");
 
-		assertNull(professorDao.findOneById("P1"));
+		assertNull(professorDao.findById("P1"));
+	}
+	
+	@Test
+	public void deleteProfessorest() {
+		professorDao.delete(professor1);
+
+		assertNull(professorDao.findById("P1"));
 	}
 
 }
