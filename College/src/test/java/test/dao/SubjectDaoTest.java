@@ -22,19 +22,11 @@ public class SubjectDaoTest extends BaseDaoTest {
 
 	@Before
 	public void setUp() {
-		deleteAll();
+		subjectDao.deleteAll();
 		subject1.addLecture(lecture1);
 		subject1.addLecture(lecture2);
 		subject1.addExam(exam1);
 		subjectDao.saveOrUpdate(subject1);
-	}
-	
-	private void deleteAll() {
-		Set<Subject> subjects = subjectDao.findAll();
-		
-		for(Subject subject : subjects) {
-			subjectDao.deleteById(subject.getId());
-		}
 	}
 
 	@Test
@@ -48,7 +40,7 @@ public class SubjectDaoTest extends BaseDaoTest {
 
 	@Test
 	public void findOneSubjectTest() {
-		Subject subject = subjectDao.findOneById("SUB1");
+		Subject subject = subjectDao.findById("SUB1");
 
 		assertThat(subject.getTitle(), is("Subject 1"));
 		assertThat(subject.getStudyProgram(), equalTo(studyProgram1));
@@ -61,7 +53,7 @@ public class SubjectDaoTest extends BaseDaoTest {
 	public void saveSubjectTest() {	
 		subjectDao.saveOrUpdate(subject2);
 
-		assertNotNull(subjectDao.findOneById("SUB2"));
+		assertNotNull(subjectDao.findById("SUB2"));
 	}
 
 	@Test
@@ -70,7 +62,7 @@ public class SubjectDaoTest extends BaseDaoTest {
 
 		subjectDao.saveOrUpdate(subject1);
 
-		Subject subject = subjectDao.findOneById("SUB1");
+		Subject subject = subjectDao.findById("SUB1");
 
 		assertThat(subject.getTitle(), is("Subject 1"));
 		assertThat(subject.getStudyProgram(), equalTo(studyProgram2));
@@ -80,10 +72,17 @@ public class SubjectDaoTest extends BaseDaoTest {
 	}
 
 	@Test
-	public void deleteSubjectTest() {
+	public void deleteSubjectByIdTest() {
 		subjectDao.deleteById("SUB1");
 
-		assertNull(subjectDao.findOneById("SUB1"));
+		assertNull(subjectDao.findById("SUB1"));
+	}
+	
+	@Test
+	public void deleteSubjectest() {
+		subjectDao.delete(subject1);
+
+		assertNull(subjectDao.findById("SUB1"));
 	}
 
 }
