@@ -24,19 +24,11 @@ public class UserDaoTest extends BaseDaoTest {
 	
 	@Before
 	public void setUp() {
-		deleteAll();
+		userDao.deleteAll();
 		userDao.saveOrUpdate(user1);
 		userDao.saveOrUpdate(user2);
 	}
 	
-	private void deleteAll() {
-		Set<User> users = userDao.findAll();
-		
-		for(User user: users) {
-			userDao.deleteById(user.getUsername());
-		}
-	}
-
 	@Test
 	public void findAllUsersTest() {
 		Set<User> users = userDao.findAll();
@@ -49,18 +41,18 @@ public class UserDaoTest extends BaseDaoTest {
 	
 	@Test
 	public void findOneUserByUsernameTest() {
-		User user = userDao.findOneById("Username 1");
+		User user = userDao.findById("Username 1");
 
 		assertThat(user.getRoles(), hasSize(2));
 		assertThat(user.getEmail(), is("username1@gmail.com"));
-		assertTrue(user.isEnabled());
+		assertTrue(user.getEnabled());
 	}
 	
 	@Test
 	public void saveUserTest() {
 		userDao.saveOrUpdate(user3);
 		
-		assertNotNull(userDao.findOneById("Username 3"));
+		assertNotNull(userDao.findById("Username 3"));
 	}
 	
 
@@ -69,7 +61,7 @@ public class UserDaoTest extends BaseDaoTest {
 		user2.setRoles(new HashSet<>(Arrays.asList(Role.PROFESSOR)));
 		userDao.saveOrUpdate(user2);
 
-		User user = userDao.findOneById("Username 2");
+		User user = userDao.findById("Username 2");
 
 		assertThat(user.getRoles(), hasSize(1));
 	}
@@ -78,16 +70,23 @@ public class UserDaoTest extends BaseDaoTest {
 	public void deleteUserByUsernameTest() {
 		userDao.deleteById("Username 2");
 
-		assertNull(userDao.findOneById("Username 2"));
+		assertNull(userDao.findById("Username 2"));
+	}
+	
+	@Test
+	public void deleteUserTest() {
+		userDao.delete(user2);
+
+		assertNull(userDao.findById("Username 2"));
 	}
 
 	@Test
 	public void disableUserByUsernameTest() {
 		userDao.disableByUsername("Username 2");
 
-		User user = userDao.findOneById("Username 2");
+		User user = userDao.findById("Username 2");
 
-		assertFalse(user.isEnabled());
+		assertFalse(user.getEnabled());
 	}
 
 }
