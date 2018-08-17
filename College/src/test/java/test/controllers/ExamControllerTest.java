@@ -88,9 +88,9 @@ public class ExamControllerTest extends BaseControllerTest {
 
 		mockMvc.perform(get("/exams/examForm").param("studyProgram", "SP1"))
 		       .andExpect(status().isOk())
-			   .andExpect(model().attribute("exam", is(new Exam())))
-			   .andExpect(model().attribute("studyProgram", is(studyProgram1)))
-			   .andExpect(view().name("examForm"));
+		       .andExpect(model().attribute("exam", is(new Exam())))
+		       .andExpect(model().attribute("studyProgram", is(studyProgram1)))
+		       .andExpect(view().name("examForm"));
 		
 		verify(studyProgramService, times(1)).findStudyProgramById("SP1");
 	}
@@ -100,7 +100,7 @@ public class ExamControllerTest extends BaseControllerTest {
 	public void renderExamFormSubjectByProfessorTest() throws Exception {
 		mockMvc.perform(get("/exams/examForm").param("studyProgramId", "SP1"))
 		       .andExpect(status().isForbidden())
-			   .andExpect(forwardedUrl("/denied"));
+		       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -123,7 +123,7 @@ public class ExamControllerTest extends BaseControllerTest {
 				.param("subject", "SUB1")
 				.param("professor", "P1")
 				.param("date", "01-01-2017")
-		        .param("score", "8"))
+		                .param("score", "8"))
 		       .andExpect(model().hasNoErrors())
 		       .andExpect(status().is3xxRedirection())
 		       .andExpect(redirectedUrl("/exams/examForm?studyProgram=SP1"));
@@ -155,12 +155,12 @@ public class ExamControllerTest extends BaseControllerTest {
 				.param("professor", "P1")
 				.param("subject", "SUB1")
 				.param("date", "01-01-2017")
-		        .param("score", "5"))
+		                .param("score", "5"))
 		       .andExpect(status().isOk())
 		       .andExpect(model().attributeHasFieldErrors("exam", "score"))
 		       .andExpect(model().attribute("exam", is(exam)))
-			   .andExpect(model().attribute("studyProgram", is(studyProgram1)))
-			   .andExpect(view().name("examForm"));
+		       .andExpect(model().attribute("studyProgram", is(studyProgram1)))
+	               .andExpect(view().name("examForm"));
 		
 		verify(studyProgramService, times(1)).findStudyProgramById("SP1");
 		verify(studentService, times(1)).findStudentById("S1");
@@ -187,9 +187,9 @@ public class ExamControllerTest extends BaseControllerTest {
 
 		mockMvc.perform(get("/exams/edit/E1/SP1"))
 		       .andExpect(status().isOk())
-			   .andExpect(model().attribute("exam", is(exam1)))
-			   .andExpect(model().attribute("studyProgram", is(studyProgram1)))
-			   .andExpect(view().name("examForm"));
+		       .andExpect(model().attribute("exam", is(exam1)))
+		       .andExpect(model().attribute("studyProgram", is(studyProgram1)))
+		       .andExpect(view().name("examForm"));
 		
 		verify(studyProgramService, times(1)).findStudyProgramById("SP1");
 		verify(examService, times(1)).findExamById("E1");
@@ -200,7 +200,7 @@ public class ExamControllerTest extends BaseControllerTest {
 	public void renderExamFormWithExamByProfessorTest() throws Exception {
 		mockMvc.perform(get("/exams/edit/E1/SP1"))
 		       .andExpect(status().isForbidden())
-			   .andExpect(forwardedUrl("/denied"));
+		       .andExpect(forwardedUrl("/denied"));
 	}
 
 	@Test
@@ -223,8 +223,8 @@ public class ExamControllerTest extends BaseControllerTest {
 	
 		mockMvc.perform(get("/exams/delete/E1"))
 		       .andExpect(status().isOk())
-			   .andExpect(model().attribute("exams", hasSize(0)))
-			   .andExpect(view().name("examsPage"));
+		       .andExpect(model().attribute("exams", hasSize(0)))
+		       .andExpect(view().name("examsPage"));
 		
 		verify(examService, times(1)).findExamById("E1");
 		verify(examService, times(1)).deleteExam(exam1);
@@ -236,7 +236,7 @@ public class ExamControllerTest extends BaseControllerTest {
 	public void deleteExamByIdByProfessorTest() throws Exception {
 		mockMvc.perform(get("/exams/delete/E1"))
 		       .andExpect(status().isForbidden())
-			   .andExpect(forwardedUrl("/denied"));
+		       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -265,10 +265,10 @@ public class ExamControllerTest extends BaseControllerTest {
 		
 		mockMvc.perform(get("/exams/search"))
 		       .andExpect(status().isOk())
-			   .andExpect(model().attribute("exam", is(new Exam())))
-			   .andExpect(model().attribute("subjects", hasSize(2)))
-			   .andExpect(model().attribute("professors", hasSize(2)))
-			   .andExpect(view().name("searchExamsForm"));
+		       .andExpect(model().attribute("exam", is(new Exam())))
+		       .andExpect(model().attribute("subjects", hasSize(2)))
+		       .andExpect(model().attribute("professors", hasSize(2)))
+		       .andExpect(view().name("searchExamsForm"));
 		
 		verify(subjectService, times(1)).findAllSubjects();
 		verify(professorService, times(1)).findAllProfessors();
@@ -279,7 +279,7 @@ public class ExamControllerTest extends BaseControllerTest {
 	public void renderSearchExamFormByAnonymousUserTest() throws Exception {
 		mockMvc.perform(get("/exams/search"))
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -296,11 +296,11 @@ public class ExamControllerTest extends BaseControllerTest {
 				.param("professor", "P1")
 				.param("subject", "SUB1")
 				.param("date", "01-01-2017")
-		        .param("student", "")
-		        .param("id", ""))
+		                .param("student", "")
+		                .param("id", ""))
 		       .andExpect(status().isOk())
-			   .andExpect(model().attribute("exams", hasSize(1)))
-			   .andExpect(view().name("examsPage"));
+		       .andExpect(model().attribute("exams", hasSize(1)))
+		       .andExpect(view().name("examsPage"));
 		
 		verify(professorService, times(1)).findProfessorById("P1");
 		verify(subjectService, times(1)).findSubjectById("SUB1");
@@ -332,7 +332,7 @@ public class ExamControllerTest extends BaseControllerTest {
 		       .andExpect(model().attributeHasFieldErrors("exam", "student", "professor"))
 		       .andExpect(model().attribute("subjects", hasSize(2)))
 		       .andExpect(model().attribute("professors", hasSize(2)))
-			   .andExpect(view().name("searchExamsForm"));
+		       .andExpect(view().name("searchExamsForm"));
 		
 		verify(professorService, times(1)).findProfessorById("");
 		verify(subjectService, times(1)).findSubjectById("");
