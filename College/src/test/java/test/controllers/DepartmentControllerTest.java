@@ -76,7 +76,7 @@ public class DepartmentControllerTest extends BaseControllerTest {
 	public void renderDepartmentsPageWithAllDepartmentsByAnonymousUserTest() throws Exception {	
 		mockMvc.perform(get("/departments"))
 		       .andExpect(status().is3xxRedirection())
-	         .andExpect(redirectedUrlPattern("**/login"));
+	               .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
