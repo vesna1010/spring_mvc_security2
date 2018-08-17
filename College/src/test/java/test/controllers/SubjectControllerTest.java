@@ -88,7 +88,7 @@ public class SubjectControllerTest extends BaseControllerTest {
 	public void renderSubjectsPageWithAllSubjectsByAnonymousUserTest() throws Exception {
 		mockMvc.perform(get("/subjects"))
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -126,7 +126,7 @@ public class SubjectControllerTest extends BaseControllerTest {
 	public void renderSubjectsPageWithSubjectsByStudyProgramByAnonymousUserTest() throws Exception {
 		mockMvc.perform(get("/subjects").param("studyProgram", "SP1"))
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 
 	@Test
