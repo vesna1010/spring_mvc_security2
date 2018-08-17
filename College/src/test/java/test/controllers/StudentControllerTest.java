@@ -130,7 +130,7 @@ public class StudentControllerTest extends BaseControllerTest {
 	public void renderStudentsPageWithStudentsByStudyProgramByAnonymousUserTest() throws Exception {
 		mockMvc.perform(get("/students").param("studyProgram", "SP1"))
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+		       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -163,7 +163,7 @@ public class StudentControllerTest extends BaseControllerTest {
 	public void renderEmptyStudentFormByProfessorTest() throws Exception {
 		mockMvc.perform(get("/students/studentForm"))
 		       .andExpect(status().isForbidden())
-               .andExpect(forwardedUrl("/denied"));
+                       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -233,7 +233,7 @@ public class StudentControllerTest extends BaseControllerTest {
 		       .andExpect(status().isOk())
 		       .andExpect(model().attribute("student", is(student)))
 		       .andExpect(model().attribute("studyPrograms", hasSize(2)))
-               .andExpect(view().name("studentForm"));
+                       .andExpect(view().name("studentForm"));
 		
 		verify(studyProgramService, times(1)).findStudyProgramById("SP1");
 		verify(studentService, times(0)).saveOrUpdateStudent(student1);
@@ -272,7 +272,7 @@ public class StudentControllerTest extends BaseControllerTest {
 	public void renderStudentFormWithStudentByProfessorTest() throws Exception {
 		mockMvc.perform(get("/students/edit/S1"))
 		       .andExpect(status().isForbidden())
-               .andExpect(forwardedUrl("/denied"));
+                       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -304,7 +304,7 @@ public class StudentControllerTest extends BaseControllerTest {
 	public void deleteStudentAndRenderStudentsPageByProfessorTest() throws Exception {
 		mockMvc.perform(get("/students/delete/S1"))
 		       .andExpect(status().isForbidden())
-               .andExpect(forwardedUrl("/denied"));
+                       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -341,7 +341,7 @@ public class StudentControllerTest extends BaseControllerTest {
 	public void renderStudentExamsPageWithStudentByAnonymousUserTest() throws Exception {
 		mockMvc.perform(get("/students/exams/S1"))
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 }
