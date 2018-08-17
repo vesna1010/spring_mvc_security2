@@ -22,8 +22,8 @@ public class HomeControllerTest extends BaseControllerTest {
 	@WithAnonymousUser
 	public void renderLoginPageByAnonymousUserTest() throws Exception {
 		mockMvc.perform(get("/login"))
-	           .andExpect(status().isOk())
-	           .andExpect(view().name("loginForm"));   
+	               .andExpect(status().isOk())
+	               .andExpect(view().name("loginForm"));   
 	}
 	
 	@Test
