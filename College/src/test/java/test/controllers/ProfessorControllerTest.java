@@ -86,7 +86,7 @@ public class ProfessorControllerTest extends BaseControllerTest {
 	public void renderProfessorsPageWithAllProfessorsByAnonymousUserTest() throws Exception {
 		mockMvc.perform(get("/professors"))
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -124,7 +124,7 @@ public class ProfessorControllerTest extends BaseControllerTest {
 	public void renderProfessorsPageWithProfessorsByStudyProgramByAnonymousUserTest() throws Exception {
 		mockMvc.perform(get("/professors").param("studyProgram", "SP1"))
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -151,7 +151,7 @@ public class ProfessorControllerTest extends BaseControllerTest {
 	public void renderEmptyProfessorFormByProfessorTest() throws Exception {
 		mockMvc.perform(get("/professors/professorForm"))
 		       .andExpect(status().isForbidden())
-               .andExpect(forwardedUrl("/denied"));
+                       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -176,7 +176,7 @@ public class ProfessorControllerTest extends BaseControllerTest {
 				.param("address", "City - Street - State")
 				.param("dateOfEmployment", "01-08-2017" )
 				.param("titleOfProfessor", "Title"))
-		        .andExpect(model().hasNoErrors())
+		       .andExpect(model().hasNoErrors())
 		       .andExpect(status().is3xxRedirection())
 		       .andExpect(redirectedUrl("/professors/professorForm"));
 		
@@ -240,7 +240,7 @@ public class ProfessorControllerTest extends BaseControllerTest {
 	public void renderFormWithProfessorByProfessorTest() throws Exception {
 		mockMvc.perform(get("/professors/edit/P1"))
 		       .andExpect(status().isForbidden())
-               .andExpect(forwardedUrl("/denied"));
+                       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -260,8 +260,8 @@ public class ProfessorControllerTest extends BaseControllerTest {
 		doNothing().when(professorService).deleteProfessor(professor1);
 		
 		mockMvc.perform(get("/professors/delete/P1"))
-	           .andExpect(status().is3xxRedirection())
-	           .andExpect(redirectedUrl("/professors"));
+	               .andExpect(status().is3xxRedirection())
+	               .andExpect(redirectedUrl("/professors"));
 		
 		verify(professorService, times(1)).findProfessorById("P1");
 		verify(professorService, times(1)).deleteProfessor(professor1);
@@ -272,7 +272,7 @@ public class ProfessorControllerTest extends BaseControllerTest {
 	public void deleteProfessorAndRenderProfessorsPageByProfessorTest() throws Exception {	
 		mockMvc.perform(get("/professors/delete/P1"))
 		       .andExpect(status().isForbidden())
-               .andExpect(forwardedUrl("/denied"));
+                       .andExpect(forwardedUrl("/denied"));
 	}
 	
 }
