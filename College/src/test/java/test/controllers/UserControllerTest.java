@@ -2,13 +2,11 @@ package test.controllers;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
@@ -19,23 +17,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import java.util.Arrays;
 import java.util.HashSet;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import college.controllers.UserController;
 import college.enums.Role;
 import college.model.User;
 import college.service.UserService;
 
-
 public class UserControllerTest extends BaseControllerTest {
-
 	
 	@Mock
 	private UserService userService;
@@ -43,21 +36,9 @@ public class UserControllerTest extends BaseControllerTest {
 	@Autowired
 	private UserController userController;
 
-	@Before
-	public void setup() {
-		MockitoAnnotations.initMocks(this);
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(wax).apply(springSecurity()).build();
-	}
-
 	@Test
-	public void mocksTest() {
-		assertNotNull(userService);
-		assertNotNull(userController);
-	}
-
-	@Test
-	@WithMockUser(username = "USERNAME_USER", password = "PASSWORD_USER", roles = { "USER", "PROFESSOR" })
-	public void renderUsersPageTest_By_User_Professor() throws Exception {
+	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = { "USER", "PROFESSOR" })
+	public void renderUsersPageWithAllUsersByUserProfessorTest() throws Exception {
 		when(userService.findUsers()).thenReturn(new HashSet<User>(Arrays.asList(user1, user2)));
 
 		mockMvc.perform(get("/users"))
@@ -68,8 +49,8 @@ public class UserControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "USERNAME_ADMIN", password = "PASSWORD_ADMIN", roles = "ADMIN")
-	public void renderUsersPageTest_By_Admin() throws Exception {
+	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = "ADMIN")
+	public void renderUsersPageWithAllUsersByAdminTest() throws Exception {
 		when(userService.findUsers()).thenReturn(new HashSet<User>(Arrays.asList(user1, user2)));
 
 		mockMvc.perform(get("/users"))
@@ -81,15 +62,15 @@ public class UserControllerTest extends BaseControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(username = "USERNAME_USER", password = "PASSWORD_USER", roles = { "USER", "PROFESSOR" })
-	public void renderEmptyUserFormTest_By_User_Professor() throws Exception {
+	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = { "USER", "PROFESSOR" })
+	public void renderEmptyUserFormByUserProfessorTest() throws Exception {
 		mockMvc.perform(get("/users/userForm"))
 		       .andExpect(status().isForbidden())
 		       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
-	@WithMockUser(username = "USERNAME_ADMIN", password = "PASSWORD_ADMIN", roles = "ADMIN")
+	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = "ADMIN")
 	public void renderEmptyUserFormTest_By_Admin() throws Exception {
 		mockMvc.perform(get("/users/userForm"))
 		       .andExpect(status().isOk())
@@ -98,8 +79,8 @@ public class UserControllerTest extends BaseControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(username = "USERNAME_ADMIN", password = "PASSWORD_ADMIN", roles = "ADMIN")
-	public void saveUserAndRenderUserForm_ValidForm_By_Admin() throws Exception {
+	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = "ADMIN")
+	public void saveUserAndRenderUserFormValidFormByAdminTest() throws Exception {
 		User user = new User("USERNAME", "email@gmail.com", "PASSWORD", new HashSet<Role>(
 			Arrays.asList(Role.PROFESSOR)));
 
@@ -110,7 +91,8 @@ public class UserControllerTest extends BaseControllerTest {
 				.param("email", "email@gmail.com")
 				.param("password", "PASSWORD")
 				.param("confirmPassword", "PASSWORD")
-				.param("roles", "PROFESSOR"))
+				.param("roles", "PROFESSOR")
+		        .param("enabled", "true"))
 		       .andExpect(model().hasNoErrors())
 		       .andExpect(status().is3xxRedirection())
 		       .andExpect(redirectedUrl("/users/userForm"));
@@ -119,8 +101,8 @@ public class UserControllerTest extends BaseControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(username = "USERNAME_ADMIN", password = "PASSWORD_ADMIN", roles = "ADMIN")
-	public void saveUserAndRenderUserForm_InvalidForm_By_Admin() throws Exception {
+	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = "ADMIN")
+	public void saveUserAndRenderUserFormInvalidFormByAdminTest() throws Exception {
 		User user = new User("USERNAME", "email@gmail.com", "PASSWORD", new HashSet<Role>());
 
 		doNothing().when(userService).saveOrUpdateUser(user);
@@ -130,7 +112,8 @@ public class UserControllerTest extends BaseControllerTest {
 				.param("email", "email@gmail.com")
 				.param("password", "PASSWORD")
 				.param("confirmPassword", "PASSWORD")
-				.param("roles", ""))
+				.param("roles", "")
+				.param("enabled", "true"))
 		       .andExpect(status().isOk())
 		       .andExpect(model().attributeHasFieldErrors("user", "roles"))
 		       .andExpect(model().attribute("user", is(user)))
@@ -140,11 +123,11 @@ public class UserControllerTest extends BaseControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(username = "USERNAME_USER", password = "PASSWORD_USER", roles = { "USER", "PROFESSOR" })
-	public void deleteUserAndRenderUsersPageTest_By_User() throws Exception {
+	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = { "USER", "PROFESSOR" })
+	public void deleteUserAndRenderUsersPageByUserProfessorTest() throws Exception {
 		doNothing().when(userService).deleteUserByUsername("USERNAME");
 
-		mockMvc.perform(get("/users/delete/" + "USERNAME"))
+		mockMvc.perform(get("/users/delete/USERNAME"))
 		       .andExpect(status().isForbidden())
 		       .andExpect(forwardedUrl("/denied"));
 
@@ -152,11 +135,11 @@ public class UserControllerTest extends BaseControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(username = "USERNAME_ADMIN", password = "PASSWORD_ADMIN", roles = "ADMIN")
-	public void deleteUserAndRenderUsersPageTest_By_Admin() throws Exception {
+	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = "ADMIN")
+	public void deleteUserAndRenderUsersPageByAdminTest() throws Exception {
 		doNothing().when(userService).deleteUserByUsername("USERNAME");
 
-		mockMvc.perform(get("/users/delete/" + "USERNAME"))
+		mockMvc.perform(get("/users/delete/USERNAME"))
 		       .andExpect(status().is3xxRedirection())
 		       .andExpect(redirectedUrl("/users"));
 
@@ -164,11 +147,11 @@ public class UserControllerTest extends BaseControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(username = "USERNAME_USER", password = "PASSWORD_USER", roles = { "USER", "PROFESSOR" })
-	public void disableUserAndRenderUsersPageTest_By_User() throws Exception {
+	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = { "USER", "PROFESSOR" })
+	public void disableUserAndRenderUsersPageByUserProfessorTest() throws Exception {
 		doNothing().when(userService).disableUserByUsername("USERNAME");
 
-		mockMvc.perform(get("/users/disable/" + "USERNAME"))
+		mockMvc.perform(get("/users/disable/USERNAME"))
 		       .andExpect(status().isForbidden())
 		       .andExpect(forwardedUrl("/denied"));
 
@@ -176,11 +159,11 @@ public class UserControllerTest extends BaseControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(username = "USERNAME_ADMIN", password = "PASSWORD_ADMIN", roles = "ADMIN")
-	public void disableUserAndRenderUsersPageTest_By_Admin() throws Exception {
+	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = "ADMIN")
+	public void disableUserAndRenderUsersPageByAdminTest() throws Exception {
 		doNothing().when(userService).disableUserByUsername("USERNAME");
 
-		mockMvc.perform(get("/users/disable/" + "USERNAME"))
+		mockMvc.perform(get("/users/disable/USERNAME"))
 		       .andExpect(status().is3xxRedirection())
 		       .andExpect(redirectedUrl("/users"));
 
@@ -189,26 +172,27 @@ public class UserControllerTest extends BaseControllerTest {
 	
 	@Test
 	@WithAnonymousUser
-	public void renderPasswordFormTest_By_AnonymousUser() throws Exception {
+	public void renderUserFormWithUserByAnonymousUserTest() throws Exception {
+		when(userService.findUserByUsernameWithoutPassword("Username 1")).thenReturn(user1);
+		
 		mockMvc.perform(get("/users/changePassword"))
 		       .andExpect(status().is3xxRedirection())
 		       .andExpect(redirectedUrlPattern("**/login"));
+		
+		verify(userService, times(0)).findUserByUsernameWithoutPassword("USERNAME");
 	}
 	
 	@Test
-	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = "USER")
-	public void renderPasswordFormTest_By_User() throws Exception {
-		User user = new User("USERNAME", "email@gmail.com", "", 
-	             new HashSet<Role>(Arrays.asList(Role.USER)));
-		
-		when(userService.findUserByUsernameWithoutPassword("USERNAME")).thenReturn(user);
+	@WithMockUser(username = "Username 1", password = "Password", roles = "USER")
+	public void renderUserFormWithUserByUserTest() throws Exception {
+		when(userService.findUserByUsernameWithoutPassword("Username 1")).thenReturn(user1);
 		
 		mockMvc.perform(get("/users/changePassword"))
 		       .andExpect(status().isOk())
-		       .andExpect(model().attribute("user", is(user)))
+		       .andExpect(model().attribute("user", is(user1)))
 		       .andExpect(view().name("userForm"));
 		
-		verify(userService, times(1)).findUserByUsernameWithoutPassword("USERNAME");
+		verify(userService, times(1)).findUserByUsernameWithoutPassword("Username 1");
 	}
 	
 }
