@@ -25,7 +25,7 @@
 		<security:intercept-url pattern="/users/**"
 			access="hasRole('ADMIN')" method="GET" />
 		<security:intercept-url pattern="/exams/search"
-			access="hasAnyRole('USER', 'PROFESSOR')" />
+			access="isAuthenticated()" />
 		<security:intercept-url pattern="/students/exams/*"
 			access="isAuthenticated()" />
 		<security:intercept-url pattern="/*" method="GET"
