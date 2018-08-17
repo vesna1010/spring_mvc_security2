@@ -45,7 +45,7 @@ public class ProfessorController {
 		return new ModelAndView("professorForm", "professor", new Professor());
 	}
 
-	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "multipart/form-data")
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public ModelAndView saveProfessorAndRenderProfessorForm(@Valid @ModelAttribute Professor professor,
 			BindingResult result) {
 
