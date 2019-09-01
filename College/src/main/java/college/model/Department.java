@@ -4,28 +4,27 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 import java.util.HashSet;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.springframework.format.annotation.DateTimeFormat;
-import college.validation.MyId;
 import college.validation.Title;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "DEPARTMENTS")
 public class Department implements Serializable {
 
-	
-	private String id;
+	private static final long serialVersionUID = 1L;
+	private Long id;
 	private String title;
 	private Date dateOfCreation;
 	private Set<StudyProgram> studyPrograms = new HashSet<>();;
@@ -33,20 +32,24 @@ public class Department implements Serializable {
 	public Department() {
 	}
 
-	public Department(String id, String title, Date dateOfCreation) {
+	public Department(Long id, String title) {
+		this(id, title, new Date());
+	}
+
+	public Department(Long id, String title, Date dateOfCreation) {
 		this.id = id;
 		this.title = title;
 		this.dateOfCreation = dateOfCreation;
 	}
 
 	@Id
-	@MyId
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -72,19 +75,13 @@ public class Department implements Serializable {
 		this.dateOfCreation = dateOfCreation;
 	}
 
-	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
-	@Cascade(value = CascadeType.ALL)
+	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	public Set<StudyProgram> getStudyPrograms() {
 		return studyPrograms;
 	}
 
 	public void setStudyPrograms(Set<StudyProgram> studyPrograms) {
 		this.studyPrograms = studyPrograms;
-	}
-
-	public void addStudyProgram(StudyProgram studyProgram) {
-		studyProgram.setDepartment(this);
-		this.studyPrograms.add(studyProgram);
 	}
 
 	@Override
@@ -113,4 +110,3 @@ public class Department implements Serializable {
 	}
 
 }
-
