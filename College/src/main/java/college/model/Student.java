@@ -3,6 +3,7 @@ package college.model;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,17 +16,15 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Formula;
 import org.springframework.format.annotation.DateTimeFormat;
 import college.enums.Gender;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "STUDENTS")
 public class Student extends Person {
 
+	private static final long serialVersionUID = 1L;
 	private Date dateOfEntry;
 	private Integer yearOfStudy;
 	private Double average;
@@ -35,7 +34,11 @@ public class Student extends Person {
 	public Student() {
 	}
 
-	public Student(String id, String fullName, String fatherName, Date dateOfBirth, String email, String telephone,
+	public Student(Long id, String fullName) {
+		super(id, fullName);
+	}
+
+	public Student(Long id, String fullName, String fatherName, Date dateOfBirth, String email, String telephone,
 			Gender gender, Address address, Date dateOfEntry, Integer yearOfStudy, StudyProgram studyProgram) {
 		super(id, fullName, fatherName, dateOfBirth, email, telephone, gender, address);
 		this.yearOfStudy = yearOfStudy;
@@ -68,9 +71,8 @@ public class Student extends Person {
 	}
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "STUDY_PROGRAM_ID")
-	@Cascade(value = CascadeType.SAVE_UPDATE)
 	public StudyProgram getStudyProgram() {
 		return studyProgram;
 	}
@@ -79,19 +81,13 @@ public class Student extends Person {
 		this.studyProgram = studyProgram;
 	}
 
-	@OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
-	@Cascade(value = CascadeType.ALL)
+	@OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	public Set<Exam> getExams() {
 		return exams;
 	}
 
 	public void setExams(Set<Exam> exams) {
 		this.exams = exams;
-	}
-
-	public void addExam(Exam exam) {
-		exam.setStudent(this);
-		this.exams.add(exam);
 	}
 
 	@Column(name = "AVERAGE")
@@ -105,4 +101,3 @@ public class Student extends Person {
 	}
 
 }
-
