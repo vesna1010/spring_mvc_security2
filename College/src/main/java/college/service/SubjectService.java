@@ -1,18 +1,21 @@
 package college.service;
 
-import java.util.Set;
+import java.util.List;
+import college.model.StudyProgram;
 import college.model.Subject;
 
 public interface SubjectService {
 
-	Set<Subject> findAllSubjects();
-	
-	Subject findSubjectById(String id);
-	
-	void deleteSubject(Subject subject);
-	
+	List<Subject> findAllSubjects();
+
+	List<Subject> findAllSubjectsByStudyProgram(StudyProgram studyProgram);
+
+	Subject findSubjectById(Long id);
+
 	void saveOrUpdateSubject(Subject subject);
-	
+
+	void deleteSubjectById(Long id);
+
 }
 
 
