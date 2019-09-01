@@ -1,15 +1,15 @@
 package college.controllers;
 
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import college.model.StudyProgram;
 import college.model.Subject;
 import college.service.StudyProgramService;
@@ -24,66 +24,53 @@ public class SubjectsController {
 	@Autowired
 	private StudyProgramService studyProgramService;
 
-	@RequestMapping(method = RequestMethod.GET, params = "!studyProgram")
-	public ModelAndView renderSubjectsPageWithAllSubjects(ModelAndView model) {
-		model.setViewName("subjectsPage");
-		model.addObject("title", "All Subjects");
-		model.addObject("subjects", subjectService.findAllSubjects());
+	@RequestMapping(method = RequestMethod.GET, params = "!studyProgramId")
+	public String renderSubjectsPageWithAllSubjects(Model model) {
+		model.addAttribute("subjects", subjectService.findAllSubjects());
 
-		return model;
+		return "subjects/page";
 	}
 
-	@RequestMapping(method = RequestMethod.GET, params = "studyProgram")
-	public ModelAndView renderSubjectsPageWithSubjectsByStudyProgram(@RequestParam StudyProgram studyProgram) {
-		ModelAndView model = new ModelAndView("subjectsPage");
+	@RequestMapping(method = RequestMethod.GET, params = "studyProgramId")
+	public String renderSubjectsPageWithSubjectsByStudyProgram(
+			@RequestParam("studyProgramId") StudyProgram studyProgram, Model model) {
+		model.addAttribute("subjects", subjectService.findAllSubjectsByStudyProgram(studyProgram));
 
-		model.addObject("title", "Subjects at " + studyProgram.getTitle());
-		model.addObject("subjects", studyProgram.getSubjects());
-
-		return model;
+		return "subjects/page";
 	}
 
-	@RequestMapping(value = "/subjectForm", method = RequestMethod.GET)
-	public ModelAndView renderEmptySubjectForm(ModelAndView model) {
-		model.setViewName("subjectForm");
-		model.addObject("subject", new Subject());
-		model.addObject("studyPrograms", studyProgramService.findAllStudyPrograms());
+	@RequestMapping(value = "/delete", params = "subjectId", method = RequestMethod.GET)
+	public String deleteSubjectAndRenderSubjectsPage(@RequestParam Long subjectId) {
+		subjectService.deleteSubjectById(subjectId);
 
-		return model;
+		return "redirect:/subjects";
+	}
+
+	@RequestMapping(value = "/form", method = RequestMethod.GET)
+	public Subject subject() {
+		return new Subject();
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public ModelAndView saveSubjectAndRenderSubjectForm(@Valid @ModelAttribute Subject subject, BindingResult result) {
-
-		if (!result.hasErrors()) {
-			return saveSubjectAndGetModelAndView(subject);
+	public String saveSubjectAndRenderSubjectForm(@Valid @ModelAttribute Subject subject, BindingResult result) {
+		if (result.hasErrors()) {
+			return "subjects/form";
 		}
 
-		return new ModelAndView("subjectForm", "studyPrograms", studyProgramService.findAllStudyPrograms());
-	}
-
-	private ModelAndView saveSubjectAndGetModelAndView(Subject subject) {
 		subjectService.saveOrUpdateSubject(subject);
 
-		return new ModelAndView("redirect:/subjects/subjectForm");
+		return "redirect:/subjects/form";
 	}
 
-	@RequestMapping("/edit/{subject}")
-	public ModelAndView renderSubjectFormWithSubject(@PathVariable Subject subject) {
-		ModelAndView model = new ModelAndView("subjectForm");
+	@RequestMapping(value = "/edit", params = "subjectId", method = RequestMethod.GET)
+	public String renderSubjectFormWithSubject(@RequestParam("subjectId") Subject subject, Model model) {
+		model.addAttribute("subject", subject);
 
-		model.addObject("subject", subject);
-		model.addObject("studyPrograms", studyProgramService.findAllStudyPrograms());
-
-		return model;
+		return "subjects/form";
 	}
 
-	@RequestMapping("/delete/{subject}")
-	public ModelAndView deleteSubjectAndRenderSubjectsPage(@PathVariable Subject subject) {
-		subjectService.deleteSubject(subject);
-
-		return new ModelAndView("redirect:/subjects");
+	@ModelAttribute("studyPrograms")
+	public List<StudyProgram> studyPrograms() {
+		return studyProgramService.findAllStudyPrograms();
 	}
-
 }
-
