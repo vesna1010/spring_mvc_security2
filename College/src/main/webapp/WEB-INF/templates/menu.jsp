@@ -2,7 +2,6 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-
 <div class="navbar navbar-inverse">
 	<div class="navbar-header">
 		<button type="button" class="navbar-toggle" data-target="#navbar"
@@ -11,60 +10,59 @@
 				class="icon-bar"></span>
 		</button>
 	</div>
-	
+
 	<div class="collapse navbar-collapse" id="navbar">
 		<ul class="nav navbar-nav">
 			<li id="home"><a href='<c:url value="/"/>'>Home</a></li>
 
 			<sec:authorize access="hasRole('ADMIN')">
-				<li id="users"><a href='<c:url value="/users"/>'>All Users</a></li>
-				<li id="userForm"><a href='<c:url value="/users/userForm"/>'>Add
-						New User</a></li>
+				<li id="users"><a href='<c:url value="/users"/>'>Users</a></li>
+				<li id="userForm"><a href='<c:url value="/users/form"/>'>User&nbsp;Form</a></li>
 			</sec:authorize>
-			
-			<li id="password"><a
-				href='<c:url value="/users/changePassword"/>'>Change Password</a></li>
-				
+
+			<sec:authorize access="isAuthenticated()">
+				<li id="changePassword"><a href='<c:url value="/users/edit"/>'>Change&nbsp;Password</a></li>
+			</sec:authorize>
+
 			<li id="departments"><a href='<c:url value="/departments"/>'>Departments</a></li>
-			
-			<sec:authorize access="hasAnyRole('ADMIN', 'USER')">
+
+			<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
 				<li id="departmentForm"><a
-					href='<c:url value="/departments/departmentForm"/>'>Department Form</a></li>
+					href='<c:url value="/departments/form"/>'>Department&nbsp;Form</a></li>
 			</sec:authorize>
-			
+
 			<li id="studyPrograms"><a
-				href='<c:url value="/studyPrograms/"/>'>Study Programs</a></li>
-			
-			<sec:authorize access="hasAnyRole('ADMIN', 'USER')">
+				href='<c:url value="/studyPrograms/"/>'>Study&nbsp;Programs</a></li>
+
+			<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
 				<li id="studyProgramForm"><a
-					href='<c:url value="/studyPrograms/studyProgramForm"/>'>Study Program Form</a></li>
+					href='<c:url value="/studyPrograms/form"/>'>Study&nbsp;Program&nbsp;Form</a></li>
 			</sec:authorize>
-			
-			<li id="professors"><a href='<c:url value="/professors/"/>'>Professors</a></li>
-			
-			<sec:authorize access="hasAnyRole('ADMIN', 'USER')">
+
+			<li id="professors"><a href='<c:url value="/professors"/>'>Professors</a></li>
+
+			<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
 				<li id="professorForm"><a
-					href='<c:url value="/professors/professorForm"/>'>Professor Form</a></li>
+					href='<c:url value="/professors/form"/>'>Professor&nbsp;Form</a></li>
 			</sec:authorize>
-			
-			<li id="subjects"><a href='<c:url value="/subjects/"/>'> Subjects</a></li>
-			
-			<sec:authorize access="hasAnyRole('ADMIN', 'USER')">
-				<li id="subjectForm"><a
-					href='<c:url value="/subjects/subjectForm"/>'>Subject Form</a></li>
+
+			<li id="subjects"><a href='<c:url value="/subjects"/>'>Subjects</a></li>
+
+			<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
+				<li id="subjectForm"><a href='<c:url value="/subjects/form"/>'>Subject&nbsp;Form</a></li>
 			</sec:authorize>
-			
+
 			<li id="students"><a href='<c:url value="/students/"/>'>Students</a></li>
-			
-			<sec:authorize access="hasAnyRole('ADMIN', 'USER')">
-				<li id="studentForm"><a href='<c:url value="/students/studentForm"/>'>Student Form</a></li>
+
+			<sec:authorize access="hasAnyRole('USER', 'ADMIN')">
+				<li id="studentForm"><a href='<c:url value="/students/form"/>'>Student&nbsp;Form</a></li>
 			</sec:authorize>
-			
+
 			<li id="searchExamsForm"><a
-				href='<c:url value="/exams/search"/>'>Search Exams</a></li>
+				href='<c:url value="/exams/search"/>'>Search&nbsp;Exams</a></li>
 		</ul>
 	</div>
-	
+
 </div>
 
 
