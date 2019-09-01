@@ -5,41 +5,64 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<security:authentication-manager>
-		<security:authentication-provider user-service-ref="userServiceImpl">
+		<security:authentication-provider
+			user-service-ref="userServiceImpl">
 			<security:password-encoder ref="passwordEncoder" />
 		</security:authentication-provider>
 	</security:authentication-manager>
 
 	<security:http use-expressions="true">
 		<security:intercept-url pattern="/" access="permitAll" />
-		<security:intercept-url pattern="/login"
+
+		<security:intercept-url pattern="/denied"
+			access="permitAll" />
+
+		<security:intercept-url pattern="/login/**"
 			access="isAnonymous()" method="GET" />
+
 		<security:intercept-url pattern="/login"
 			access="isAnonymous()" method="POST" />
+
 		<security:intercept-url pattern="/logout"
-			access="isAuthenticated()" />
+			method="POST" access="isAuthenticated()" />
+
 		<security:intercept-url pattern="/resource/**"
 			access="permitAll" />
-		<security:intercept-url pattern="/users/changePassword"
+
+		<security:intercept-url pattern="/users/edit/**"
 			access="isAuthenticated()" method="GET" />
+
+		<security:intercept-url pattern="/users/update"
+			access="isAuthenticated()" method="POST" />
+
 		<security:intercept-url pattern="/users/**"
 			access="hasRole('ADMIN')" method="GET" />
-		<security:intercept-url pattern="/exams/search"
+
+		<security:intercept-url pattern="/exams/search/**"
 			access="isAuthenticated()" />
-		<security:intercept-url pattern="/students/exams/*"
+
+		<security:intercept-url pattern="/exams/student/**"
 			access="isAuthenticated()" />
+
 		<security:intercept-url pattern="/*" method="GET"
 			access="isAuthenticated()" />
+
 		<security:intercept-url pattern="/*/" method="GET"
 			access="isAuthenticated()" />
+
 		<security:intercept-url pattern="/*/**"
 			access="hasAnyRole('USER', 'ADMIN')" />
+
 		<security:form-login login-page="/login"
+			username-parameter="email" password-parameter="password"
 			login-processing-url="/login" authentication-failure-url="/login?error=true" />
-		<security:logout logout-success-url="/"
+
+		<security:logout logout-success-url="/login"
 			delete-cookies="true" invalidate-session="true" logout-url="/logout" />
+
 		<security:access-denied-handler
 			error-page="/denied" />
+
 	</security:http>
 
 </beans>
