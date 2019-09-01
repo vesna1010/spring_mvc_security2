@@ -16,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import java.util.Arrays;
-import java.util.HashSet;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -35,246 +34,335 @@ public class SubjectControllerTest extends BaseControllerTest {
 
 	@Mock
 	private SubjectService subjectService;
-	@Mock
-	private StudyProgramService studyProgramService;
 	@InjectMocks
 	@Autowired
 	private SubjectsController subjectController;
 	@InjectMocks
 	@Autowired
 	private SubjectConverter subjectConverter;
+	@Mock
+	private StudyProgramService studyProgramService;
 	@InjectMocks
 	@Autowired
 	private StudyProgramConverter studyProgramConverter;
 	
-	{
-		studyProgram1.addSubject(subject1);
-		studyProgram1.addSubject(subject2);
-	}
-	
 	@Test
 	@WithMockUser(username = "ADMIN", password = "PASSWORD", roles = "ADMIN")
-	public void renderSubjectsPageWithAllSubjectsByAdminTest() throws Exception {
+	public void renderSubjectsPageWithAllSubjectsWithRoleAdminTest() throws Exception {
 		renderSubjectsPageWithAllSubjects();
 	}
 
 	@Test
 	@WithMockUser(username = "USER", password = "PASSWORD", roles = "USER")
-	public void renderSubjectsPageWithAllSubjectsByUserTest() throws Exception {
+	public void renderSubjectsPageWithAllSubjectsWithRoleUserTest() throws Exception {
 		renderSubjectsPageWithAllSubjects();
 	}
 
 	@Test
 	@WithMockUser(username = "PROFESSOR", password = "PASSWORD", roles = "PROFESSOR")
-	public void renderSubjectsPageWithAllSubjectsByProfessorTest() throws Exception {
+	public void renderSubjectsPageWithAllSubjectsWithRoleProfessorTest() throws Exception {
 		renderSubjectsPageWithAllSubjects();
 	}
 	
 	private void renderSubjectsPageWithAllSubjects() throws Exception {	
-		when(subjectService.findAllSubjects()).thenReturn(
-				new HashSet<Subject>(Arrays.asList(subject1, subject2)));
+		when(subjectService.findAllSubjects())
+				.thenReturn(Arrays.asList(new Subject(1L, "Subject A"), new Subject(2L, "Subject B")));
 		
 		mockMvc.perform(get("/subjects"))
 		       .andExpect(status().isOk())
-		       .andExpect(model().attribute("title", is("All Subjects")))
 		       .andExpect(model().attribute("subjects", hasSize(2)))
-		       .andExpect(view().name("subjectsPage"));
+		       .andExpect(view().name("subjects/page"));
 		
 		verify(subjectService, times(1)).findAllSubjects();
 	}
 	
 	@Test
 	@WithAnonymousUser
-	public void renderSubjectsPageWithAllSubjectsByAnonymousUserTest() throws Exception {
+	public void renderSubjectsPageWithAllSubjectsWithAnonymousUserTest() throws Exception {
+		renderSubjectsPageWithAllSubjectsNotAuthenticated();
+	}
+	
+	private void renderSubjectsPageWithAllSubjectsNotAuthenticated() throws Exception {
 		mockMvc.perform(get("/subjects"))
-		       .andExpect(status().is3xxRedirection())
-                       .andExpect(redirectedUrlPattern("**/login"));
+	           .andExpect(status().is3xxRedirection())
+               .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
 	@WithMockUser(username = "ADMIN", password = "PASSWORD", roles = "ADMIN")
-	public void renderSubjectsPageWithSubjectsByStudyProgramByAdminTest() throws Exception {
+	public void renderSubjectsPageWithSubjectsByStudyProgramWithRoleAdminTest() throws Exception {
 		renderSubjectsPageWithSubjectsByStudyProgram();
 	}
 
 	@Test
 	@WithMockUser(username = "USER", password = "PASSWORD", roles = "USER")
-	public void renderSubjectsPageWithSubjectsByStudyProgramByUserTest() throws Exception {
+	public void renderSubjectsPageWithSubjectsByStudyProgramWithRoleUserTest() throws Exception {
 		renderSubjectsPageWithSubjectsByStudyProgram();
 	}
 	
 	@Test
 	@WithMockUser(username = "PROFESSOR", password = "PASSWORD", roles = "PROFESSOR")
-	public void renderSubjectsPageWithSubjectsByStudyProgramByProfessorTest() throws Exception {
+	public void renderSubjectsPageWithSubjectsByStudyProgramWithRoleProfessorTest() throws Exception {
 		renderSubjectsPageWithSubjectsByStudyProgram();
 	}
 	
 	private void renderSubjectsPageWithSubjectsByStudyProgram() throws Exception {
-		when(studyProgramService.findStudyProgramById("SP1")).thenReturn(studyProgram1);
+		StudyProgram studyProgram = new StudyProgram(1L, "Study Program");
+		
+		when(studyProgramService.findStudyProgramById(1L)).thenReturn(studyProgram);
+		when(subjectService.findAllSubjectsByStudyProgram(studyProgram))
+				.thenReturn(Arrays.asList(new Subject(1L, "Subject A"), new Subject(2L, "Subject B")));
 	
-		mockMvc.perform(get("/subjects").param("studyProgram", "SP1"))
+		mockMvc.perform(
+				get("/subjects")
+				.param("studyProgramId", "1")
+				)
 		       .andExpect(status().isOk())
-		       .andExpect(model().attribute("title", is("Subjects at Study Program 1")))
 		       .andExpect(model().attribute("subjects", hasSize(2)))
-		       .andExpect(view().name("subjectsPage"));
+		       .andExpect(view().name("subjects/page"));
 	
-		verify(studyProgramService, times(1)).findStudyProgramById("SP1");
+		verify(studyProgramService, times(1)).findStudyProgramById(1L);
+		verify(subjectService, times(1)).findAllSubjectsByStudyProgram(studyProgram);
 	}
 	
 	@Test
 	@WithAnonymousUser
-	public void renderSubjectsPageWithSubjectsByStudyProgramByAnonymousUserTest() throws Exception {
-		mockMvc.perform(get("/subjects").param("studyProgram", "SP1"))
+	public void renderSubjectsPageWithSubjectsByStudyProgramWithAnonymousUserTest() throws Exception {
+		renderSubjectsPageWithSubjectsByStudyProgramNotAuthenticated();
+	}
+	
+	private void renderSubjectsPageWithSubjectsByStudyProgramNotAuthenticated() throws Exception {
+		mockMvc.perform(
+				get("/subjects")
+				.param("studyProgramId", "1")
+				)
 		       .andExpect(status().is3xxRedirection())
-                       .andExpect(redirectedUrlPattern("**/login"));
+               .andExpect(redirectedUrlPattern("**/login"));
 	}
 
 	@Test
 	@WithMockUser(username = "ADMIN", password = "PASSWORD", roles = "ADMIN")
-	public void renderEmptySubjectFormByAdminTest() throws Exception {
+	public void renderEmptySubjectFormWithRoleAdminTest() throws Exception {
 		renderEmptySubjectForm();
 	}
 
 	@Test
 	@WithMockUser(username = "USER", password = "PASSWORD", roles = "USER")
-	public void renderEmptySubjectFormByUserTest() throws Exception {
+	public void renderEmptySubjectFormWithRoleUserTest() throws Exception {
 		renderEmptySubjectForm();
 	}
 	
 	private void renderEmptySubjectForm() throws Exception {
 		when(studyProgramService.findAllStudyPrograms()).thenReturn(
-				new HashSet<StudyProgram>(Arrays.asList(studyProgram1, studyProgram2)));
+				Arrays.asList(new StudyProgram(1L, "Study Program A"), new StudyProgram(2L, "Study Program B")));
 		
-		mockMvc.perform(get("/subjects/subjectForm"))
+		mockMvc.perform(get("/subjects/form"))
 		       .andExpect(status().isOk())
 		       .andExpect(model().attribute("subject", is(new Subject())))
 		       .andExpect(model().attribute("studyPrograms", hasSize(2)))
-		       .andExpect(view().name("subjectForm"));
+		       .andExpect(view().name("subjects/form"));
 		
 		verify(studyProgramService, times(1)).findAllStudyPrograms();
 	}
 
 	@Test
 	@WithMockUser(username = "PROFESSOR", password = "PASSWORD", roles = "PROFESSOR")
-	public void renderEmptySubjectFormByProfessorTest() throws Exception {
-		mockMvc.perform(get("/subjects/subjectForm"))
-		       .andExpect(status().isForbidden())
-		       .andExpect(forwardedUrl("/denied"));
+	public void renderEmptySubjectFormWithRoleProfessorTest() throws Exception {
+		renderEmptySubjectFormAccessDenied();
+	}
+	
+	private void renderEmptySubjectFormAccessDenied() throws Exception {
+		mockMvc.perform(get("/subjects/form"))
+	           .andExpect(status().isForbidden())
+	           .andExpect(forwardedUrl("/denied"));
+	}
+	
+	@Test
+	@WithAnonymousUser
+	public void renderEmptySubjectFormWithAnonymousUserTest() throws Exception {
+		renderEmptySubjectFormNotAuthenticated();
 	}
 
+	private void renderEmptySubjectFormNotAuthenticated() throws Exception {
+		mockMvc.perform(get("/subjects/form"))
+	           .andExpect(status().is3xxRedirection())
+               .andExpect(redirectedUrlPattern("**/login"));
+	}
+	
 	@Test
-	@WithMockUser
+	@WithMockUser(username = "USER", password = "PASSWORD", roles = "USER")
 	public void saveSubjectAndRenderSubjectFormValidFormTest() throws Exception {
-		Subject subject = new Subject("SUB1", "Subject", studyProgram1);
+		saveSubjectAndRenderSubjectFormValidForm();
+	}
+	
+	private void saveSubjectAndRenderSubjectFormValidForm() throws Exception {
+		StudyProgram studyProgram = new StudyProgram(1L, "Study Program");
+		Subject subject = new Subject(1L, "Subject", studyProgram);
 		
-		when(studyProgramService.findStudyProgramById("SP1")).thenReturn(studyProgram1);
+		when(studyProgramService.findStudyProgramById(1L)).thenReturn(studyProgram);
 		doNothing().when(subjectService).saveOrUpdateSubject(subject);
-		when(studyProgramService.findAllStudyPrograms()).thenReturn(
-				new HashSet<StudyProgram>(Arrays.asList(studyProgram1, studyProgram2)));
 		
-		mockMvc.perform(post("/subjects/save").with(csrf())
-				.param("id", "SUB1")
+		mockMvc.perform(
+				post("/subjects/save")
+				.param("id", "1")
 				.param("title", "Subject")
-				.param("studyProgram", "SP1"))
+				.param("studyProgram", "1")
+				.with(csrf())
+				)
 		       .andExpect(model().hasNoErrors())
 		       .andExpect(status().is3xxRedirection())
-		       .andExpect(redirectedUrl("/subjects/subjectForm"));
+		       .andExpect(redirectedUrl("/subjects/form"));
 		
-		verify(studyProgramService, times(1)).findStudyProgramById("SP1");
+		verify(studyProgramService, times(1)).findStudyProgramById(1L);
 		verify(subjectService, times(1)).saveOrUpdateSubject(subject);
-		verify(studyProgramService, times(0)).findAllStudyPrograms();
 	}
 	
 	@Test
 	@WithMockUser
-	public void saveSubjectAndRenderSubjectFormInvalidForm() throws Exception {
-		Subject subject = new Subject("SUB1", "Subject :::", studyProgram1);
+	public void saveSubjectAndRenderSubjectFormInvalidFormTest() throws Exception {
+		saveSubjectAndRenderSubjectFormInvalidForm();
+	}
+	
+	private void saveSubjectAndRenderSubjectFormInvalidForm() throws Exception {
+		StudyProgram studyProgram = new StudyProgram(1L, "Study Program");
+		Subject subject = new Subject(1L, "Subject :::", studyProgram);
 		
-		when(studyProgramService.findStudyProgramById("SP1")).thenReturn(studyProgram1);
+		when(studyProgramService.findStudyProgramById(1L)).thenReturn(studyProgram);
 		doNothing().when(subjectService).saveOrUpdateSubject(subject);
-		when(studyProgramService.findAllStudyPrograms()).thenReturn(
-				new HashSet<StudyProgram>(Arrays.asList(studyProgram1, studyProgram2)));
+		when(studyProgramService.findAllStudyPrograms()).thenReturn(Arrays.asList(studyProgram));
 		
-		mockMvc.perform(post("/subjects/save").with(csrf())
-				.param("id", "SUB1")
+		mockMvc.perform(
+				post("/subjects/save")
+				.param("id", "1")
 				.param("title", "Subject :::")
-				.param("studyProgram", "SP1"))
+				.param("studyProgram", "1")
+				.with(csrf())
+				)
 		       .andExpect(status().isOk())
 		       .andExpect(model().attributeHasFieldErrors("subject", "title"))
 		       .andExpect(model().attribute("subject", is(subject)))
-		       .andExpect(model().attribute("studyPrograms", hasSize(2)))
-		       .andExpect(view().name("subjectForm"));
+		       .andExpect(model().attribute("studyPrograms", hasSize(1)))
+		       .andExpect(view().name("subjects/form"));
 		
-		verify(studyProgramService, times(1)).findStudyProgramById("SP1");
+		verify(studyProgramService, times(1)).findStudyProgramById(1L);
 		verify(subjectService, times(0)).saveOrUpdateSubject(subject);
 		verify(studyProgramService, times(1)).findAllStudyPrograms();
 	}
 	
 	@Test
 	@WithMockUser(username = "ADMIN", password = "PASSWORD", roles = "ADMIN")
-	public void renderSubjectFormWithSubjectByAdminTest() throws Exception {
+	public void renderSubjectFormWithSubjectWithRoleAdminTest() throws Exception {
 		renderSubjectFormWithSubject();
 	}
 
 	@Test
 	@WithMockUser(username = "USER", password = "PASSWORD", roles = "USER")
-	public void renderSubjectFormWithSubjectByUserTest() throws Exception {
+	public void renderSubjectFormWithSubjectWithRoleUserTest() throws Exception {
 		renderSubjectFormWithSubject();
 	}
 
 	private void renderSubjectFormWithSubject() throws Exception {
-		when(subjectService.findSubjectById("SUB1")).thenReturn(subject1);
-		when(studyProgramService.findAllStudyPrograms()).thenReturn(
-				new HashSet<StudyProgram>(Arrays.asList(studyProgram1, studyProgram2)));
+		StudyProgram studyProgram = new StudyProgram(1L, "Study Program");
+		Subject subject = new Subject(1L, "Subject", studyProgram);
 		
-		mockMvc.perform(get("/subjects/edit/SUB1"))
+		when(subjectService.findSubjectById(1L)).thenReturn(subject);
+		when(studyProgramService.findAllStudyPrograms()).thenReturn(Arrays.asList(studyProgram));
+		
+		mockMvc.perform(
+				get("/subjects/edit")
+				.param("subjectId", "1")
+				)
 		       .andExpect(status().isOk())
-		       .andExpect(model().attribute("subject", is(subject1)))
-		       .andExpect(model().attribute("studyPrograms", hasSize(2)))
-		       .andExpect(view().name("subjectForm"));
+		       .andExpect(model().attribute("subject", is(subject)))
+		       .andExpect(model().attribute("studyPrograms", hasSize(1)))
+		       .andExpect(view().name("subjects/form"));
 		
 		verify(studyProgramService, times(1)).findAllStudyPrograms();
-		verify(subjectService, times(1)).findSubjectById("SUB1");
+		verify(subjectService, times(1)).findSubjectById(1L);
 	}
 	
 	@Test
 	@WithMockUser(username = "PROFESSOR", password = "PASSWORD", roles = "PROFESSOR")
-	public void renderSubjectFormWithSubjectByProfessorTest() throws Exception {
-		mockMvc.perform(get("/subjects/edit/SUB1"))
+	public void renderSubjectFormWithSubjectWithRoleProfessorTest() throws Exception {
+		renderSubjectFormWithSubjectAccessDenied();
+	}
+	
+	private void renderSubjectFormWithSubjectAccessDenied() throws Exception {
+		mockMvc.perform(
+				get("/subjects/edit")
+				.param("subjectId", "1")
+				)
 		       .andExpect(status().isForbidden())
 		       .andExpect(forwardedUrl("/denied"));
 	}
+	
+	@Test
+	@WithAnonymousUser
+	public void renderSubjectFormWithSubjectWithAnonymousUserTest() throws Exception {
+		renderSubjectFormWithSubjectNotAuthenticated();
+	}
 
+	private void renderSubjectFormWithSubjectNotAuthenticated() throws Exception {
+		mockMvc.perform(
+				get("/subjects/edit")
+				.param("subjectId", "1")
+				)
+		       .andExpect(status().is3xxRedirection())
+               .andExpect(redirectedUrlPattern("**/login"));
+	}
+	
 	@Test
 	@WithMockUser(username = "ADMIN", password = "PASSWORD", roles = "ADMIN")
-	public void deleteSubjectAndRenderSubjectsPageByAdminTest() throws Exception {
+	public void deleteSubjectAndRenderSubjectsPageWithRoleAdminTest() throws Exception {
 		deleteSubjectAndRenderSubjectsPage();
 	}
 
 	@Test
 	@WithMockUser(username = "USER", password = "PASSWORD", roles = "USER")
-	public void deleteSubjectAndRenderSubjectsPageByUserTest() throws Exception {
+	public void deleteSubjectAndRenderSubjectsPageWithRoleUserTest() throws Exception {
 		deleteSubjectAndRenderSubjectsPage();
 	}
 	
 	private void deleteSubjectAndRenderSubjectsPage() throws Exception {
-		when(subjectService.findSubjectById("SUB1")).thenReturn(subject1);
-		doNothing().when(subjectService).deleteSubject(subject1);
+		doNothing().when(subjectService).deleteSubjectById(1L);
 		
-		mockMvc.perform(get("/subjects/delete/SUB1"))
+		mockMvc.perform(
+				get("/subjects/delete")
+				.param("subjectId", "1")
+				)
 		       .andExpect(status().is3xxRedirection())
 		       .andExpect(redirectedUrl("/subjects"));
 		
-		verify(subjectService, times(1)).findSubjectById("SUB1");
-		verify(subjectService, times(1)).deleteSubject(subject1);
+		verify(subjectService, times(1)).deleteSubjectById(1L);
 	}
-
+	
 	@Test
 	@WithMockUser(username = "PROFESSOR", password = "PASSWORD", roles = "PROFESSOR")
 	public void deleteSubjectAndRenderSubjectsPageByProfessorTest() throws Exception {
-		mockMvc.perform(get("/subjects/delete/SUB1"))
+		deleteSubjectAndRenderSubjectsPageAccessDenied();
+	}
+
+	private void deleteSubjectAndRenderSubjectsPageAccessDenied() throws Exception {
+		mockMvc.perform(
+				get("/subjects/delete")
+				.param("subjectId", "1")
+				)
 		       .andExpect(status().isForbidden())
 		       .andExpect(forwardedUrl("/denied"));
 	}
 	
+	@Test
+	@WithAnonymousUser
+	public void deleteSubjectAndRenderSubjectsPageByAnonymousUserTest() throws Exception {
+		deleteSubjectAndRenderSubjectsPageNotAuthenticated();
+	}
+	
+	private void deleteSubjectAndRenderSubjectsPageNotAuthenticated() throws Exception {
+		mockMvc.perform(
+				get("/subjects/delete")
+				.param("subjectId", "1")
+				)
+		       .andExpect(status().is3xxRedirection())
+               .andExpect(redirectedUrlPattern("**/login"));
+	}
 }
