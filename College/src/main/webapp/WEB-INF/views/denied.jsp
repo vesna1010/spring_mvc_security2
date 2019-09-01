@@ -1,3 +1,3 @@
-<h1 class="text-danger">Access is denied</h1>
+<h1 class="text-danger">Access&nbsp;Denied</h1>
 
 
