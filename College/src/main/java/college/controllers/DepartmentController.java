@@ -3,12 +3,12 @@ package college.controllers;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestParam;
 import college.model.Department;
 import college.service.DepartmentService;
 
@@ -19,44 +19,42 @@ public class DepartmentController {
 	@Autowired
 	private DepartmentService departmentService;
 
-	@RequestMapping
-	public ModelAndView renderDepartmentsPageWithAllDepartments() {
-		return new ModelAndView("departmentsPage", "departments", departmentService.findAllDepartments());
+	@RequestMapping(method = RequestMethod.GET)
+	public String renderDepartmentsPageWithAllDepartments(Model model) {
+		model.addAttribute("departments", departmentService.findAllDepartments());
+
+		return "departments/page";
 	}
 
-	@RequestMapping(value = "/departmentForm", method = RequestMethod.GET)
-	public ModelAndView renderEmptyDepartmentForm() {
-		return new ModelAndView("departmentForm", "department", new Department());
+	@RequestMapping(value = "/delete", params = "departmentId", method = RequestMethod.GET)
+	public String deleteDepartmentAndRenderDepartmentsPage(@RequestParam Long departmentId) {
+		departmentService.deleteDepartmentById(departmentId);
+
+		return "redirect:/departments";
+	}
+
+	@RequestMapping(value = "/form", method = RequestMethod.GET)
+	public Department department() {
+		return new Department();
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public ModelAndView saveDepartmentAndRenderDepartmentForm(@Valid @ModelAttribute Department department,
+	public String saveDepartmentAndRenderDepartmentForm(@Valid @ModelAttribute Department department,
 			BindingResult result) {
-
-		if (!result.hasErrors()) {
-			return saveDepartmentAndGetModelAndView(department);
+		if (result.hasErrors()) {
+			return "departments/form";
 		}
 
-		return new ModelAndView("departmentForm");
-	}
-
-	private ModelAndView saveDepartmentAndGetModelAndView(Department department) {
 		departmentService.saveOrUpdateDepartment(department);
 
-		return new ModelAndView("redirect:/departments/departmentForm");
+		return "redirect:/departments/form";
 	}
 
-	@RequestMapping("/edit/{department}")
-	public ModelAndView renderDepartmentFormWithDepartment(@PathVariable Department department) {
-		return new ModelAndView("departmentForm", "department", department);
-	}
+	@RequestMapping(value = "/edit", params = "departmentId", method = RequestMethod.GET)
+	public String renderDepartmentFormWithDepartment(@RequestParam("departmentId") Department department, Model model) {
+		model.addAttribute("department", department);
 
-	@RequestMapping("/delete/{department}")
-	public ModelAndView deleteDepartmentAndRenderDepartmentsPage(@PathVariable Department department) {
-		departmentService.deleteDepartment(department);
-
-		return new ModelAndView("redirect:/departments");
+		return "departments/form";
 	}
 
 }
-
