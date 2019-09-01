@@ -3,9 +3,12 @@ package college.model;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -13,18 +16,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import college.validation.MyId;
 import college.validation.Title;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "SUBJECTS")
 public class Subject implements Serializable {
 
-	private String id;
+	private static final long serialVersionUID = 1L;
+	private Long id;
 	private String title;
 	private StudyProgram studyProgram;
 	private Set<Lecture> lectures = new HashSet<>();
@@ -33,20 +32,24 @@ public class Subject implements Serializable {
 	public Subject() {
 	}
 
-	public Subject(String id, String title, StudyProgram studyProgram) {
+	public Subject(Long id, String title) {
+		this(id, title, null);
+	}
+
+	public Subject(Long id, String title, StudyProgram studyProgram) {
 		this.id = id;
 		this.title = title;
 		this.studyProgram = studyProgram;
 	}
 
 	@Id
-	@MyId
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -63,7 +66,6 @@ public class Subject implements Serializable {
 	@NotNull
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "STUDY_PROGRAM_ID")
-	@Cascade(value = CascadeType.SAVE_UPDATE)
 	public StudyProgram getStudyProgram() {
 		return studyProgram;
 	}
@@ -72,8 +74,7 @@ public class Subject implements Serializable {
 		this.studyProgram = studyProgram;
 	}
 
-	@OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
-	@Cascade(value = CascadeType.ALL)
+	@OneToMany(mappedBy = "subject", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	public Set<Exam> getExams() {
 		return exams;
 	}
@@ -82,24 +83,13 @@ public class Subject implements Serializable {
 		this.exams = exams;
 	}
 
-	public void addExam(Exam exam) {
-		exam.setSubject(this);
-		exams.add(exam);
-	}
-
-	@OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
-	@Cascade(value = CascadeType.ALL)
+	@OneToMany(mappedBy = "subject", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	public Set<Lecture> getLectures() {
 		return lectures;
 	}
 
 	public void setLectures(Set<Lecture> lectures) {
 		this.lectures = lectures;
-	}
-
-	public void addLecture(Lecture lecture) {
-		lecture.setSubject(this);
-		this.lectures.add(lecture);
 	}
 
 	@Transient
@@ -139,4 +129,3 @@ public class Subject implements Serializable {
 	}
 
 }
-
