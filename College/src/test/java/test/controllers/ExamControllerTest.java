@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.GregorianCalendar;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashSet;
+import java.util.Date;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -26,13 +26,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import college.controllers.ExamController;
-import college.converters.ExamConverter;
 import college.converters.ProfessorConverter;
 import college.converters.StudentConverter;
 import college.converters.StudyProgramConverter;
 import college.converters.SubjectConverter;
 import college.model.Exam;
 import college.model.Professor;
+import college.model.Student;
+import college.model.StudentSubjectId;
+import college.model.StudyProgram;
 import college.model.Subject;
 import college.service.ExamService;
 import college.service.ProfessorService;
@@ -48,19 +50,11 @@ public class ExamControllerTest extends BaseControllerTest {
 	private SubjectService subjectService;
 	@Mock
 	private ProfessorService professorService;
+	@Mock
+	private StudentService studentService;
 	@InjectMocks
 	@Autowired
 	private ExamController examController;
-	@InjectMocks
-	@Autowired
-	private ExamConverter examConverter;
-	@Mock
-	private StudyProgramService studyProgramService;
-	@InjectMocks
-	@Autowired
-	private StudyProgramConverter studyProgramConverter;
-	@Mock
-	private StudentService studentService;
 	@InjectMocks
 	@Autowired
 	private StudentConverter studentConverter;
@@ -70,276 +64,282 @@ public class ExamControllerTest extends BaseControllerTest {
 	@InjectMocks
 	@Autowired
 	private ProfessorConverter professorConverter;
-
+	@Mock
+	private StudyProgramService studyProgramService;
+	@InjectMocks
+	@Autowired
+	private StudyProgramConverter studyProgramConverter;
+	
 	@Test
 	@WithMockUser(username = "ADMIN", password = "PASSWORD", roles = "ADMIN")
-	public void renderExamFormSubjectByAdminTest() throws Exception {
-		renderExamFormSubject();
+	public void renderPageWithExamsByStudyProgramWithRoleAdminTest() throws Exception {
+		renderPageWithExamsByStudyProgram();
+	}
+	
+	@Test
+	@WithMockUser(username = "USER", password = "PASSWORD", roles = "USER")
+	public void renderPageWithExamsByStudyProgramWithRoleUserTest() throws Exception {
+		renderPageWithExamsByStudyProgram();
+	}
+	
+	@Test
+	@WithMockUser(username = "PROFESSOR", password = "PASSWORD", roles = "PROFESSOR")
+	public void renderPageWithExamsByStudyProgramWithRoleProfessorTest() throws Exception {
+		renderPageWithExamsByStudyProgram();
+	}
+	
+	private void renderPageWithExamsByStudyProgram() throws Exception {
+		StudyProgram studyProgram = new StudyProgram(1L, "Study Program");
+		
+		when(studyProgramService.findStudyProgramById(1L)).thenReturn(studyProgram);
+		when(examService.findAllExamsByStudyProgram(studyProgram))
+				.thenReturn(Arrays.asList(new Exam(new Student(1L, "Student"), new Subject(1L, "Subject"),
+						new Professor(1L, "Professor"), new Date(), 10)));	
+		
+		mockMvc.perform(
+				get("/exams")
+				.param("studyProgramId", "1")
+				)
+		       .andExpect(status().isOk())
+		       .andExpect(model().attribute("exams", hasSize(1)))
+		       .andExpect(view().name("exams/page"));
+		
+		verify(studyProgramService, times(4)).findStudyProgramById(1L);
+		verify(examService, times(1)).findAllExamsByStudyProgram(studyProgram);
+	}
+	
+	@Test
+	@WithAnonymousUser
+	public void renderPageWithExamsByStudyProgramWithAnonymousUserTest() throws Exception {
+		renderPageWithExamsByStudyProgramNotAuthenticated();
+	}
+	
+	private void renderPageWithExamsByStudyProgramNotAuthenticated() throws Exception {
+		mockMvc.perform(
+				get("/exams")
+				.param("studyProgramId", "1")
+				)
+		       .andExpect(status().is3xxRedirection())
+               .andExpect(redirectedUrlPattern("**/login"));
+	}
+	
+	@Test
+	@WithMockUser(username = "ADMIN", password = "PASSWORD", roles = "ADMIN")
+	public void renderEmptyExamFormWithRoleAdminTest() throws Exception {
+		renderEmptyExamForm();
 	}
 
 	@Test
 	@WithMockUser(username = "USER", password = "PASSWORD", roles = "USER")
-	public void renderExamFormSubjectByUserTest() throws Exception {
-		renderExamFormSubject();
+	public void renderEmptyExamFormWithRoleUserTest() throws Exception {
+		renderEmptyExamForm();
 	}
 
-	private void renderExamFormSubject() throws Exception {
-		when(studyProgramService.findStudyProgramById("SP1")).thenReturn(studyProgram1);
+	private void renderEmptyExamForm() throws Exception {
+		StudyProgram studyProgram = new StudyProgram(1L, "Study Program");
+		
+		when(studyProgramService.findStudyProgramById(1L)).thenReturn(studyProgram);
+		when(studentService.findAllStudentsByStudyProgram(studyProgram)).thenReturn(Arrays.asList(new Student(1L, "Student")));
+		when(subjectService.findAllSubjectsByStudyProgram(studyProgram)).thenReturn(Arrays.asList(new Subject(1L, "Subject")));
+		when(professorService.findAllProfessorsByStudyProgram(studyProgram))
+				.thenReturn(Arrays.asList(new Professor(1L, "Professor")));
 
-		mockMvc.perform(get("/exams/examForm").param("studyProgram", "SP1"))
+		mockMvc.perform(
+				get("/exams/form")
+				.param("studyProgramId", "1")
+				)
 		       .andExpect(status().isOk())
 		       .andExpect(model().attribute("exam", is(new Exam())))
-		       .andExpect(model().attribute("studyProgram", is(studyProgram1)))
-		       .andExpect(view().name("examForm"));
+		       .andExpect(model().attribute("students", hasSize(1)))
+		       .andExpect(model().attribute("subjects", hasSize(1)))
+		       .andExpect(model().attribute("professors", hasSize(1)))
+		       .andExpect(view().name("exams/form"));
 		
-		verify(studyProgramService, times(1)).findStudyProgramById("SP1");
+		verify(studyProgramService, times(3)).findStudyProgramById(1L);
+		verify(studentService, times(1)).findAllStudentsByStudyProgram(studyProgram);
+		verify(subjectService, times(1)).findAllSubjectsByStudyProgram(studyProgram);
+		verify(professorService, times(1)).findAllProfessorsByStudyProgram(studyProgram);
 	}
 
 	@Test
 	@WithMockUser(username = "PROFESSOR", password = "PASSWORD", roles = "PROFESSOR")
-	public void renderExamFormSubjectByProfessorTest() throws Exception {
-		mockMvc.perform(get("/exams/examForm").param("studyProgramId", "SP1"))
+	public void renderEmptyExamFormWithRoleProfessorTest() throws Exception {
+		renderEmptyExamFormAccessDenied();
+	}
+	
+	private void renderEmptyExamFormAccessDenied() throws Exception {
+		mockMvc.perform(
+				get("/exams/form")
+				.param("studyProgramId", "1")
+				)
 		       .andExpect(status().isForbidden())
 		       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
-	@WithMockUser
+	@WithAnonymousUser
+	public void renderExamFormSubjectWithAnonymousUserTest() throws Exception {
+		renderEmptyExamFormNotAuthenticated();
+	}
+	
+	private void renderEmptyExamFormNotAuthenticated() throws Exception {
+		mockMvc.perform(
+				get("/exams/form")
+				.param("studyProgramId", "1")
+				)
+		       .andExpect(status().is3xxRedirection())
+               .andExpect(redirectedUrlPattern("**/login"));
+	}
+	
+	@Test
+	@WithMockUser(username = "USER", password = "PASSWORD", roles = "USER")
 	public void saveExamAndRenderExamFormValidFormTest() throws Exception {
-		 Exam exam = new Exam("E1", student1, subject1, professor1,
-					new GregorianCalendar(2017, Calendar.JANUARY, 1).getTime(), 8);
-		
-		when(studyProgramService.findStudyProgramById("SP1")).thenReturn(studyProgram1);
-		when(studentService.findStudentById("S1")).thenReturn(student1);
-		when(subjectService.findSubjectById("SUB1")).thenReturn(subject1);
-		when(professorService.findProfessorById("P1")).thenReturn(professor1);
+		saveExamAndRenderExamFormValidForm();
+	}
+	
+	private void saveExamAndRenderExamFormValidForm() throws Exception {
+		Student student = new Student(1L, "Student");
+		Subject subject = new Subject(1L, "Subject");
+		Professor professor = new Professor(1L, "Professor");
+		Exam exam = new Exam(student, subject, professor,
+				new GregorianCalendar(2017, Calendar.JANUARY, 1).getTime(), 8);
+	
+		when(studentService.findStudentById(1L)).thenReturn(student);
+		when(subjectService.findSubjectById(1L)).thenReturn(subject);
+		when(professorService.findProfessorById(1L)).thenReturn(professor);
 		doNothing().when(examService).saveOrUpdateExam(exam);
 		
 		mockMvc.perform(
-				post("/exams/save").with(csrf())
-				.param("studyProgram", "SP1")
-				.param("id", "E1")
-				.param("student", "S1")
-				.param("subject", "SUB1")
-				.param("professor", "P1")
+				post("/exams/save")
+				.param("studyProgramId", "1")
+				.param("student", "1")
+				.param("subject", "1")
+				.param("professor", "1")
 				.param("date", "01-01-2017")
-		                .param("score", "8"))
+		        .param("score", "8")
+		        .with(csrf())
+		        )
 		       .andExpect(model().hasNoErrors())
 		       .andExpect(status().is3xxRedirection())
-		       .andExpect(redirectedUrl("/exams/examForm?studyProgram=SP1"));
+		       .andExpect(redirectedUrl("/exams/form?studyProgramId=1"));
 		
-		verify(studyProgramService, times(1)).findStudyProgramById("SP1");
-		verify(studentService, times(1)).findStudentById("S1");
-		verify(subjectService, times(1)).findSubjectById("SUB1");
-		verify(professorService, times(1)).findProfessorById("P1");
+		verify(studentService, times(1)).findStudentById(1L);
+		verify(subjectService, times(1)).findSubjectById(1L);
+		verify(professorService, times(1)).findProfessorById(1L);
 		verify(examService, times(1)).saveOrUpdateExam(exam);
 	}
 	
 	@Test
 	@WithMockUser(username = "USER", password = "PASSWORD", roles = "USER")
 	public void saveExamAndRenderExamFormInvalidFormTest() throws Exception {
-		Exam exam = new Exam("E1", student1, subject1, professor1,
-				new GregorianCalendar(2017, 1, 1).getTime(), 0);
+		saveExamAndRenderExamFormInvalidForm();
+	}
+	
+	private void saveExamAndRenderExamFormInvalidForm() throws Exception {
+		Student student = new Student(1L, "Student");
+		Subject subject = new Subject(1L, "Subject");
+		Professor professor = new Professor(1L, "Professor");
+		Exam exam = new Exam(student, subject, professor, new GregorianCalendar(2017, 1, 1).getTime(), 0);
+		StudyProgram studyProgram = new StudyProgram(1L, "Study Program");
 		
-		when(studyProgramService.findStudyProgramById("SP1")).thenReturn(studyProgram1);
-		when(studentService.findStudentById("S1")).thenReturn(student1);
-		when(subjectService.findSubjectById("SUB1")).thenReturn(subject1);
-		when(professorService.findProfessorById("P1")).thenReturn(professor1);
+		when(studyProgramService.findStudyProgramById(1L)).thenReturn(studyProgram);
+		when(studentService.findStudentById(1L)).thenReturn(student);
+		when(subjectService.findSubjectById(1L)).thenReturn(subject);
+		when(professorService.findProfessorById(1L)).thenReturn(professor);
 		doNothing().when(examService).saveOrUpdateExam(exam);
+		when(studentService.findAllStudentsByStudyProgram(studyProgram)).thenReturn(Arrays.asList(student));
+		when(subjectService.findAllSubjectsByStudyProgram(studyProgram)).thenReturn(Arrays.asList(subject));
+		when(professorService.findAllProfessorsByStudyProgram(studyProgram)).thenReturn(Arrays.asList(professor));
 		
 		mockMvc.perform(
-				post("/exams/save").with(csrf())
-				.param("studyProgram", "SP1")
-				.param("id", "E1")
-				.param("student", "S1")
-				.param("professor", "P1")
-				.param("subject", "SUB1")
+				post("/exams/save")
+				.param("studyProgramId", "1")
+				.param("student", "1")
+				.param("professor", "1")
+				.param("subject", "1")
 				.param("date", "01-01-2017")
-		                .param("score", "5"))
+		        .param("score", "5")
+		        .with(csrf())
+		        )
 		       .andExpect(status().isOk())
 		       .andExpect(model().attributeHasFieldErrors("exam", "score"))
 		       .andExpect(model().attribute("exam", is(exam)))
-		       .andExpect(model().attribute("studyProgram", is(studyProgram1)))
-	               .andExpect(view().name("examForm"));
+		       .andExpect(model().attribute("students", hasSize(1)))
+		       .andExpect(model().attribute("subjects", hasSize(1)))
+		       .andExpect(model().attribute("professors", hasSize(1)))
+	           .andExpect(view().name("exams/form"));
 		
-		verify(studyProgramService, times(1)).findStudyProgramById("SP1");
-		verify(studentService, times(1)).findStudentById("S1");
-		verify(subjectService, times(1)).findSubjectById("SUB1");
-		verify(professorService, times(1)).findProfessorById("P1");
+		verify(studyProgramService, times(3)).findStudyProgramById(1L);
+		verify(studentService, times(1)).findStudentById(1L);
+		verify(subjectService, times(1)).findSubjectById(1L);
+		verify(professorService, times(1)).findProfessorById(1L);
 		verify(examService, times(0)).saveOrUpdateExam(exam);
+		verify(studentService, times(1)).findAllStudentsByStudyProgram(studyProgram);
+		verify(subjectService, times(1)).findAllSubjectsByStudyProgram(studyProgram);
+		verify(professorService, times(1)).findAllProfessorsByStudyProgram(studyProgram);
 	}
 	
 	@Test
 	@WithMockUser(username = "ADMIN", password = "PASSWORD", roles = "ADMIN")
-	public void renderExamFormWithExamByAdminTest() throws Exception {
-		renderExamFormWithExam();
+	public void deleteExamAndRenderExamsPageWithRoleAdminTest() throws Exception {
+		deleteExamAndRenderExamsPage();
 	}
 
 	@Test
 	@WithMockUser(username = "USER", password = "PASSWORD", roles = "USER")
-	public void renderExamFormWithExamByUserTest() throws Exception {
-		renderExamFormWithExam();
+	public void deleteExamAndRenderExamsPageWithRoleUserTest() throws Exception {
+		deleteExamAndRenderExamsPage();
 	}
 
-	private void renderExamFormWithExam() throws Exception {
-		when(studyProgramService.findStudyProgramById("SP1")).thenReturn(studyProgram1);
-		when(examService.findExamById("E1")).thenReturn(exam1);
-
-		mockMvc.perform(get("/exams/edit/E1/SP1"))
-		       .andExpect(status().isOk())
-		       .andExpect(model().attribute("exam", is(exam1)))
-		       .andExpect(model().attribute("studyProgram", is(studyProgram1)))
-		       .andExpect(view().name("examForm"));
+	private void deleteExamAndRenderExamsPage() throws Exception {
+		StudentSubjectId id = new StudentSubjectId(1L, 1L);
 		
-		verify(studyProgramService, times(1)).findStudyProgramById("SP1");
-		verify(examService, times(1)).findExamById("E1");
+		doNothing().when(examService).deleteExamById(id);
+		
+		mockMvc.perform(
+				get("/exams/delete")
+				.param("studentId", "1")
+				.param("subjectId", "1")
+				.param("studyProgramId", "1")
+				)
+		       .andExpect(status().is3xxRedirection())
+		       .andExpect(redirectedUrl("/exams?studyProgramId=1"));
+		
+		verify(examService, times(1)).deleteExamById(id);
 	}
 
 	@Test
 	@WithMockUser(username = "PROFESSOR", password = "PASSWORD", roles = "PROFESSOR")
-	public void renderExamFormWithExamByProfessorTest() throws Exception {
-		mockMvc.perform(get("/exams/edit/E1/SP1"))
+	public void deleteExamAndRenderExamsPageWithRoleProfessorTest() throws Exception {
+		deleteExamAndRenderExamsPageAccessDenied();
+	}
+	
+	private void deleteExamAndRenderExamsPageAccessDenied() throws Exception {
+		mockMvc.perform(
+				get("/exams/delete")
+				.param("studentId", "1")
+				.param("subjectId", "1")
+				.param("studyProgramId", "1")
+				)
 		       .andExpect(status().isForbidden())
 		       .andExpect(forwardedUrl("/denied"));
-	}
-
-	@Test
-	@WithMockUser(username = "ADMIN", password = "PASSWORD", roles = "ADMIN")
-	public void deleteExamByIdByAdminTest() throws Exception {
-		deleteExamById();
-	}
-
-	@Test
-	@WithMockUser(username = "USER", password = "PASSWORD", roles = "USER")
-	public void deleteExamByIdByUserTest() throws Exception {
-		deleteExamById();
-	}
-
-	private void deleteExamById() throws Exception {
-		when(examService.findExamById("E1")).thenReturn(exam1);
-		doNothing().when(examService).deleteExam(exam1);
-		when(examService.findExamsByObjects(exam1.getProfessor(), exam1.getSubject(),  
-				exam1.getDate())).thenReturn(new HashSet<Exam>());
-	
-		mockMvc.perform(get("/exams/delete/E1"))
-		       .andExpect(status().isOk())
-		       .andExpect(model().attribute("exams", hasSize(0)))
-		       .andExpect(view().name("examsPage"));
-		
-		verify(examService, times(1)).findExamById("E1");
-		verify(examService, times(1)).deleteExam(exam1);
-		verify(examService, times(1)).findExamsByObjects(professor1, subject1, exam1.getDate());
-	}
-
-	@Test
-	@WithMockUser(username = "PROFESSOR", password = "PASSWORD", roles = "PROFESSOR")
-	public void deleteExamByIdByProfessorTest() throws Exception {
-		mockMvc.perform(get("/exams/delete/E1"))
-		       .andExpect(status().isForbidden())
-		       .andExpect(forwardedUrl("/denied"));
-	}
-	
-	@Test
-	@WithMockUser(username = "ADMIN", password = "PASSWORD", roles = "ADMIN")
-	public void renderSearchExamFormByAdminTest() throws Exception {
-		renderSearchExamForm();
-	}
-
-	@Test
-	@WithMockUser(username = "USER", password = "PASSWORD", roles = "USER")
-	public void renderSearchExamFormByUserTest() throws Exception {
-		renderSearchExamForm();
-	}
-	
-	@Test
-	@WithMockUser(username = "PROFESSOR", password = "PASSWORD", roles = "PROFESSOR")
-	public void renderSearchExamFormByProfessorTest() throws Exception {
-		renderSearchExamForm();
-	}
-
-	private void renderSearchExamForm() throws Exception {
-		when(professorService.findAllProfessors()).thenReturn(
-				new HashSet<Professor>(Arrays.asList(professor1, professor2)));
-		when(subjectService.findAllSubjects()).thenReturn(
-				new HashSet<Subject>(Arrays.asList(subject1, subject2)));
-		
-		mockMvc.perform(get("/exams/search"))
-		       .andExpect(status().isOk())
-		       .andExpect(model().attribute("exam", is(new Exam())))
-		       .andExpect(model().attribute("subjects", hasSize(2)))
-		       .andExpect(model().attribute("professors", hasSize(2)))
-		       .andExpect(view().name("searchExamsForm"));
-		
-		verify(subjectService, times(1)).findAllSubjects();
-		verify(professorService, times(1)).findAllProfessors();
 	}
 	
 	@Test
 	@WithAnonymousUser
-	public void renderSearchExamFormByAnonymousUserTest() throws Exception {
-		mockMvc.perform(get("/exams/search"))
+	public void deleteExamAndRenderExamsPageWithAnonymousUserTest() throws Exception {
+		deleteExamAndRenderExamsPageNotAuthenticated();
+	}
+	
+	private void deleteExamAndRenderExamsPageNotAuthenticated() throws Exception {
+		mockMvc.perform(
+				get("/exams/delete")
+				.param("studentId", "1")
+				.param("subjectId", "1")
+				.param("studyProgramId", "1")
+				)
 		       .andExpect(status().is3xxRedirection())
-                       .andExpect(redirectedUrlPattern("**/login"));
+               .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
-	@Test
-	@WithMockUser
-	public void renderSearchedExamsValidFormTest() throws Exception {
-		when(professorService.findProfessorById("P1")).thenReturn(professor1);
-		when(subjectService.findSubjectById("SUB1")).thenReturn(subject1);
-		when(examService.findExamsByObjects(professor1, subject1, 
-				new GregorianCalendar(2017, Calendar.JANUARY, 1).getTime())).thenReturn(
-				new HashSet<Exam>(Arrays.asList(exam1)));	
-		
-		mockMvc.perform(
-				post("/exams/search").with(csrf())
-				.param("professor", "P1")
-				.param("subject", "SUB1")
-				.param("date", "01-01-2017")
-		                .param("student", "")
-		                .param("id", ""))
-		       .andExpect(status().isOk())
-		       .andExpect(model().attribute("exams", hasSize(1)))
-		       .andExpect(view().name("examsPage"));
-		
-		verify(professorService, times(1)).findProfessorById("P1");
-		verify(subjectService, times(1)).findSubjectById("SUB1");
-		verify(examService, times(1)).findExamsByObjects(professor1, subject1, 
-				new GregorianCalendar(2017, Calendar.JANUARY, 1).getTime());
-	}
-	
-	@Test
-	@WithMockUser(username = "USER", password = "PASSWORD", roles = "USER")
-	public void renderSearchedExamsInvalidFormTest() throws Exception {	
-		when(professorService.findProfessorById("")).thenReturn(null);
-		when(subjectService.findSubjectById("")).thenReturn(null);
-		when(examService.findExamsByObjects(null, null, 
-				new GregorianCalendar(2017, Calendar.JANUARY, 1).getTime())).thenReturn(
-				new HashSet<Exam>(Arrays.asList()));	
-		when(professorService.findAllProfessors()).thenReturn(
-				new HashSet<Professor>(Arrays.asList(professor1, professor2)));
-		when(subjectService.findAllSubjects()).thenReturn(
-				new HashSet<Subject>(Arrays.asList(subject1, subject2)));
-		
-		mockMvc.perform(
-				post("/exams/search").with(csrf())
-				.param("professor", "")
-				.param("subject", "")
-				.param("student", "")
-				.param("id", "")
-				.param("date", ""))
-		       .andExpect(status().isOk())
-		       .andExpect(model().attributeHasFieldErrors("exam", "student", "professor"))
-		       .andExpect(model().attribute("subjects", hasSize(2)))
-		       .andExpect(model().attribute("professors", hasSize(2)))
-		       .andExpect(view().name("searchExamsForm"));
-		
-		verify(professorService, times(1)).findProfessorById("");
-		verify(subjectService, times(1)).findSubjectById("");
-		verify(examService, times(0)).findExamsByObjects(null, null, 
-				new GregorianCalendar(2017, Calendar.JANUARY, 1).getTime());
-		verify(subjectService, times(1)).findAllSubjects();
-		verify(professorService, times(1)).findAllProfessors();
-	}
-
 }
