@@ -1,20 +1,29 @@
 package college.service.impl;
 
-import javax.annotation.Resource;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import college.dao.extensions.LectureDao;
+import org.springframework.transaction.annotation.Transactional;
+import college.dao.LectureDao;
 import college.model.Lecture;
+import college.model.ProfessorSubjectId;
+import college.model.StudyProgram;
 import college.service.LectureService;
 
 @Service
+@Transactional
 public class LectureServiceImpl implements LectureService {
-	
-	@Resource
+
 	private LectureDao lectureDao;
 
+	@Autowired
+	public LectureServiceImpl(LectureDao lectureDao) {
+		this.lectureDao = lectureDao;
+	}
+
 	@Override
-	public Lecture findLectureById(Long id) {
-		return lectureDao.findById(id);
+	public List<Lecture> findAllLecturesByStudyProgram(StudyProgram studyProgram) {
+		return lectureDao.findAllByStudyProgram(studyProgram);
 	}
 
 	@Override
@@ -23,9 +32,8 @@ public class LectureServiceImpl implements LectureService {
 	}
 
 	@Override
-	public void deleteLecture(Lecture lecture) {
-		lectureDao.delete(lecture);
+	public void deleteLectureById(ProfessorSubjectId id) {
+		lectureDao.deleteById(id);
 	}
 
 }
-
