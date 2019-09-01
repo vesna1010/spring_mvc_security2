@@ -1,18 +1,21 @@
 package college.validation;
 
 import java.util.Set;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import college.enums.Role;
 import college.model.User;
+import college.service.UserService;
 
-@Component
 public class UserValidator implements Validator {
 
-	private String userPattern = "^([a-zA-Z0-9]+\\s?){8,15}$";
-	private String passwordPattern = "^\\S{8,15}$";
-	private String emailPattern = "^[a-zA-Z0-9_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
+	private static final String NAME_PATTERN = "^[a-zA-Z]{3,}\\s[a-zA-Z]{3,}(\\s[a-zA-Z]{3,})?$";
+	private static final String PASSWORD_PATTERN = "^\\S{8,15}$";
+	private static final String EMAIL_PATTERN = "^[a-zA-Z0-9_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
+
+	@Autowired
+	private UserService userService;
 
 	@Override
 	public boolean supports(Class<?> cls) {
@@ -23,45 +26,53 @@ public class UserValidator implements Validator {
 	public void validate(Object object, Errors errors) {
 		User user = (User) object;
 
-		if (!isValidUsername(user.getUsername())) {
-			errors.rejectValue("username", "user.username");
+		if (isInvalidName(user.getName())) {
+			errors.rejectValue("name", "user.name");
 		}
 
-		if (!isValidPassword(user.getPassword())) {
+		if (isExistEmail(user.getEmail())) {
+			errors.rejectValue("email", "user.email.exists");
+		}
+
+		if (isInvalidEmail(user.getEmail())) {
+			errors.rejectValue("email", "user.email.invalid");
+		}
+
+		if (isInvalidPassword(user.getPassword())) {
 			errors.rejectValue("password", "user.password");
+		} else {
+			if (isNotEqualPasswords(user.getPassword(), user.getConfirmPassword())) {
+				errors.rejectValue("confirmPassword", "user.confirmPassword");
+			}
 		}
 
-		if (!isValidEmail(user.getEmail())) {
-			errors.rejectValue("email", "user.email");
-		}
-
-		if (isValidPassword(user.getPassword()) && !isEqualsPasswords(user.getPassword(), user.getConfirmPassword())) {
-			errors.rejectValue("confirmPassword", "user.passwordConfirmDifferent");
-		}
-
-		if (isEmptyRoles(user.getRoles())) {
+		if (isInvalidRoles(user.getRoles())) {
 			errors.rejectValue("roles", "user.roles");
 		}
 
 	}
 
-	private boolean isValidUsername(String username) {
-		return username.matches(userPattern);
+	private boolean isInvalidName(String name) {
+		return (name == null || !name.matches(NAME_PATTERN));
 	}
 
-	private boolean isValidPassword(String password) {
-		return password.matches(passwordPattern);
+	private boolean isExistEmail(String email) {
+		return (userService.findUserByEmail(email) != null);
 	}
 
-	private boolean isValidEmail(String email) {
-		return email.matches(emailPattern);
+	private boolean isInvalidEmail(String email) {
+		return (email == null || !email.matches(EMAIL_PATTERN));
 	}
 
-	private boolean isEqualsPasswords(String password, String confirmPassword) {
-		return password.equals(confirmPassword);
+	private boolean isInvalidPassword(String password) {
+		return (password == null || !password.matches(PASSWORD_PATTERN));
 	}
 
-	private boolean isEmptyRoles(Set<Role> roles) {
+	private boolean isNotEqualPasswords(String password, String confirmPassword) {
+		return !password.equals(confirmPassword);
+	}
+
+	private boolean isInvalidRoles(Set<Role> roles) {
 		return (roles == null || roles.size() == 0);
 	}
 
