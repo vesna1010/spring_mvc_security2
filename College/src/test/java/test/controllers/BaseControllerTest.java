@@ -11,23 +11,26 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import test.BaseTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/spring-security.xml",
 		"file:src/main/webapp/WEB-INF/spring/dispatcherServlet/servlet-context.xml",
 		"file:src/main/webapp/WEB-INF/spring/root-context.xml" })
 @WebAppConfiguration
-public abstract class BaseControllerTest extends BaseTest {
+public abstract class BaseControllerTest {
 
 	@Autowired
 	protected WebApplicationContext wax;
 	protected MockMvc mockMvc;
-	
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(wax).apply(springSecurity()).build();
+
+		this.mockMvc = MockMvcBuilders
+				.webAppContextSetup(wax)
+				.apply(springSecurity())
+				.build();
 	}
-	
-}	
+
+}
