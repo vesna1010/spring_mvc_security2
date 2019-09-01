@@ -2,94 +2,93 @@ package test.dao;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Set;
-import org.junit.Before;
+import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import college.dao.extensions.ExamDao;
+import college.dao.ExamDao;
 import college.model.Exam;
+import college.model.Professor;
+import college.model.Student;
+import college.model.StudentSubjectId;
+import college.model.StudyProgram;
+import college.model.Subject;
 
 public class ExamDaoTest extends BaseDaoTest {
-	
+
 	@Autowired
 	private ExamDao examDao;
-	
-	@Before
-	public void setUp() {
-		examDao.deleteAll();
-		examDao.saveOrUpdate(exam1);
-		examDao.saveOrUpdate(exam2);
-	}
-	
+
 	@Test
-	public void findAllExamsTest() {
-		Set<Exam> exams = examDao.findAll();
-		
-		assertThat(exams, hasSize(2));
-		assertTrue(exams.contains(exam1));
-		assertTrue(exams.contains(exam2));
-		assertFalse(exams.contains(exam3));
-	}
-	
-	@Test
-	public void findExamByIdTest() {
-		Exam exam = examDao.findById(exam1.getId());
-		
-		assertThat(exam.getProfessor(), is(professor1));
-		assertThat(exam.getStudent(), is(student1));
-		assertThat(exam.getSubject(), is(subject1));
+	public void findAllTest() {
+		List<Exam> exams = examDao.findAll();
+
+		assertThat(exams, hasSize(4));
 	}
 
 	@Test
-	public void saveExamTest() {
-        examDao.saveOrUpdate(exam3);
-        
-        assertNotNull(examDao.findById("E3"));
+	public void findAllByStudyProgramTest() {
+		StudyProgram studyProgram = new StudyProgram(1L, "Study Program A");
+		
+		List<Exam> exams = examDao.findAllByStudyProgram(studyProgram);
+
+		assertThat(exams, hasSize(3));
 	}
-	
+
 	@Test
-	public void updateExamTest() {
-		exam1.setProfessor(professor2);
-		exam1.setStudent(student2);
-		exam1.setSubject(subject2);
+	public void findAllByStudentTest() {
+		Student student = new Student(1L, "Student A");
 		
-		examDao.saveOrUpdate(exam1);
-		
-		Exam exam = examDao.findById("E1");
-		
-		assertThat(exam.getProfessor(), is(professor2));
-		assertThat(exam.getStudent(), is(student2));
-		assertThat(exam.getSubject(), is(subject2));
+		List<Exam> exams = examDao.findAllByStudent(student);
+
+		assertThat(exams, hasSize(2));
 	}
-	
+
 	@Test
-	public void deleteExamByIdTest() {	
-		examDao.deleteById("E1");
-		
-		assertNull(examDao.findById("E1"));
-	}
-	
-	@Test
-	public void deleteExamTest() {	
-		examDao.delete(exam1);
-		
-		assertNull(examDao.findById("E1"));
-	}
-	
-	@Test
-	public void findExamsByObjectsTest() {
-		Set<Exam> exams = examDao.findExamsByObjects(professor1, subject1, 
-				new GregorianCalendar(2017, Calendar.FEBRUARY, 1).getTime());
-		
+	public void findAllByProfessorAndSubjectAndDateTest() {
+		Professor professor = new Professor(4L, "Professor A");
+		Subject subject = new Subject(1L, "Subject A");
+		Date date = new GregorianCalendar(2018, Calendar.FEBRUARY, 1).getTime();
+
+		List<Exam> exams = examDao.findAllByProfessorAndSubjectAndDate(professor, subject, date);
+
 		assertThat(exams, hasSize(1));
-		assertThat(examDao.findAll(), hasSize(2));
 	}
-	
+
+	@Test
+	public void findExamByIdTest() {
+		StudentSubjectId examId = new StudentSubjectId(1L, 1L);
+		
+		Exam exam = examDao.findById(examId);
+
+		assertThat(exam.getScore(), is(9));
+	}
+
+	@Test
+	public void saveOrUpdateExamTest() {
+		StudentSubjectId examId = new StudentSubjectId(1L, 1L);
+		Exam exam = examDao.findById(examId);
+
+		exam.setScore(10);
+
+		examDao.saveOrUpdate(exam);
+
+		exam = examDao.findById(examId);
+
+		assertThat(exam.getScore(), is(10));
+	}
+
+	@Test
+	public void deleteExamByIdTest() {
+		StudentSubjectId examId = new StudentSubjectId(1L, 1L);
+
+		examDao.deleteById(examId);
+
+		assertNull(examDao.findById(examId));
+	}
+
 }
