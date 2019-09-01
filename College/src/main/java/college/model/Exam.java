@@ -4,28 +4,24 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.springframework.format.annotation.DateTimeFormat;
-import college.validation.MyId;
 
-@SuppressWarnings({ "serial" })
 @Entity
 @Table(name = "EXAMS")
+@IdClass(StudentSubjectId.class)
 public class Exam implements Serializable {
 
-	private String id;
+	private static final long serialVersionUID = 1L;
 	private Student student;
 	private Subject subject;
 	private Professor professor;
@@ -35,8 +31,7 @@ public class Exam implements Serializable {
 	public Exam() {
 	}
 
-	public Exam(String id, Student student, Subject subject, Professor professor, Date date, Integer score) {
-		this.id = id;
+	public Exam(Student student, Subject subject, Professor professor, Date date, Integer score) {
 		this.student = student;
 		this.subject = subject;
 		this.professor = professor;
@@ -44,21 +39,10 @@ public class Exam implements Serializable {
 		this.score = score;
 	}
 
-	@Id
-	@MyId
-	@Column(name = "ID")
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	@NotNull
-	@ManyToOne(fetch = FetchType.EAGER)
+	@Id
+	@ManyToOne
 	@JoinColumn(name = "STUDENT_ID")
-	@Cascade(value = CascadeType.SAVE_UPDATE)
 	public Student getStudent() {
 		return student;
 	}
@@ -68,9 +52,9 @@ public class Exam implements Serializable {
 	}
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.EAGER)
+	@Id
+	@ManyToOne
 	@JoinColumn(name = "SUBJECT_ID")
-	@Cascade(value = CascadeType.SAVE_UPDATE)
 	public Subject getSubject() {
 		return subject;
 	}
@@ -80,9 +64,8 @@ public class Exam implements Serializable {
 	}
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "PROFESSOR_ID")
-	@Cascade(value = CascadeType.SAVE_UPDATE)
 	public Professor getProfessor() {
 		return professor;
 	}
@@ -114,17 +97,13 @@ public class Exam implements Serializable {
 	public void setScore(Integer score) {
 		this.score = score;
 	}
-	
-	@Transient
-	public StudyProgram getStudyProgram() {
-		return this.subject.getStudyProgram();
-	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((student == null) ? 0 : student.hashCode());
+		result = prime * result + ((subject == null) ? 0 : subject.hashCode());
 		return result;
 	}
 
@@ -137,13 +116,17 @@ public class Exam implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Exam other = (Exam) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (student == null) {
+			if (other.student != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!student.equals(other.student))
+			return false;
+		if (subject == null) {
+			if (other.subject != null)
+				return false;
+		} else if (!subject.equals(other.subject))
 			return false;
 		return true;
 	}
 
 }
-
