@@ -1,4 +1,5 @@
 $(document).ready(function() {
+	
 	$(".datepicker").datepicker({
 		dateFormat : 'dd-mm-yy',
 		changeMonth : true,
@@ -7,6 +8,7 @@ $(document).ready(function() {
 	});
 
 	$(".datepicker").unbind();
+	
 	$(".showDate").click(function() {
 		$(this).prev(".datepicker").datepicker('show');
 	});
