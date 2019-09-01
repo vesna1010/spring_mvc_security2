@@ -1,21 +1,20 @@
 package college.service;
 
-import java.util.Set;
+import java.util.List;
 import college.model.User;
 
 public interface UserService {
 
-	Set<User> findUsers();
-	
-	User findUserByUsername(String username);
-	
-	User findUserByUsernameWithoutPassword(String username);
-	
+	List<User> findAllUsers();
+
+	User findUserByEmail(String email);
+
 	void saveOrUpdateUser(User user);
-	
-	void deleteUserByUsername(String username);
-	
-	void disableUserByUsername(String username);
-	
+
+	void deleteUserById(Long id);
+
+	void disableUserById(Long id);
+
 }
+
 
