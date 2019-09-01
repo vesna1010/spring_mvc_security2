@@ -27,6 +27,7 @@ import college.controllers.UserController;
 import college.enums.Role;
 import college.model.User;
 import college.service.UserService;
+import college.validation.UserValidator;
 
 public class UserControllerTest extends BaseControllerTest {
 	
@@ -35,164 +36,347 @@ public class UserControllerTest extends BaseControllerTest {
 	@InjectMocks
 	@Autowired
 	private UserController userController;
+	@InjectMocks
+	@Autowired
+	private UserValidator userValidator;
 
 	@Test
 	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = { "USER", "PROFESSOR" })
-	public void renderUsersPageWithAllUsersByUserProfessorTest() throws Exception {
-		when(userService.findUsers()).thenReturn(new HashSet<User>(Arrays.asList(user1, user2)));
-
+	public void renderUsersPageWithAllUsersWithRoleUserAndProfessorTest() throws Exception {
+		renderUsersPageWithAllUsersAccessDenied();
+	}
+	
+	private void renderUsersPageWithAllUsersAccessDenied() throws Exception {
 		mockMvc.perform(get("/users"))
-		       .andExpect(status().isForbidden())
-		       .andExpect(forwardedUrl("/denied"));
-
-		verify(userService, times(0)).findUsers();
+	           .andExpect(status().isForbidden())
+	           .andExpect(forwardedUrl("/denied"));
 	}
 
 	@Test
 	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = "ADMIN")
-	public void renderUsersPageWithAllUsersByAdminTest() throws Exception {
-		when(userService.findUsers()).thenReturn(new HashSet<User>(Arrays.asList(user1, user2)));
+	public void renderUsersPageWithAllUsersWithRoleAdminTest() throws Exception {
+		renderUsersPageWithAllUsers();
+	}
+	
+	private void renderUsersPageWithAllUsers() throws Exception {
+		when(userService.findAllUsers())
+				.thenReturn(Arrays.asList(new User(1L, "userA@gmail.com"), new User(2L, "userB@gmail.com")));
 
 		mockMvc.perform(get("/users"))
 		       .andExpect(status().isOk())
 		       .andExpect(model().attribute("users", hasSize(2)))
-		       .andExpect(view().name("usersPage"));
+		       .andExpect(view().name("users/page"));
 
-		verify(userService, times(1)).findUsers();
+		verify(userService, times(1)).findAllUsers();
+	}
+	
+	@WithAnonymousUser
+	public void renderUsersPageWithAllUsersWithAnonymousUserTest() throws Exception {
+		renderUsersPageWithAllUsersNotAuthenticated();
+	}
+	
+	private void renderUsersPageWithAllUsersNotAuthenticated() throws Exception {
+		mockMvc.perform(get("/users"))
+	           .andExpect(status().is3xxRedirection())
+               .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
 	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = { "USER", "PROFESSOR" })
-	public void renderEmptyUserFormByUserProfessorTest() throws Exception {
-		mockMvc.perform(get("/users/userForm"))
-		       .andExpect(status().isForbidden())
-		       .andExpect(forwardedUrl("/denied"));
+	public void renderEmptyUserFormWithRoleUserOrProfessorTest() throws Exception {
+		renderEmptyUserFormAccessDenied();
+	}
+	
+	private void renderEmptyUserFormAccessDenied() throws Exception {
+		mockMvc.perform(get("/users/form"))
+	           .andExpect(status().isForbidden())
+	           .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
 	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = "ADMIN")
-	public void renderEmptyUserFormTest_By_Admin() throws Exception {
-		mockMvc.perform(get("/users/userForm"))
-		       .andExpect(status().isOk())
-		       .andExpect(model().attribute("user", is(new User())))
-		       .andExpect(view().name("userForm"));
+	public void renderEmptyUserFormWithRoleAdminTest() throws Exception {
+		renderEmptyUserForm();
+	}
+	
+	private void renderEmptyUserForm() throws Exception {
+		mockMvc.perform(get("/users/form"))
+	           .andExpect(status().isOk())
+	           .andExpect(model().attribute("user", is(new User())))
+	           .andExpect(view().name("users/form"));
+	}
+	
+	@Test
+	@WithAnonymousUser
+	public void renderEmptyUserFormWithAnonymousUserTest() throws Exception {
+		renderEmptyUserFormNotAuthenticated();
+	}
+	
+	private void renderEmptyUserFormNotAuthenticated() throws Exception {
+		mockMvc.perform(get("/users/form"))
+	           .andExpect(status().is3xxRedirection())
+               .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
 	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = "ADMIN")
-	public void saveUserAndRenderUserFormValidFormByAdminTest() throws Exception {
-		User user = new User("USERNAME", "email@gmail.com", "PASSWORD", new HashSet<Role>(
-			Arrays.asList(Role.PROFESSOR)));
+	public void saveUserAndRenderUserFormValidFormTest() throws Exception {
+		saveUserAndRenderUserFormValidForm();
+	}
+	
+	private void saveUserAndRenderUserFormValidForm() throws Exception {
+		User user = new User(1L, "First Name", "user@gmail.com", "Password", "Password", true,
+				new HashSet<Role>(Arrays.asList(Role.PROFESSOR)));
 
+		when(userService.findUserByEmail("user@gmail.com")).thenReturn(null);
 		doNothing().when(userService).saveOrUpdateUser(user);
 
-		mockMvc.perform(post("/users/save").with(csrf())
-				.param("username", "USERNAME")
-				.param("email", "email@gmail.com")
-				.param("password", "PASSWORD")
-				.param("confirmPassword", "PASSWORD")
+		mockMvc.perform(
+				post("/users/save")
+				.param("id", "1")
+				.param("name", "First Name")
+				.param("email", "user@gmail.com")
+				.param("password", "Password")
+				.param("confirmPassword", "Password")
 				.param("roles", "PROFESSOR")
-		        .param("enabled", "true"))
+		        .param("enabled", "true")
+		        .with(csrf())
+		        )
 		       .andExpect(model().hasNoErrors())
 		       .andExpect(status().is3xxRedirection())
-		       .andExpect(redirectedUrl("/users/userForm"));
+		       .andExpect(redirectedUrl("/users/form"));
 
+		verify(userService, times(1)).findUserByEmail("user@gmail.com");
 		verify(userService, times(1)).saveOrUpdateUser(user);
 	}
 	
 	@Test
 	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = "ADMIN")
-	public void saveUserAndRenderUserFormInvalidFormByAdminTest() throws Exception {
-		User user = new User("USERNAME", "email@gmail.com", "PASSWORD", new HashSet<Role>());
+	public void saveUserAndRenderUserFormInvalidFormTest() throws Exception {
+		saveUserAndRenderUserFormInvalidForm();
+	}
+	
+	private void saveUserAndRenderUserFormInvalidForm() throws Exception {
+		User user = new User(1L, "First Name", "userA@gmail.com", "Password", "Password", true,
+				new HashSet<Role>(Arrays.asList(Role.USER)));
 
+		when(userService.findUserByEmail("userA@gmail.com")).thenReturn(user);
 		doNothing().when(userService).saveOrUpdateUser(user);
 
-		mockMvc.perform(post("/users/save").with(csrf())
-				.param("username", "USERNAME")
-				.param("email", "email@gmail.com")
-				.param("password", "PASSWORD")
-				.param("confirmPassword", "PASSWORD")
-				.param("roles", "")
-				.param("enabled", "true"))
+		mockMvc.perform(
+				post("/users/save")
+				.param("id", "1")
+				.param("name", "First Name")
+				.param("email", "userA@gmail.com")
+				.param("password", "Password")
+				.param("confirmPassword", "Password")
+				.param("roles", "USER")
+				.param("enabled", "true")
+				.with(csrf())
+				)
 		       .andExpect(status().isOk())
-		       .andExpect(model().attributeHasFieldErrors("user", "roles"))
+		       .andExpect(model().attributeHasFieldErrors("user", "email"))
 		       .andExpect(model().attribute("user", is(user)))
-		       .andExpect(view().name("userForm"));
+		       .andExpect(view().name("users/form"));
 
+		verify(userService, times(1)).findUserByEmail("userA@gmail.com");
 		verify(userService, times(0)).saveOrUpdateUser(user);
 	}
 	
 	@Test
-	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = { "USER", "PROFESSOR" })
-	public void deleteUserAndRenderUsersPageByUserProfessorTest() throws Exception {
-		doNothing().when(userService).deleteUserByUsername("USERNAME");
+	@WithMockUser(username = "PROFESSOR", password = "PASSWORD", roles = "PROFESSOR")
+	public void updateUserPasswordAndRenderPasswordFormValidFormTest() throws Exception {
+		updateUserPasswordAndRenderPasswordFormValidForm();
+	}
+	
+	private void updateUserPasswordAndRenderPasswordFormValidForm() throws Exception {
+		User user = new User(1L, "First Name", "user@gmail.com", "Password", "Password", true,
+				new HashSet<Role>(Arrays.asList(Role.PROFESSOR)));
 
-		mockMvc.perform(get("/users/delete/USERNAME"))
-		       .andExpect(status().isForbidden())
-		       .andExpect(forwardedUrl("/denied"));
+		when(userService.findUserByEmail("user@gmail.com")).thenReturn(null);
+		doNothing().when(userService).saveOrUpdateUser(user);
 
-		verify(userService, times(0)).deleteUserByUsername("USERNAME");
+		mockMvc.perform(
+				post("/users/update")
+				.param("id", "1")
+				.param("name", "First Name")
+				.param("email", "user@gmail.com")
+				.param("password", "Password")
+				.param("confirmPassword", "Password")
+				.param("roles", "PROFESSOR")
+		        .param("enabled", "true")
+		        .with(csrf())
+		        )
+		       .andExpect(model().hasNoErrors())
+		       .andExpect(status().isOk())
+		       .andExpect(model().attribute("user", is(user)))
+		       .andExpect(view().name("users/update/form"));
+
+		verify(userService, times(1)).findUserByEmail("user@gmail.com");
+		verify(userService, times(1)).saveOrUpdateUser(user);
 	}
 	
 	@Test
 	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = "ADMIN")
-	public void deleteUserAndRenderUsersPageByAdminTest() throws Exception {
-		doNothing().when(userService).deleteUserByUsername("USERNAME");
-
-		mockMvc.perform(get("/users/delete/USERNAME"))
-		       .andExpect(status().is3xxRedirection())
-		       .andExpect(redirectedUrl("/users"));
-
-		verify(userService, times(1)).deleteUserByUsername("USERNAME");
+	public void updateUserPasswordAndRenderPasswordInvalidFormTest() throws Exception {
+		updateUserPasswordAndRenderPasswordInvalidForm();
 	}
+	
+	private void updateUserPasswordAndRenderPasswordInvalidForm() throws Exception {
+		User user = new User(1L, "First Name", "userA@gmail.com", "Password", "Password", true,
+				new HashSet<Role>(Arrays.asList(Role.USER)));
+
+		when(userService.findUserByEmail("userA@gmail.com")).thenReturn(null);
+		doNothing().when(userService).saveOrUpdateUser(user);
+
+		mockMvc.perform(
+				post("/users/update")
+				.param("id", "1")
+				.param("name", "First Name")
+				.param("email", "userA@gmail.com")
+				.param("password", "Password")
+				.param("confirmPassword", "Password1")
+				.param("roles", "USER")
+				.param("enabled", "true")
+				.with(csrf())
+				)
+		       .andExpect(status().isOk())
+		       .andExpect(model().attributeHasFieldErrors("user", "confirmPassword"))
+		       .andExpect(model().attribute("user", is(user)))
+		       .andExpect(view().name("users/update/form"));
+
+		verify(userService, times(1)).findUserByEmail("userA@gmail.com");
+		verify(userService, times(0)).saveOrUpdateUser(user);
+	}
+	
 	
 	@Test
 	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = { "USER", "PROFESSOR" })
-	public void disableUserAndRenderUsersPageByUserProfessorTest() throws Exception {
-		doNothing().when(userService).disableUserByUsername("USERNAME");
-
-		mockMvc.perform(get("/users/disable/USERNAME"))
+	public void deleteUserAndRenderUsersPageWithRoleUserOrPasswordTest() throws Exception {
+		deleteUserAndRenderUsersPageAccessDenied();
+	}
+	
+	private void deleteUserAndRenderUsersPageAccessDenied() throws Exception {
+		mockMvc.perform(
+				get("/users/delete")
+				.param("userId", "1")
+				)
 		       .andExpect(status().isForbidden())
 		       .andExpect(forwardedUrl("/denied"));
-
-		verify(userService, times(0)).disableUserByUsername("USERNAME");
 	}
 	
 	@Test
 	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = "ADMIN")
-	public void disableUserAndRenderUsersPageByAdminTest() throws Exception {
-		doNothing().when(userService).disableUserByUsername("USERNAME");
+	public void deleteUserAndRenderUsersPageWithRoleAdminTest() throws Exception {
+		deleteUserAndRenderUsersPage();
+	}
+	
+	private void deleteUserAndRenderUsersPage() throws Exception {
+		doNothing().when(userService).deleteUserById(1L);
 
-		mockMvc.perform(get("/users/disable/USERNAME"))
+		mockMvc.perform(
+				get("/users/delete")
+				.param("userId", "1")
+				)
 		       .andExpect(status().is3xxRedirection())
 		       .andExpect(redirectedUrl("/users"));
 
-		verify(userService, times(1)).disableUserByUsername("USERNAME");
+		verify(userService, times(1)).deleteUserById(1L);
 	}
 	
 	@Test
 	@WithAnonymousUser
-	public void renderUserFormWithUserByAnonymousUserTest() throws Exception {
-		when(userService.findUserByUsernameWithoutPassword("Username 1")).thenReturn(user1);
-		
-		mockMvc.perform(get("/users/changePassword"))
+	public void deleteUserAndRenderUsersPageByAnonymousUserTest() throws Exception {
+		deleteUserAndRenderUsersPageNotAuthenticated();
+	}
+	
+	private void deleteUserAndRenderUsersPageNotAuthenticated() throws Exception {
+		mockMvc.perform(
+				get("/users/delete")
+				.param("userId", "1")
+				)
 		       .andExpect(status().is3xxRedirection())
-		       .andExpect(redirectedUrlPattern("**/login"));
-		
-		verify(userService, times(0)).findUserByUsernameWithoutPassword("USERNAME");
+               .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
-	@WithMockUser(username = "Username 1", password = "Password", roles = "USER")
-	public void renderUserFormWithUserByUserTest() throws Exception {
-		when(userService.findUserByUsernameWithoutPassword("Username 1")).thenReturn(user1);
+	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = { "USER", "PROFESSOR" })
+	public void disableUserAndRenderUsersPageWithRoleUserOrPasswordTest() throws Exception {
+		disableUserAndRenderUsersPageAccessDenied();
+	}
+	
+	private void disableUserAndRenderUsersPageAccessDenied() throws Exception {
+		mockMvc.perform(
+				get("/users/disable")
+				.param("userId", "1")
+				)
+		       .andExpect(status().isForbidden())
+		       .andExpect(forwardedUrl("/denied"));
+	}
+	
+	@Test
+	@WithMockUser(username = "USERNAME", password = "PASSWORD", roles = "ADMIN")
+	public void disableUserAndRenderUsersPageWithRoleAdminTest() throws Exception {
+		disableUserAndRenderUsersPage();
+	}
+	
+	private void disableUserAndRenderUsersPage() throws Exception {
+		doNothing().when(userService).disableUserById(1L);
+
+		mockMvc.perform(
+				get("/users/disable")
+				.param("userId", "1")
+				)
+		       .andExpect(status().is3xxRedirection())
+		       .andExpect(redirectedUrl("/users"));
+
+		verify(userService, times(1)).disableUserById(1L);
+	}
+	
+	@Test
+	@WithAnonymousUser
+	public void disableUserAndRenderUsersPageWithAnonymousUserTest() throws Exception {
+		disableUserAndRenderUsersPageNotAuthenticated();
+	}
+	
+	private void disableUserAndRenderUsersPageNotAuthenticated() throws Exception {
+		mockMvc.perform(
+				get("/users/disable")
+				.param("userId", "1")
+				)
+		       .andExpect(status().is3xxRedirection())
+               .andExpect(redirectedUrlPattern("**/login"));
+	}
+	
+	@Test
+	@WithMockUser(username = "userA@gmail.com", password = "Password", roles = "PROFESSOR")
+	public void renderUserFormWithRoleProfessorTest() throws Exception {
+		renderUserFormWithUser();
+	}
+	
+	private void renderUserFormWithUser() throws Exception {
+		User user = new User(1L, "userA@gmail.com");
 		
-		mockMvc.perform(get("/users/changePassword"))
+		when(userService.findUserByEmail("userA@gmail.com")).thenReturn(user);
+		
+		mockMvc.perform(get("/users/edit"))
 		       .andExpect(status().isOk())
-		       .andExpect(model().attribute("user", is(user1)))
-		       .andExpect(view().name("userForm"));
+		       .andExpect(model().attribute("user", is(user)))
+		       .andExpect(view().name("users/update/form"));
 		
-		verify(userService, times(1)).findUserByUsernameWithoutPassword("Username 1");
+		verify(userService, times(1)).findUserByEmail("userA@gmail.com");
+	}
+	
+	@Test
+	@WithAnonymousUser
+	public void renderUserFormWithAnonymousUserTest() throws Exception {
+		renderUserFormWithUserNotAuthenticated();
+	}
+	
+	private void renderUserFormWithUserNotAuthenticated() throws Exception {
+		mockMvc.perform(get("/users/edit"))
+	           .andExpect(status().is3xxRedirection())
+               .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 }
