@@ -1,21 +1,24 @@
 package college.controllers;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import college.model.Lecture;
+import college.model.Professor;
+import college.model.ProfessorSubjectId;
 import college.model.StudyProgram;
+import college.model.Subject;
 import college.service.LectureService;
 import college.service.ProfessorService;
+import college.service.SubjectService;
 
 @Controller
 @RequestMapping("/lectures")
@@ -25,66 +28,54 @@ public class LectureController {
 	private LectureService lectureService;
 	@Autowired
 	private ProfessorService professorService;
+	@Autowired
+	private SubjectService subjectService;
 
-	@RequestMapping(method = RequestMethod.GET, params = "studyProgram")
-	public ModelAndView renderLecturesByStudyProgram(@RequestParam StudyProgram studyProgram) {
-		return new ModelAndView("lecturesPage", "studyProgram", studyProgram);
+	@RequestMapping(params = "studyProgramId", method = RequestMethod.GET)
+	public String renderLecturesByStudyProgram(@RequestParam("studyProgramId") StudyProgram studyProgram, Model model) {
+		model.addAttribute("lectures", lectureService.findAllLecturesByStudyProgram(studyProgram));
+
+		return "lectures/page";
 	}
 
-	@RequestMapping("/lectureForm")
-	public ModelAndView renderLectureForm(@RequestParam StudyProgram studyProgram) {
-		ModelAndView model = new ModelAndView("lectureForm");
+	@RequestMapping(value = "/delete", params = { "studyProgramId", "subjectId",
+			"professorId" }, method = RequestMethod.GET)
+	public String deleteLectureAndRenderLecturesPage(@RequestParam Map<String, String> params) {
+		Long studyProgramId = Long.valueOf(params.get("studyProgramId"));
+		Long professorId = Long.valueOf(params.get("professorId"));
+		Long subjectId = Long.valueOf(params.get("subjectId"));
+		ProfessorSubjectId lectureId = new ProfessorSubjectId(professorId, subjectId);
 
-		model.addObject("lecture", new Lecture());
-		model.addObject("studyProgram", studyProgram);
-		model.addObject("professors", professorService.findAllProfessors());
+		lectureService.deleteLectureById(lectureId);
 
-		return model;
+		return "redirect:/lectures?studyProgramId=" + studyProgramId;
 	}
 
-	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public ModelAndView saveLectureAndRenderForm(@RequestParam StudyProgram studyProgram,
-			@Valid @ModelAttribute Lecture lecture, BindingResult result) {
-		if (!result.hasErrors()) {
-			return saveLectureAndGetModelAndView(lecture, studyProgram);
+	@RequestMapping(value = "/form", params = "studyProgramId", method = RequestMethod.GET)
+	public Lecture lecture() {
+		return new Lecture();
+	}
+
+	@RequestMapping(value = "/save", params = "studyProgramId", method = RequestMethod.POST)
+	public String saveLectureAndRenderLectureForm(@Valid @ModelAttribute Lecture lecture, BindingResult result,
+			@RequestParam Long studyProgramId) {
+		if (result.hasErrors()) {
+			return "lectures/form";
 		}
 
-		return new ModelAndView("lectureForm", getModelMap(studyProgram));
-	}
-
-	private ModelAndView saveLectureAndGetModelAndView(Lecture lecture, StudyProgram studyProgram) {
 		lectureService.saveOrUpdateLecture(lecture);
 
-		return new ModelAndView("redirect:/lectures/lectureForm?studyProgram=" + studyProgram.getId());
+		return "redirect:/lectures/form?studyProgramId=" + studyProgramId;
 	}
 
-	private Map<String, Object> getModelMap(StudyProgram studyProgram) {
-		Map<String, Object> modelMap = new HashMap<>();
-
-		modelMap.put("studyProgram", studyProgram);
-		modelMap.put("professors", professorService.findAllProfessors());
-
-		return modelMap;
+	@ModelAttribute("professors")
+	public List<Professor> professors() {
+		return professorService.findAllProfessors();
 	}
 
-	@RequestMapping("/edit/{lecture}/{studyProgram}")
-	public ModelAndView renderFormWithLecture(@PathVariable StudyProgram studyProgram, @PathVariable Lecture lecture) {
-		ModelAndView model = new ModelAndView("lectureForm");
-
-		model.addObject("lecture", lecture);
-		model.addObject("studyProgram", studyProgram);
-		model.addObject("professors", professorService.findAllProfessors());
-
-		return model;
-	}
-
-	@RequestMapping("/delete/{lecture}/{studyProgram}")
-	public ModelAndView deleteLectureAndRenderLecturesPage(@PathVariable StudyProgram studyProgram,
-			@PathVariable Lecture lecture) {
-		lectureService.deleteLecture(lecture);
-
-		return new ModelAndView("redirect:/lectures?studyProgram=" + studyProgram.getId());
+	@ModelAttribute("subjects")
+	public List<Subject> subjects(@RequestParam("studyProgramId") StudyProgram studyProgram) {
+		return subjectService.findAllSubjectsByStudyProgram(studyProgram);
 	}
 
 }
-
