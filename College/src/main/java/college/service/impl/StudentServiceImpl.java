@@ -1,31 +1,38 @@
 package college.service.impl;
 
-import java.util.Set;
-import javax.annotation.Resource;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import college.dao.extensions.StudentDao;
+import org.springframework.transaction.annotation.Transactional;
+import college.dao.StudentDao;
 import college.model.Student;
+import college.model.StudyProgram;
 import college.service.StudentService;
 
 @Service
+@Transactional
 public class StudentServiceImpl implements StudentService {
 
-	@Resource
 	private StudentDao studentDao;
 
+	@Autowired
+	public StudentServiceImpl(StudentDao studentDao) {
+		this.studentDao = studentDao;
+	}
+
 	@Override
-	public Set<Student> findAllStudents() {
+	public List<Student> findAllStudents() {
 		return studentDao.findAll();
 	}
 
 	@Override
-	public Student findStudentById(String id) {
-		return studentDao.findById(id);
+	public List<Student> findAllStudentsByStudyProgram(StudyProgram studyProgram) {
+		return studentDao.findAllByStudyProgram(studyProgram);
 	}
 
 	@Override
-	public void deleteStudent(Student student) {
-		studentDao.delete(student);
+	public Student findStudentById(Long id) {
+		return studentDao.findById(id);
 	}
 
 	@Override
@@ -33,5 +40,9 @@ public class StudentServiceImpl implements StudentService {
 		studentDao.saveOrUpdate(student);
 	}
 
-}
+	@Override
+	public void deleteStudentById(Long id) {
+		studentDao.deleteById(id);
+	}
 
+}
