@@ -27,13 +27,15 @@
 </head>
 <body>
 	<div class="container">
+		<input type='hidden' name="page"
+			value="<tiles:getAsString name='active'/>" />
+
 		<div class="row">
 			<div class="col-sm-12 header hidden-xs hidden-sm">
 				<tiles:insertAttribute name="header" />
 			</div>
 		</div>
-		<input type='hidden' name="page"
-			value="<tiles:getAsString name='active'/>" />
+
 		<div class="row">
 			<div class="col-sm-2">
 
@@ -44,6 +46,7 @@
 				<tiles:insertAttribute name="body" />
 			</div>
 		</div>
+
 	</div>
 </body>
 </html>
