@@ -2,81 +2,64 @@ package test.dao;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import java.util.Set;
-import org.junit.Before;
+import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import college.dao.extensions.StudentDao;
+import college.dao.StudentDao;
 import college.model.Student;
+import college.model.StudyProgram;
 
 public class StudentDaoTest extends BaseDaoTest {
 
 	@Autowired
 	private StudentDao studentDao;
 
-	@Before
-	public void setUp() {
-		studentDao.deleteAll();
-		student1.addExam(exam1);
-		student1.addExam(exam2);
-		studentDao.saveOrUpdate(student1);
-	}
-
 	@Test
 	public void findAllStudentsTest() {
-		Set<Student> students = studentDao.findAll();
-		
-		assertThat(students, hasSize(1));
-		assertTrue(students.contains(student1));
-		assertFalse(students.contains(student2));
+		List<Student> students = studentDao.findAll();
+
+		assertThat(students, hasSize(3));
 	}
-	
+
+	@Test
+	public void findAllByStudyProgramTest() {
+		StudyProgram studyProgram = new StudyProgram(1L, "Study Program A");
+		
+		List<Student> students = studentDao.findAllByStudyProgram(studyProgram);
+
+		assertThat(students, hasSize(2));
+	}
+
 	@Test
 	public void findStudentByIdTest() {
-		Student student = studentDao.findById("S1");
-		
-		assertThat(student.getStudyProgram(), is(studyProgram1));
+		Student student = studentDao.findById(1L);
+
+		assertThat(student.getFullName(), is("Student NameA"));
 		assertThat(student.getExams(), hasSize(2));
 		assertThat(student.getAverage(), is(8.5));
 	}
-	
+
 	@Test
-	public void saveStudentTest() {
-		studentDao.saveOrUpdate(student2);
-		
-		assertNotNull(studentDao.findById("S2"));
-	}
-	
-	@Test
-	public void updateStudentTest() {
-		student1.setStudyProgram(studyProgram2);
+	public void saveOrUpdateStudentTest() {
+		Student student = studentDao.findById(1L);
 
-		studentDao.saveOrUpdate(student1);
+		student.setFullName("New Name");
 
-		Student student = studentDao.findById("S1");
+		studentDao.saveOrUpdate(student);
 
-		assertThat(student.getStudyProgram(), is(studyProgram2));
+		student = studentDao.findById(1L);
+
+		assertThat(student.getFullName(), is("New Name"));
 		assertThat(student.getExams(), hasSize(2));
-		assertThat(student.getAverage(), is(8.5));
 	}
-	
+
 	@Test
 	public void deleteStudentByIdTest() {
-		studentDao.deleteById("S1");
-		
-		assertNull(studentDao.findById("S1"));
-	}
-	
-	@Test
-	public void deleteStudentTest() {
-		studentDao.delete(student1);
-		
-		assertNull(studentDao.findById("S1"));
-	}
-}
+		studentDao.deleteById(1L);
 
+		assertNull(studentDao.findById(1L));
+	}
+
+}
