@@ -2,73 +2,81 @@ package college.controllers;
 
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestParam;
 import college.model.User;
 import college.service.UserService;
+import college.validation.UserValidator;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
 	@Autowired
-	@Qualifier("userValidator")
-	private Validator validator;
+	private UserValidator userValidator;
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping
-	public ModelAndView renderUsersPageWithAllUsers() {
-		return new ModelAndView("usersPage", "users", userService.findUsers());
+	@RequestMapping(method = RequestMethod.GET)
+	public String renderUsersPageWithAllUsers(Model model) {
+		model.addAttribute("users", userService.findAllUsers());
+
+		return "users/page";
 	}
 
-	@RequestMapping("/userForm")
-	public ModelAndView renderEmptyUserForm(ModelAndView model) {
-		return new ModelAndView("userForm", "user", new User());
+	@RequestMapping(value = "/form", method = RequestMethod.GET)
+	public User user() {
+		return new User();
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public ModelAndView saveUserAndRenderUserForm(@ModelAttribute User user, BindingResult result) {
-		validator.validate(user, result);
+	public String saveUserAndRenderUserForm(@ModelAttribute User user, BindingResult result) {
+		userValidator.validate(user, result);
 
-		if (!result.hasErrors()) {
-			return saveUserAndGetModelAndView(user);
+		if (result.hasErrors()) {
+			return "users/form";
 		}
 
-		return new ModelAndView("userForm");
-	}
-
-	private ModelAndView saveUserAndGetModelAndView(User user) {
 		userService.saveOrUpdateUser(user);
 
-		return new ModelAndView("redirect:/users/userForm");
+		return "redirect:/users/form";
 	}
 
-	@RequestMapping("/delete/{username}")
-	public ModelAndView deleteUserAndRenderUsersPage(@PathVariable String username) {
-		userService.deleteUserByUsername(username);
+	@RequestMapping(value = "/edit", method = RequestMethod.GET)
+	public String renderUserFormWithUser(Principal principal, Model model) {
+		model.addAttribute("user", userService.findUserByEmail(principal.getName()));
 
-		return new ModelAndView("redirect:/users");
+		return "users/update/form";
 	}
 
-	@RequestMapping("/disable/{username}")
-	public ModelAndView disableUserAndRenderUsersPage(@PathVariable String username) {
-		userService.disableUserByUsername(username);
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public String updateUserPasswordAndRenderPasswordForm(@ModelAttribute User user, BindingResult result) {
+		userValidator.validate(user, result);
 
-		return new ModelAndView("redirect:/users");
+		if (!result.hasFieldErrors("password") && !result.hasFieldErrors("confirmPassword")) {
+			userService.saveOrUpdateUser(user);
+		}
+
+		return "users/update/form";
 	}
 
-	@RequestMapping("/changePassword")
-	public ModelAndView renderUserFormWithUser(Principal principal) {
-		return new ModelAndView("userForm", "user", userService.findUserByUsernameWithoutPassword(principal.getName()));
+	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+	public String deleteUserAndRenderUsersPage(@RequestParam Long userId) {
+		userService.deleteUserById(userId);
+
+		return "redirect:/users";
+	}
+
+	@RequestMapping(value = "/disable", method = RequestMethod.GET)
+	public String disableUserAndRenderUsersPage(@RequestParam Long userId) {
+		userService.disableUserById(userId);
+
+		return "redirect:/users";
 	}
 
 }
-
