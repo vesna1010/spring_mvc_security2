@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 import java.util.HashSet;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,18 +21,15 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.springframework.format.annotation.DateTimeFormat;
-import college.validation.MyId;
 import college.validation.Title;
 
-@SuppressWarnings({ "serial" })
 @Entity
 @Table(name = "STUDY_PROGRAMS")
 public class StudyProgram implements Serializable {
 
-	private String id;
+	private static final long serialVersionUID = 1L;
+	private Long id;
 	private String title;
 	private Date dateOfCreation;
 	private Integer durationOfStudy;
@@ -40,7 +40,11 @@ public class StudyProgram implements Serializable {
 	public StudyProgram() {
 	}
 
-	public StudyProgram(String id, String title, Date dateOfCreation, Integer durationOfStudy, Department department) {
+	public StudyProgram(Long id, String title) {
+		this(id, title, new Date(), null, null);
+	}
+
+	public StudyProgram(Long id, String title, Date dateOfCreation, Integer durationOfStudy, Department department) {
 		this.id = id;
 		this.title = title;
 		this.dateOfCreation = dateOfCreation;
@@ -49,13 +53,13 @@ public class StudyProgram implements Serializable {
 	}
 
 	@Id
-	@MyId
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -82,9 +86,8 @@ public class StudyProgram implements Serializable {
 	}
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "DEPARTMENT_ID")
-	@Cascade(value = CascadeType.SAVE_UPDATE)
 	public Department getDepartment() {
 		return department;
 	}
@@ -93,8 +96,7 @@ public class StudyProgram implements Serializable {
 		this.department = department;
 	}
 
-	@OneToMany(mappedBy = "studyProgram", fetch = FetchType.LAZY)
-	@Cascade(value = CascadeType.ALL)
+	@OneToMany(mappedBy = "studyProgram", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	public Set<Student> getStudents() {
 		return students;
 	}
@@ -103,24 +105,13 @@ public class StudyProgram implements Serializable {
 		this.students = students;
 	}
 
-	public void addStudent(Student student) {
-		student.setStudyProgram(this);
-		this.students.add(student);
-	}
-
-	@OneToMany(mappedBy = "studyProgram", fetch = FetchType.LAZY)
-	@Cascade(value = CascadeType.ALL)
+	@OneToMany(mappedBy = "studyProgram", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	public Set<Subject> getSubjects() {
 		return subjects;
 	}
 
 	public void setSubjects(Set<Subject> subjects) {
 		this.subjects = subjects;
-	}
-
-	public void addSubject(Subject subject) {
-		subject.setStudyProgram(this);
-		this.subjects.add(subject);
 	}
 
 	@NotNull
@@ -138,28 +129,6 @@ public class StudyProgram implements Serializable {
 	@Transient
 	public Integer getEcts() {
 		return this.durationOfStudy * 60;
-	}
-
-	@Transient
-	public Set<Professor> getProfessors() {
-		Set<Professor> professors = new HashSet<>();
-
-		for (Subject subject : this.subjects) {
-			professors.addAll(subject.getProfessors());
-		}
-
-		return professors;
-	}
-
-	@Transient
-	public Set<Lecture> getLectures() {
-		Set<Lecture> lectures = new HashSet<>();
-
-		for (Subject subject : this.subjects) {
-			lectures.addAll(subject.getLectures());
-		}
-
-		return lectures;
 	}
 
 	@Override
@@ -188,4 +157,3 @@ public class StudyProgram implements Serializable {
 	}
 
 }
-
