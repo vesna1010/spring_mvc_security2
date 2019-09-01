@@ -1,20 +1,20 @@
 package college.service;
 
 import java.util.List;
-import college.model.Student;
+import college.model.Department;
 import college.model.StudyProgram;
 
-public interface StudentService {
+public interface StudyProgramService {
 
-	List<Student> findAllStudents();
-	
-	List<Student> findAllStudentsByStudyProgram(StudyProgram studyProgram);
+	List<StudyProgram> findAllStudyPrograms();
 
-	Student findStudentById(Long id);
+	List<StudyProgram> findAllStudyProgramsByDepartment(Department department);
 
-	void saveOrUpdateStudent(Student student);
+	StudyProgram findStudyProgramById(Long id);
 
-	void deleteStudentById(Long id);
+	void saveOrUpdateStudyProgram(StudyProgram studyProgram);
+
+	void deleteStudyProgramById(Long id);
 
 }
 
