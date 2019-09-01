@@ -1,18 +1,19 @@
 package college.service;
 
-import java.util.Set;
+import java.util.List;
 import college.model.Department;
 
 public interface DepartmentService {
 
-	Set<Department> findAllDepartments();
+	List<Department> findAllDepartments();
 
-	Department findDepartmentById(String id);
-	
+	Department findDepartmentById(Long id);
+
 	void saveOrUpdateDepartment(Department department);
 
-	void deleteDepartment(Department department);
+	void deleteDepartmentById(Long id);
 
 }
+
 
 
