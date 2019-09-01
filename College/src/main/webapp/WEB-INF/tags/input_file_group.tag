@@ -5,8 +5,7 @@
 <%@ attribute name="title" required="true" type="java.lang.String"%>
 
 <div class="form-group">
-	<sf:label path="${name}"
-		class="control-label col-sm-3 col-sm-offset-2">${title}</sf:label>
+	<sf:label path="${name}" class="control-label col-sm-3 col-sm-offset-2">${title}</sf:label>
 	<div class="col-sm-4">
 		<sf:input type="file" path="${file}" class="form-control" />
 		<sf:errors class="text-danger" path="${name}" />
