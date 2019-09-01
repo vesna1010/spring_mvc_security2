@@ -1,28 +1,5 @@
 @CHARSET "UTF-8";
 
-.container {
-	padding-right: 0;
-	padding-left: 0;
-}
-
-@media ( min-width : 768px) {
-	.container {
-		width: 100%;
-	}
-}
-
-@media ( min-width : 992px) {
-	.container {
-		width: 100%;
-	}
-}
-
-@media ( min-width : 1200px) {
-	.container {
-		width: 100%;
-	}
-}
-
 .header {
 	background-color: #337ab7;
 	height: 70px;
@@ -32,13 +9,19 @@ body {
 	background-color: rgb(220, 220, 220);
 }
 
-.table {
-	margin-left: 5%;
-	width: 90%;
+.container {
+	padding-right: 0;
+	padding-left: 0;
+	width: 100%;
 }
 
 .table-bordered>tbody>tr>th, .table>tbody>tr>td {
 	border: 2px solid white;
+}
+
+.table {
+	margin-left: 5%;
+	width: 90%;
 }
 
 h5 {
