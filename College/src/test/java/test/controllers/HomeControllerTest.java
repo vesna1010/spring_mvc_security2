@@ -20,6 +20,14 @@ public class HomeControllerTest extends BaseControllerTest {
 	
 	@Test
 	@WithAnonymousUser
+	public void renderDeniedPageByAnonymousUserTest() throws Exception {
+		mockMvc.perform(get("/denied"))
+		       .andExpect(status().isOk())
+		       .andExpect(view().name("denied"));      
+	}
+	
+	@Test
+	@WithAnonymousUser
 	public void renderLoginPageByAnonymousUserTest() throws Exception {
 		mockMvc.perform(get("/login"))
 	               .andExpect(status().isOk())
@@ -31,7 +39,7 @@ public class HomeControllerTest extends BaseControllerTest {
 	public void renderLoginPageByAuthenticatedUserTest() throws Exception {
 		mockMvc.perform(get("/login"))
 		       .andExpect(status().isForbidden())
-	               .andExpect(forwardedUrl("/denied")); 
+	           .andExpect(forwardedUrl("/denied")); 
 	} 
 	
 }
