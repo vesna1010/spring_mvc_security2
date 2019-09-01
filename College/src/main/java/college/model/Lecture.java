@@ -3,29 +3,25 @@ package college.model;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "LECTURES")
+@IdClass(ProfessorSubjectId.class)
 public class Lecture implements Serializable {
 
-	private Long id;
+	private static final long serialVersionUID = 1L;
 	private Professor professor;
 	private Subject subject;
 	private Integer hours;
-    
-	public Lecture(){
+
+	public Lecture() {
 	}
 
 	public Lecture(Professor professor, Subject subject, Integer hours) {
@@ -34,21 +30,10 @@ public class Lecture implements Serializable {
 		this.hours = hours;
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID")
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	@NotNull
-	@ManyToOne(fetch = FetchType.EAGER)
+	@Id
+	@ManyToOne
 	@JoinColumn(name = "PROFESSOR_ID")
-	@Cascade(value = CascadeType.SAVE_UPDATE)
 	public Professor getProfessor() {
 		return professor;
 	}
@@ -58,9 +43,9 @@ public class Lecture implements Serializable {
 	}
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.EAGER)
+	@Id
+	@ManyToOne
 	@JoinColumn(name = "SUBJECT_ID")
-	@Cascade(value = CascadeType.SAVE_UPDATE)
 	public Subject getSubject() {
 		return subject;
 	}
@@ -79,7 +64,7 @@ public class Lecture implements Serializable {
 	public void setHours(Integer hours) {
 		this.hours = hours;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -112,4 +97,3 @@ public class Lecture implements Serializable {
 	}
 
 }
-
