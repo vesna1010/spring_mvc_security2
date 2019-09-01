@@ -13,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({ METHOD, FIELD, ANNOTATION_TYPE })
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = college.validation.PersonNameImpl.class)
+@Constraint(validatedBy = college.validation.PersonValidator.class)
 public @interface PersonName {
 
 	String message() default "";
