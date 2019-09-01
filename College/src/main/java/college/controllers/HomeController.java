@@ -2,25 +2,24 @@ package college.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class HomeController {
 
-	
-	@RequestMapping("/")
-	public ModelAndView renderHomePage() {
-		return new ModelAndView("home");
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String renderHomePage() {
+		return "home";
 	}
 
-	@RequestMapping("/login")
-	public ModelAndView renderLoginPage() {
-		return new ModelAndView("loginForm");
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String renderLoginPage() {
+		return "loginForm";
 	}
 
-	@RequestMapping("/denied")
-	public ModelAndView renderDeniedPage() {
-		return new ModelAndView("denied");
+	@RequestMapping(value = "/denied", method = RequestMethod.GET)
+	public String renderDeniedPage() {
+		return "denied";
 	}
 
 }
