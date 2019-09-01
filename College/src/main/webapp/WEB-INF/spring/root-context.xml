@@ -6,15 +6,20 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
 
-	<context:component-scan
-		base-package="college.dao.impl.extensions, college.service.impl"></context:component-scan>
+	<context:component-scan use-default-filters="false"
+		base-package="college">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Repository"></context:include-filter>
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Service"></context:include-filter>
+	</context:component-scan>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
 
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
-
-	<tx:annotation-driven transaction-manager="transactionManager" />
 
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
@@ -22,17 +27,17 @@
 		<property name="packagesToScan" value="college.model"></property>
 		<property name="hibernateProperties">
 			<map>
-				<entry key="hibernate.dialect" value="${jdbc.dialect}"></entry>
-				<entry key="hibernate.hbm2ddl.auto" value="update"></entry>
-				<entry key="hibernate.enable_lazy_load_no_trans" value="true"></entry>
-				<entry key="hibernate.show_sql" value="true"></entry>
+				<entry key="hibernate.dialect" value="${hibernate.dialect}"></entry>
+				<entry key="hibernate.hbm2ddl.auto" value="${hibernate.hbm2ddl.auto}"></entry>
+				<entry key="hibernate.enable_lazy_load_no_trans" value="${hibernate.enable_lazy_load_no_trans}"></entry>
+				<entry key="hibernate.show_sql" value="${hibernate.show_sql}"></entry>
 			</map>
 		</property>
 	</bean>
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-		p:maxIdle="30" p:maxWait="10000" p:maxActive="100" p:password="${jdbc.password}"
-		p:username="${jdbc.username}" p:url="${jdbc.url}" p:driverClassName="${jdbc.driverClassName}" />
+		p:password="${jdbc.password}" p:username="${jdbc.username}" p:url="${jdbc.url}"
+		p:driverClassName="${jdbc.driverClassName}" />
 
 	<context:property-placeholder location="classpath:database/database.properties" />
 
