@@ -1,17 +1,13 @@
 package test.dao;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
-import java.util.Set;
-import org.junit.Before;
+import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import college.dao.extensions.DepartmentDao;
+import college.dao.DepartmentDao;
 import college.model.Department;
 
 public class DepartmentDaoTest extends BaseDaoTest {
@@ -19,45 +15,30 @@ public class DepartmentDaoTest extends BaseDaoTest {
 	@Autowired
 	private DepartmentDao departmentDao;
 
-	@Before
-	public void setUp() {
-		departmentDao.deleteAll();
-		department1.addStudyProgram(studyProgram1);
-		department1.addStudyProgram(studyProgram2);
-		departmentDao.saveOrUpdate(department1);
-	}
-
 	@Test
 	public void findAllDepartmentsTest() {
-		Set<Department> departments = departmentDao.findAll();
+		List<Department> departments = departmentDao.findAll();
 
-		assertThat(departments.size(), is(1));
-		assertTrue(departments.contains(department1));
-		assertFalse(departments.contains(department2));
+		assertThat(departments.size(), is(2));
 	}
 
 	@Test
 	public void findDepartmentByIdTest() {
-		Department department = departmentDao.findById("D1");
+		Department department = departmentDao.findById(1L);
 
-		assertThat(department.getTitle(), is("Department 1"));
+		assertThat(department.getTitle(), is("Department A"));
 		assertThat(department.getStudyPrograms(), hasSize(2));
 	}
 
 	@Test
-	public void saveDepartmentTest() {
-		departmentDao.saveOrUpdate(department2);
+	public void saveOrUpdateDepartmentTest() {
+		Department department = departmentDao.findById(1L);
 
-		assertNotNull(departmentDao.findById("D2"));
-	}
+		department.setTitle("Department");
+		
+		departmentDao.saveOrUpdate(department);
 
-	@Test
-	public void updateDepartmentTest() {
-		department1.setTitle("Department");
-
-		departmentDao.saveOrUpdate(department1);
-
-		Department department = departmentDao.findById("D1");
+		department = departmentDao.findById(1L);
 
 		assertThat(department.getTitle(), is("Department"));
 		assertThat(department.getStudyPrograms(), hasSize(2));
@@ -65,17 +46,9 @@ public class DepartmentDaoTest extends BaseDaoTest {
 
 	@Test
 	public void deleteDepartmentByIdTest() {
-		departmentDao.deleteById("D1");
+		departmentDao.deleteById(1L);
 
-		assertNull(departmentDao.findById("D1"));
+		assertNull(departmentDao.findById(1L));
 	}
-	
-	@Test
-	public void deleteDepartmentTest() {
-		departmentDao.delete(department1);
-
-		assertNull(departmentDao.findById("D1"));
-	}
-	
 
 }
