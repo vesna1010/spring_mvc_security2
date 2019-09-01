@@ -1,18 +1,14 @@
 package test.dao;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import java.util.Set;
-import org.junit.Before;
+import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import college.dao.extensions.SubjectDao;
+import college.dao.SubjectDao;
+import college.model.StudyProgram;
 import college.model.Subject;
 
 public class SubjectDaoTest extends BaseDaoTest {
@@ -20,70 +16,53 @@ public class SubjectDaoTest extends BaseDaoTest {
 	@Autowired
 	private SubjectDao subjectDao;
 
-	@Before
-	public void setUp() {
-		subjectDao.deleteAll();
-		subject1.addLecture(lecture1);
-		subject1.addLecture(lecture2);
-		subject1.addExam(exam1);
-		subjectDao.saveOrUpdate(subject1);
-	}
-
 	@Test
 	public void findAllSubjectsTest() {
-		Set<Subject> subjects = subjectDao.findAll();
+		List<Subject> subjects = subjectDao.findAll();
 
-		assertThat(subjects, hasSize(1));
-		assertTrue(subjects.contains(subject1));
-		assertFalse(subjects.contains(subject2));
+		assertThat(subjects, hasSize(3));
 	}
 
 	@Test
-	public void findOneSubjectTest() {
-		Subject subject = subjectDao.findById("SUB1");
+	public void findAllByStudyProgramfTest() {
+		StudyProgram studyProgram = new StudyProgram(1L, "Study Program A");
+		
+		List<Subject> subjects = subjectDao.findAllByStudyProgram(studyProgram);
 
-		assertThat(subject.getTitle(), is("Subject 1"));
-		assertThat(subject.getStudyProgram(), equalTo(studyProgram1));
+		assertThat(subjects, hasSize(2));
+	}
+
+	@Test
+	public void findSubjectByIdTest() {
+		Subject subject = subjectDao.findById(1L);
+
+		assertThat(subject.getTitle(), is("Subject A"));
 		assertThat(subject.getLectures(), hasSize(2));
-		assertThat(subject.getExams(), hasSize(1));
+		assertThat(subject.getExams(), hasSize(2));
 		assertThat(subject.getProfessors(), hasSize(2));
 	}
 
 	@Test
-	public void saveSubjectTest() {	
-		subjectDao.saveOrUpdate(subject2);
-
-		assertNotNull(subjectDao.findById("SUB2"));
-	}
-
-	@Test
 	public void updateSubjectTest() {
-		subject1.setStudyProgram(studyProgram2);
+		Subject subject = subjectDao.findById(1L);
 
-		subjectDao.saveOrUpdate(subject1);
+		subject.setTitle("Subject");
 
-		Subject subject = subjectDao.findById("SUB1");
+		subjectDao.saveOrUpdate(subject);
 
-		assertThat(subject.getTitle(), is("Subject 1"));
-		assertThat(subject.getStudyProgram(), equalTo(studyProgram2));
+		subject = subjectDao.findById(1L);
+
+		assertThat(subject.getTitle(), is("Subject"));
 		assertThat(subject.getLectures(), hasSize(2));
-		assertThat(subject.getExams(), hasSize(1));
+		assertThat(subject.getExams(), hasSize(2));
 		assertThat(subject.getProfessors(), hasSize(2));
 	}
 
 	@Test
 	public void deleteSubjectByIdTest() {
-		subjectDao.deleteById("SUB1");
+		subjectDao.deleteById(1L);
 
-		assertNull(subjectDao.findById("SUB1"));
-	}
-	
-	@Test
-	public void deleteSubjectest() {
-		subjectDao.delete(subject1);
-
-		assertNull(subjectDao.findById("SUB1"));
+		assertNull(subjectDao.findById(1L));
 	}
 
 }
-
