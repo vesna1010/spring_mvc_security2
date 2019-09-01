@@ -1,19 +1,25 @@
 package college.controllers;
 
+import java.util.List;
+import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import college.model.Exam;
+import college.model.Professor;
+import college.model.Student;
+import college.model.StudentSubjectId;
 import college.model.StudyProgram;
+import college.model.Subject;
 import college.service.ExamService;
 import college.service.ProfessorService;
+import college.service.StudentService;
 import college.service.SubjectService;
 
 @Controller
@@ -26,76 +32,60 @@ public class ExamController {
 	private SubjectService subjectService;
 	@Autowired
 	private ProfessorService professorService;
+	@Autowired
+	private StudentService studentService;
 
-	@RequestMapping("/examForm")
-	public ModelAndView renderExamFormSubject(@RequestParam StudyProgram studyProgram) {
-		ModelAndView model = new ModelAndView("examForm");
+	@RequestMapping(params = "studyProgramId", method = RequestMethod.GET)
+	public String renderPageWithExamsByStudyProgram(@RequestParam("studyProgramId") StudyProgram studyProgram,
+			Model model) {
+		model.addAttribute("exams", examService.findAllExamsByStudyProgram(studyProgram));
 
-		model.addObject("exam", new Exam());
-		model.addObject("studyProgram", studyProgram);
+		return "exams/page";
+	}
 
-		return model;
+	@RequestMapping(value = "/delete", params = { "studentId", "subjectId",
+			"studyProgramId" }, method = RequestMethod.GET)
+	public String deleteExamAndRenderExamsPage(@RequestParam Map<String, String> params) {
+		Long studyProgramId = Long.valueOf(params.get("studyProgramId"));
+		Long studentId = Long.valueOf(params.get("studentId"));
+		Long subjectId = Long.valueOf(params.get("subjectId"));
+		StudentSubjectId examId = new StudentSubjectId(studentId, subjectId);
+
+		examService.deleteExamById(examId);
+
+		return "redirect:/exams?studyProgramId=" + studyProgramId;
+	}
+
+	@RequestMapping(value = "/form", params = "studyProgramId", method = RequestMethod.GET)
+	public Exam exam() {
+		return new Exam();
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public ModelAndView saveExamAndRenderExamForm(@RequestParam StudyProgram studyProgram,
-			@Valid @ModelAttribute Exam exam, BindingResult result) {
-		if (!result.hasErrors()) {
-			return saveExamAndGetModelAndView(exam, studyProgram);
+	public String saveExamAndRenderExamForm(@ModelAttribute @Valid Exam exam, BindingResult result,
+			@RequestParam Long studyProgramId) {
+		if (result.hasErrors()) {
+			return "exams/form";
 		}
 
-		return new ModelAndView("examForm", "studyProgram", studyProgram);
-	}
-
-	private ModelAndView saveExamAndGetModelAndView(Exam exam, StudyProgram studyProgram) {
 		examService.saveOrUpdateExam(exam);
 
-		return new ModelAndView("redirect:/exams/examForm?studyProgram=" + studyProgram.getId());
+		return "redirect:/exams/form?studyProgramId=" + studyProgramId;
 	}
 
-	@RequestMapping("/edit/{exam}/{studyProgram}")
-	public ModelAndView renderExamFormWithExam(@PathVariable StudyProgram studyProgram, @PathVariable Exam exam) {
-		ModelAndView model = new ModelAndView("examForm");
-
-		model.addObject("exam", exam);
-		model.addObject("studyProgram", studyProgram);
-
-		return model;
+	@ModelAttribute("subjects")
+	public List<Subject> subjects(@RequestParam("studyProgramId") StudyProgram studyProgram) {
+		return subjectService.findAllSubjectsByStudyProgram(studyProgram);
 	}
 
-	@RequestMapping("/delete/{exam}")
-	public ModelAndView deleteExamById(@PathVariable Exam exam) {
-		examService.deleteExam(exam);
-
-		return new ModelAndView("examsPage", "exams",
-				examService.findExamsByObjects(exam.getProfessor(), exam.getSubject(), exam.getDate()));
+	@ModelAttribute("professors")
+	public List<Professor> professors(@RequestParam("studyProgramId") StudyProgram studyProgram) {
+		return professorService.findAllProfessorsByStudyProgram(studyProgram);
 	}
 
-	@RequestMapping("/search")
-	public ModelAndView renderSearchExamForm(ModelAndView model) {
-		model.setViewName("searchExamsForm");
-		model.addObject("exam", new Exam());
-		model.addObject("subjects", subjectService.findAllSubjects());
-		model.addObject("professors", professorService.findAllProfessors());
-
-		return model;
-	}
-
-	@RequestMapping(value = "/search", method = RequestMethod.POST)
-	public ModelAndView renderSearchedExams(@Valid @ModelAttribute Exam exam, BindingResult result) {
-		ModelAndView model = new ModelAndView("searchExamsForm");
-
-		if (!result.hasFieldErrors("professor") && !result.hasFieldErrors("subject")
-				&& !result.hasFieldErrors("date")) {
-			return new ModelAndView("examsPage", "exams",
-					examService.findExamsByObjects(exam.getProfessor(), exam.getSubject(), exam.getDate()));
-		}
-
-		model.addObject("subjects", subjectService.findAllSubjects());
-		model.addObject("professors", professorService.findAllProfessors());
-
-		return model;
+	@ModelAttribute("students")
+	public List<Student> students(@RequestParam("studyProgramId") StudyProgram studyProgram) {
+		return studentService.findAllStudentsByStudyProgram(studyProgram);
 	}
 
 }
-
