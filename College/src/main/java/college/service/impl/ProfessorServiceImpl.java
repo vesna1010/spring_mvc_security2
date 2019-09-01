@@ -1,31 +1,38 @@
 package college.service.impl;
 
-import java.util.Set;
-import javax.annotation.Resource;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import college.dao.extensions.ProfessorDao;
+import org.springframework.transaction.annotation.Transactional;
+import college.dao.ProfessorDao;
 import college.model.Professor;
+import college.model.StudyProgram;
 import college.service.ProfessorService;
 
 @Service
+@Transactional
 public class ProfessorServiceImpl implements ProfessorService {
 
-	@Resource
 	private ProfessorDao professorDao;
 
+	@Autowired
+	public ProfessorServiceImpl(ProfessorDao professorDao) {
+		this.professorDao = professorDao;
+	}
+
 	@Override
-	public Set<Professor> findAllProfessors() {
+	public List<Professor> findAllProfessors() {
 		return professorDao.findAll();
 	}
 
 	@Override
-	public Professor findProfessorById(String id) {
-		return professorDao.findById(id);
+	public List<Professor> findAllProfessorsByStudyProgram(StudyProgram studyProgram) {
+		return professorDao.findAllByStudyProgram(studyProgram);
 	}
 
 	@Override
-	public void deleteProfessor(Professor professor) {
-		professorDao.delete(professor);
+	public Professor findProfessorById(Long id) {
+		return professorDao.findById(id);
 	}
 
 	@Override
@@ -33,5 +40,9 @@ public class ProfessorServiceImpl implements ProfessorService {
 		professorDao.saveOrUpdate(professor);
 	}
 
-}
+	@Override
+	public void deleteProfessorById(Long id) {
+		professorDao.deleteById(id);
+	}
 
+}
