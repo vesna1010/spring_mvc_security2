@@ -1,21 +1,26 @@
 package college.service;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 import college.model.Exam;
 import college.model.Professor;
+import college.model.Student;
+import college.model.StudentSubjectId;
+import college.model.StudyProgram;
 import college.model.Subject;
 
 public interface ExamService {
-	
-	Exam findExamById(String id);
-	
-	Set<Exam> findExamsByObjects(Professor professor, Subject subject, Date date );
+
+	List<Exam> findAllExamsByStudyProgram(StudyProgram studyProgram);
+
+	List<Exam> findAllExamsByStudent(Student student);
+
+	List<Exam> findAllExamsByProfessorAndSubjectAndDate(Professor professor, Subject subject, Date date);
 
 	void saveOrUpdateExam(Exam exam);
-	
-	void deleteExam(Exam exam);
-	
+
+	void deleteExamById(StudentSubjectId id);
+
 }
 
 
