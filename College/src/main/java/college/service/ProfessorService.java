@@ -1,18 +1,21 @@
 package college.service;
 
-import java.util.Set;
+import java.util.List;
 import college.model.Professor;
+import college.model.StudyProgram;
 
 public interface ProfessorService {
 
-	Set<Professor> findAllProfessors();
-		
-	Professor findProfessorById(String id);
-	
-	void deleteProfessor(Professor professor);
-	
+	List<Professor> findAllProfessors();
+
+	List<Professor> findAllProfessorsByStudyProgram(StudyProgram studyProgram);
+
+	Professor findProfessorById(Long id);
+
+	void deleteProfessorById(Long id);
+
 	void saveOrUpdateProfessor(Professor professor);
-	
+
 }
 
 
