@@ -2,11 +2,14 @@ package college.model;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
@@ -17,19 +20,17 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import college.enums.Gender;
-import college.validation.MyId;
 import college.validation.PersonName;
 
-@SuppressWarnings("serial")
 @MappedSuperclass
 public abstract class Person implements Serializable {
 
-	private String id;
+	private static final long serialVersionUID = 1L;
+	private Long id;
 	private String fullName;
 	private String fatherName;
 	private Date dateOfBirth;
@@ -42,7 +43,12 @@ public abstract class Person implements Serializable {
 	protected Person() {
 	}
 
-	protected Person(String id, String fullName, String fatherName, Date dateOfBirth, String email, String telephone,
+	protected Person(Long id, String fullName) {
+		this.id = id;
+		this.fullName = fullName;
+	}
+
+	protected Person(Long id, String fullName, String fatherName, Date dateOfBirth, String email, String telephone,
 			Gender gender, Address address) {
 		this.id = id;
 		this.fullName = fullName;
@@ -55,13 +61,13 @@ public abstract class Person implements Serializable {
 	}
 
 	@Id
-	@MyId
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -97,7 +103,7 @@ public abstract class Person implements Serializable {
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	@NotBlank
+	@NotEmpty
 	@Email
 	@Column(name = "EMAIL")
 	public String getEmail() {
@@ -108,7 +114,7 @@ public abstract class Person implements Serializable {
 		this.email = email;
 	}
 
-	@Pattern(regexp = "^\\d{3,7}-\\d{3}-\\d{3}$")
+	@Pattern(regexp = "^(00|\\+)?\\d{3,7}-\\d{3}-\\d{3,4}$")
 	@Column(name = "TELEPHONE")
 	public String getTelephone() {
 		return telephone;
@@ -158,17 +164,16 @@ public abstract class Person implements Serializable {
 
 	public void setFile(CommonsMultipartFile file) {
 		if (!file.isEmpty()) {
-			this.setImage(file.getBytes());
+			this.image = file.getBytes();
 		}
 	}
 
-	public String showImage() {
-		String base64Encoded = "";
+	public String imageToString() {
 		try {
-			base64Encoded = new String(Base64.encode(this.image), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
+			return new String(Base64.getEncoder().encode(this.image), "UTF-8");
+		} catch (UnsupportedEncodingException | NullPointerException e) {
+			return "";
 		}
-		return base64Encoded;
 	}
 
 	@Override
@@ -197,4 +202,3 @@ public abstract class Person implements Serializable {
 	}
 
 }
-
