@@ -107,7 +107,7 @@ public class SearchControllerTest extends BaseControllerTest {
 				.param("studentId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 
 	@Test
@@ -151,8 +151,8 @@ public class SearchControllerTest extends BaseControllerTest {
 	
 	private void renderSearchExamFormNotAuthenticated() throws Exception {
 		mockMvc.perform(get("/exams/search"))
-	           .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+	               .andExpect(status().is3xxRedirection())
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -177,9 +177,9 @@ public class SearchControllerTest extends BaseControllerTest {
 				.param("professor", "1")
 				.param("subject", "1")
 				.param("date", "01-01-2017")
-		        .param("student", "")
-		        .param("id", "")
-		        .with(csrf())
+		                .param("student", "")
+		                .param("id", "")
+		                .with(csrf())
 				)
 		       .andExpect(status().isOk())
 		       .andExpect(model().attribute("exams", hasSize(1)))
