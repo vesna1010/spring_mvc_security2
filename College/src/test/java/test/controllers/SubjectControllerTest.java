@@ -84,8 +84,8 @@ public class SubjectControllerTest extends BaseControllerTest {
 	
 	private void renderSubjectsPageWithAllSubjectsNotAuthenticated() throws Exception {
 		mockMvc.perform(get("/subjects"))
-	           .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+	               .andExpect(status().is3xxRedirection())
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -137,7 +137,7 @@ public class SubjectControllerTest extends BaseControllerTest {
 				.param("studyProgramId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 
 	@Test
@@ -173,8 +173,8 @@ public class SubjectControllerTest extends BaseControllerTest {
 	
 	private void renderEmptySubjectFormAccessDenied() throws Exception {
 		mockMvc.perform(get("/subjects/form"))
-	           .andExpect(status().isForbidden())
-	           .andExpect(forwardedUrl("/denied"));
+	               .andExpect(status().isForbidden())
+	               .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -185,8 +185,8 @@ public class SubjectControllerTest extends BaseControllerTest {
 
 	private void renderEmptySubjectFormNotAuthenticated() throws Exception {
 		mockMvc.perform(get("/subjects/form"))
-	           .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+	               .andExpect(status().is3xxRedirection())
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -308,7 +308,7 @@ public class SubjectControllerTest extends BaseControllerTest {
 				.param("subjectId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -363,6 +363,6 @@ public class SubjectControllerTest extends BaseControllerTest {
 				.param("subjectId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 }
