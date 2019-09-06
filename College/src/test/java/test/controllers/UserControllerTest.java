@@ -48,8 +48,8 @@ public class UserControllerTest extends BaseControllerTest {
 	
 	private void renderUsersPageWithAllUsersAccessDenied() throws Exception {
 		mockMvc.perform(get("/users"))
-	           .andExpect(status().isForbidden())
-	           .andExpect(forwardedUrl("/denied"));
+	               .andExpect(status().isForbidden())
+	               .andExpect(forwardedUrl("/denied"));
 	}
 
 	@Test
@@ -77,8 +77,8 @@ public class UserControllerTest extends BaseControllerTest {
 	
 	private void renderUsersPageWithAllUsersNotAuthenticated() throws Exception {
 		mockMvc.perform(get("/users"))
-	           .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+	               .andExpect(status().is3xxRedirection())
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -89,8 +89,8 @@ public class UserControllerTest extends BaseControllerTest {
 	
 	private void renderEmptyUserFormAccessDenied() throws Exception {
 		mockMvc.perform(get("/users/form"))
-	           .andExpect(status().isForbidden())
-	           .andExpect(forwardedUrl("/denied"));
+	               .andExpect(status().isForbidden())
+	               .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -101,9 +101,9 @@ public class UserControllerTest extends BaseControllerTest {
 	
 	private void renderEmptyUserForm() throws Exception {
 		mockMvc.perform(get("/users/form"))
-	           .andExpect(status().isOk())
-	           .andExpect(model().attribute("user", is(new User())))
-	           .andExpect(view().name("users/form"));
+	               .andExpect(status().isOk())
+	               .andExpect(model().attribute("user", is(new User())))
+	               .andExpect(view().name("users/form"));
 	}
 	
 	@Test
@@ -114,8 +114,8 @@ public class UserControllerTest extends BaseControllerTest {
 	
 	private void renderEmptyUserFormNotAuthenticated() throws Exception {
 		mockMvc.perform(get("/users/form"))
-	           .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+	               .andExpect(status().is3xxRedirection())
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -139,9 +139,9 @@ public class UserControllerTest extends BaseControllerTest {
 				.param("password", "Password")
 				.param("confirmPassword", "Password")
 				.param("roles", "PROFESSOR")
-		        .param("enabled", "true")
-		        .with(csrf())
-		        )
+		                .param("enabled", "true")
+		                .with(csrf())
+		                )
 		       .andExpect(model().hasNoErrors())
 		       .andExpect(status().is3xxRedirection())
 		       .andExpect(redirectedUrl("/users/form"));
@@ -204,9 +204,9 @@ public class UserControllerTest extends BaseControllerTest {
 				.param("password", "Password")
 				.param("confirmPassword", "Password")
 				.param("roles", "PROFESSOR")
-		        .param("enabled", "true")
-		        .with(csrf())
-		        )
+		                .param("enabled", "true")
+		                .with(csrf())
+		                )
 		       .andExpect(model().hasNoErrors())
 		       .andExpect(status().isOk())
 		       .andExpect(model().attribute("user", is(user)))
@@ -296,7 +296,7 @@ public class UserControllerTest extends BaseControllerTest {
 				.param("userId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -345,7 +345,7 @@ public class UserControllerTest extends BaseControllerTest {
 				.param("userId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -375,8 +375,8 @@ public class UserControllerTest extends BaseControllerTest {
 	
 	private void renderUserFormWithUserNotAuthenticated() throws Exception {
 		mockMvc.perform(get("/users/edit"))
-	           .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+	               .andExpect(status().is3xxRedirection())
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 }
