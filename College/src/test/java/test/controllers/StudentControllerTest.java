@@ -88,8 +88,8 @@ public class StudentControllerTest extends BaseControllerTest {
 	
 	private void renderStudentsPageWithAllStudentsNotAuthenticated() throws Exception {
 		mockMvc.perform(get("/students"))
-	           .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+	               .andExpect(status().is3xxRedirection())
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -164,7 +164,7 @@ public class StudentControllerTest extends BaseControllerTest {
 		       .andExpect(status().isOk())
 		       .andExpect(model().attribute("student", is(new Student())))
 		       .andExpect(model().attribute("studyPrograms", hasSize(2)))
-               .andExpect(view().name("students/form"));
+                       .andExpect(view().name("students/form"));
 		    	
 		verify(studyProgramService, times(1)).findAllStudyPrograms();
 	}
@@ -177,8 +177,8 @@ public class StudentControllerTest extends BaseControllerTest {
 	
 	private void renderEmptyStudentFormAccessDenied() throws Exception {	
 		mockMvc.perform(get("/students/form"))
-	           .andExpect(status().isForbidden())
-               .andExpect(forwardedUrl("/denied"));
+	               .andExpect(status().isForbidden())
+                       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -189,8 +189,8 @@ public class StudentControllerTest extends BaseControllerTest {
 	
 	private void renderEmptyStudentFormNotAuthenticated() throws Exception {
 		mockMvc.perform(get("/students/form"))
-	           .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+	               .andExpect(status().is3xxRedirection())
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -277,7 +277,7 @@ public class StudentControllerTest extends BaseControllerTest {
 		       .andExpect(status().isOk())
 		       .andExpect(model().attribute("student", is(student)))
 		       .andExpect(model().attribute("studyPrograms", hasSize(1)))
-               .andExpect(view().name("students/form"));
+                       .andExpect(view().name("students/form"));
 		
 		verify(studyProgramService, times(1)).findStudyProgramById(1L);
 		verify(studentService, times(0)).saveOrUpdateStudent(student);
@@ -328,7 +328,7 @@ public class StudentControllerTest extends BaseControllerTest {
 				.param("studentId", "1")
 				)
 		       .andExpect(status().isForbidden())
-               .andExpect(forwardedUrl("/denied"));
+                       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -343,7 +343,7 @@ public class StudentControllerTest extends BaseControllerTest {
 				.param("studentId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -383,7 +383,7 @@ public class StudentControllerTest extends BaseControllerTest {
 				.param("studentId", "1")
 				)
 		       .andExpect(status().isForbidden())
-               .andExpect(forwardedUrl("/denied"));
+                       .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -398,7 +398,7 @@ public class StudentControllerTest extends BaseControllerTest {
 				.param("studentId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	
