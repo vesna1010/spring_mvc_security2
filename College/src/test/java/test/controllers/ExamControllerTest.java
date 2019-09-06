@@ -120,7 +120,7 @@ public class ExamControllerTest extends BaseControllerTest {
 				.param("studyProgramId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -188,7 +188,7 @@ public class ExamControllerTest extends BaseControllerTest {
 				.param("studyProgramId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -216,9 +216,9 @@ public class ExamControllerTest extends BaseControllerTest {
 				.param("subject", "1")
 				.param("professor", "1")
 				.param("date", "01-01-2017")
-		        .param("score", "8")
-		        .with(csrf())
-		        )
+		                .param("score", "8")
+		                .with(csrf())
+		                )
 		       .andExpect(model().hasNoErrors())
 		       .andExpect(status().is3xxRedirection())
 		       .andExpect(redirectedUrl("/exams/form?studyProgramId=1"));
@@ -258,16 +258,16 @@ public class ExamControllerTest extends BaseControllerTest {
 				.param("professor", "1")
 				.param("subject", "1")
 				.param("date", "01-01-2017")
-		        .param("score", "5")
-		        .with(csrf())
-		        )
+		                .param("score", "5")
+		                .with(csrf())
+		                )
 		       .andExpect(status().isOk())
 		       .andExpect(model().attributeHasFieldErrors("exam", "score"))
 		       .andExpect(model().attribute("exam", is(exam)))
 		       .andExpect(model().attribute("students", hasSize(1)))
 		       .andExpect(model().attribute("subjects", hasSize(1)))
 		       .andExpect(model().attribute("professors", hasSize(1)))
-	           .andExpect(view().name("exams/form"));
+	               .andExpect(view().name("exams/form"));
 		
 		verify(studyProgramService, times(3)).findStudyProgramById(1L);
 		verify(studentService, times(1)).findStudentById(1L);
@@ -339,7 +339,7 @@ public class ExamControllerTest extends BaseControllerTest {
 				.param("studyProgramId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 }
