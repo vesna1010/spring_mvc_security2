@@ -79,7 +79,7 @@ public class DepartmentControllerTest extends BaseControllerTest {
 	private void renderDepartmentsPageWithAllDepartmentsNotAuthenticated() throws Exception {
 		mockMvc.perform(get("/departments"))
 	           .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                   .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -128,7 +128,7 @@ public class DepartmentControllerTest extends BaseControllerTest {
 				get("/departments/form")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -239,7 +239,7 @@ public class DepartmentControllerTest extends BaseControllerTest {
 				.param("departmentId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 
 	@Test
@@ -294,7 +294,7 @@ public class DepartmentControllerTest extends BaseControllerTest {
 				.param("departmentId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 
 }
