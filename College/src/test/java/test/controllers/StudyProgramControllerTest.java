@@ -86,8 +86,8 @@ public class StudyProgramControllerTest extends BaseControllerTest {
 	
 	private void renderStudyProgramsPageWithAllStudyProgramsNotAuthenticated() throws Exception {
 		mockMvc.perform(get("/studyPrograms"))
-	           .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+	               .andExpect(status().is3xxRedirection())
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 
 	@Test
@@ -139,7 +139,7 @@ public class StudyProgramControllerTest extends BaseControllerTest {
 				.param("departmentId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 
 	@Test
@@ -175,8 +175,8 @@ public class StudyProgramControllerTest extends BaseControllerTest {
 	
 	private void renderEmptyStudyProgramFormAccessDenied() throws Exception {
 		mockMvc.perform(get("/studyPrograms/form"))
-	           .andExpect(status().isForbidden())
-	           .andExpect(forwardedUrl("/denied"));
+	               .andExpect(status().isForbidden())
+	               .andExpect(forwardedUrl("/denied"));
 	}
 	
 	@Test
@@ -187,8 +187,8 @@ public class StudyProgramControllerTest extends BaseControllerTest {
 	
 	private void renderEmptyStudyProgramFormNotAuthenticated() throws Exception {
 		mockMvc.perform(get("/studyPrograms/form"))
-	           .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+	               .andExpect(status().is3xxRedirection())
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -316,7 +316,7 @@ public class StudyProgramControllerTest extends BaseControllerTest {
 				.param("studyProgramId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 
 	@Test
@@ -371,7 +371,7 @@ public class StudyProgramControllerTest extends BaseControllerTest {
 				.param("studyProgramId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 
 }
