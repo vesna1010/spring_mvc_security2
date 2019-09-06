@@ -108,7 +108,7 @@ public class LectureControllerTest extends BaseControllerTest {
 				.param("studyProgramId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 
 	@Test
@@ -174,7 +174,7 @@ public class LectureControllerTest extends BaseControllerTest {
 				.param("studyProgramId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -287,10 +287,10 @@ public class LectureControllerTest extends BaseControllerTest {
 	}
     
     private void deleteLectureAndRenderLecturesPageAccessDenied() throws Exception {
-    	mockMvc.perform(
-				get("/lectures/delete")
-				.param("studyProgramId", "1")
-				.param("professorId", "1")
+	        mockMvc.perform(
+		                get("/lectures/delete")
+			        .param("studyProgramId", "1")
+			        .param("professorId", "1")
 				.param("subjectId", "1")
 				)
 		       .andExpect(status().isForbidden())
@@ -304,14 +304,14 @@ public class LectureControllerTest extends BaseControllerTest {
 	}
     
     private void deleteLectureAndRenderLecturesPageNotAuthenticated() throws Exception {
-    	mockMvc.perform(
+    	        mockMvc.perform(
 				get("/lectures/delete")
 				.param("studyProgramId", "1")
 				.param("professorId", "1")
 				.param("subjectId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrlPattern("**/login"));
+                       .andExpect(redirectedUrlPattern("**/login"));
     }
 	
 }
