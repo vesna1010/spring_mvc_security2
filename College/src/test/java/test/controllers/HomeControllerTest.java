@@ -39,7 +39,7 @@ public class HomeControllerTest extends BaseControllerTest {
 	public void renderLoginPageByAuthenticatedUserTest() throws Exception {
 		mockMvc.perform(get("/login"))
 		       .andExpect(status().isForbidden())
-	           .andExpect(forwardedUrl("/denied")); 
+	               .andExpect(forwardedUrl("/denied")); 
 	} 
 	
 }
