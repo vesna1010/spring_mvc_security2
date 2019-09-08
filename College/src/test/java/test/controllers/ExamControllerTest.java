@@ -120,7 +120,7 @@ public class ExamControllerTest extends BaseControllerTest {
 				.param("studyProgramId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-                       .andExpect(redirectedUrlPattern("**/login"));
+		       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -188,7 +188,7 @@ public class ExamControllerTest extends BaseControllerTest {
 				.param("studyProgramId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-                       .andExpect(redirectedUrlPattern("**/login"));
+		       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 	@Test
@@ -266,8 +266,8 @@ public class ExamControllerTest extends BaseControllerTest {
 		       .andExpect(model().attribute("exam", is(exam)))
 		       .andExpect(model().attribute("students", hasSize(1)))
 		       .andExpect(model().attribute("subjects", hasSize(1)))
-		       .andExpect(model().attribute("professors", hasSize(1)))
-	               .andExpect(view().name("exams/form"));
+		       .andExpect(model().attribute("professors", hasSize(1))
+		       .andExpect(view().name("exams/form"));
 		
 		verify(studyProgramService, times(3)).findStudyProgramById(1L);
 		verify(studentService, times(1)).findStudentById(1L);
@@ -339,7 +339,7 @@ public class ExamControllerTest extends BaseControllerTest {
 				.param("studyProgramId", "1")
 				)
 		       .andExpect(status().is3xxRedirection())
-                       .andExpect(redirectedUrlPattern("**/login"));
+		       .andExpect(redirectedUrlPattern("**/login"));
 	}
 	
 }
