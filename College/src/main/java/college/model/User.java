@@ -1,6 +1,5 @@
 package college.model;
 
-import java.io.Serializable;
 import java.util.Set;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,7 +21,7 @@ import college.enums.Role;
 
 @Entity
 @Table(name = "USERS")
-public class User implements Serializable, UserDetails {
+public class User implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 	private Long id;
