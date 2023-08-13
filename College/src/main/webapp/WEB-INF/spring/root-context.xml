@@ -36,7 +36,9 @@
 	</bean>
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-		p:password="${jdbc.password}" p:username="${jdbc.username}" p:url="${jdbc.url}"
+		p:password="${jdbc.password}" 
+		p:username="${jdbc.username}" 
+		p:url="${jdbc.url}"
 		p:driverClassName="${jdbc.driverClassName}" />
 
 	<context:property-placeholder location="classpath:database/database.properties" />
